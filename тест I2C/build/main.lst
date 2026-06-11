@@ -1,0 +1,302 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.10 #15702 (MINGW64)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module main
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _main
+                                     11 	.globl _TIM4_UPD_OVF_IRQHandler
+                                     12 	.globl _stop_I2C
+                                     13 	.globl _readNack_I2C
+                                     14 	.globl _readAck_I2C
+                                     15 	.globl _write_I2C
+                                     16 	.globl _sendAddress_I2C
+                                     17 	.globl _start_I2C
+                                     18 	.globl _init_I2C
+                                     19 	.globl _sendInt_UART
+                                     20 	.globl _sendLine_UART
+                                     21 	.globl _sendString_UART
+                                     22 	.globl _init_UART
+                                     23 	.globl _delay
+                                     24 	.globl _init_TIME
+                                     25 	.globl _tick_TIME
+                                     26 	.globl _pinMode
+                                     27 ;--------------------------------------------------------
+                                     28 ; ram data
+                                     29 ;--------------------------------------------------------
+                                     30 	.area DATA
+                                     31 ;--------------------------------------------------------
+                                     32 ; ram data
+                                     33 ;--------------------------------------------------------
+                                     34 	.area INITIALIZED
+                                     35 ;--------------------------------------------------------
+                                     36 ; Stack segment in internal ram
+                                     37 ;--------------------------------------------------------
+                                     38 	.area SSEG
+      000000                         39 __start__stack:
+      000000                         40 	.ds	1
+                                     41 
+                                     42 ;--------------------------------------------------------
+                                     43 ; absolute external ram data
+                                     44 ;--------------------------------------------------------
+                                     45 	.area DABS (ABS)
+                                     46 
+                                     47 ; default segment ordering for linker
+                                     48 	.area HOME
+                                     49 	.area GSINIT
+                                     50 	.area GSFINAL
+                                     51 	.area CONST
+                                     52 	.area INITIALIZER
+                                     53 	.area CODE
+                                     54 
+                                     55 ;--------------------------------------------------------
+                                     56 ; interrupt vector
+                                     57 ;--------------------------------------------------------
+                                     58 	.area HOME
+      000000                         59 __interrupt_vect:
+      000000 82v00u00u00             60 	int s_GSINIT ; reset
+      000004 82 00 00 00             61 	int 0x000000 ; trap
+      000008 82 00 00 00             62 	int 0x000000 ; int0
+      00000C 82 00 00 00             63 	int 0x000000 ; int1
+      000010 82 00 00 00             64 	int 0x000000 ; int2
+      000014 82 00 00 00             65 	int 0x000000 ; int3
+      000018 82 00 00 00             66 	int 0x000000 ; int4
+      00001C 82 00 00 00             67 	int 0x000000 ; int5
+      000020 82 00 00 00             68 	int 0x000000 ; int6
+      000024 82 00 00 00             69 	int 0x000000 ; int7
+      000028 82 00 00 00             70 	int 0x000000 ; int8
+      00002C 82 00 00 00             71 	int 0x000000 ; int9
+      000030 82 00 00 00             72 	int 0x000000 ; int10
+      000034 82 00 00 00             73 	int 0x000000 ; int11
+      000038 82 00 00 00             74 	int 0x000000 ; int12
+      00003C 82 00 00 00             75 	int 0x000000 ; int13
+      000040 82 00 00 00             76 	int 0x000000 ; int14
+      000044 82 00 00 00             77 	int 0x000000 ; int15
+      000048 82 00 00 00             78 	int 0x000000 ; int16
+      00004C 82 00 00 00             79 	int 0x000000 ; int17
+      000050 82 00 00 00             80 	int 0x000000 ; int18
+      000054 82 00 00 00             81 	int 0x000000 ; int19
+      000058 82 00 00 00             82 	int 0x000000 ; int20
+      00005C 82 00 00 00             83 	int 0x000000 ; int21
+      000060 82 00 00 00             84 	int 0x000000 ; int22
+      000064 82v00u00u00             85 	int _TIM4_UPD_OVF_IRQHandler ; int23
+                                     86 ;--------------------------------------------------------
+                                     87 ; global & static initialisations
+                                     88 ;--------------------------------------------------------
+                                     89 	.area HOME
+                                     90 	.area GSINIT
+                                     91 	.area GSFINAL
+                                     92 	.area GSINIT
+      000000 CDr00r00         [ 4]   93 	call	___sdcc_external_startup
+      000003 4D               [ 1]   94 	tnz	a
+      000004 27 03            [ 1]   95 	jreq	__sdcc_init_data
+      000006 CCr00r68         [ 2]   96 	jp	__sdcc_program_startup
+      000009                         97 __sdcc_init_data:
+                                     98 ; stm8_genXINIT() start
+      000009 AEr00r00         [ 2]   99 	ldw x, #l_DATA
+      00000C 27 07            [ 1]  100 	jreq	00002$
+      00000E                        101 00001$:
+      00000E 72 4FuFFuFF      [ 1]  102 	clr (s_DATA - 1, x)
+      000012 5A               [ 2]  103 	decw x
+      000013 26 F9            [ 1]  104 	jrne	00001$
+      000015                        105 00002$:
+      000015 AEr00r00         [ 2]  106 	ldw	x, #l_INITIALIZER
+      000018 27 09            [ 1]  107 	jreq	00004$
+      00001A                        108 00003$:
+      00001A D6uFFuFF         [ 1]  109 	ld	a, (s_INITIALIZER - 1, x)
+      00001D D7uFFuFF         [ 1]  110 	ld	(s_INITIALIZED - 1, x), a
+      000020 5A               [ 2]  111 	decw	x
+      000021 26 F7            [ 1]  112 	jrne	00003$
+      000023                        113 00004$:
+                                    114 ; stm8_genXINIT() end
+                                    115 	.area GSFINAL
+      000000 CCr00r68         [ 2]  116 	jp	__sdcc_program_startup
+                                    117 ;--------------------------------------------------------
+                                    118 ; Home
+                                    119 ;--------------------------------------------------------
+                                    120 	.area HOME
+                                    121 	.area HOME
+      000068                        122 __sdcc_program_startup:
+      000068 CCr00r0A         [ 2]  123 	jp	_main
+                                    124 ;	return from main will return to caller
+                                    125 ;--------------------------------------------------------
+                                    126 ; code
+                                    127 ;--------------------------------------------------------
+                                    128 	.area CODE
+                                    129 ;	main.c: 8: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23) {
+                                    130 ;	-----------------------------------------
+                                    131 ;	 function TIM4_UPD_OVF_IRQHandler
+                                    132 ;	-----------------------------------------
+      000000                        133 _TIM4_UPD_OVF_IRQHandler:
+      000000 4F               [ 1]  134 	clr	a
+      000001 62               [ 2]  135 	div	x, a
+                                    136 ;	main.c: 9: TIM4_SR &= ~(1 << 0);
+      000002 72 11 53 44      [ 1]  137 	bres	0x5344, #0
+                                    138 ;	main.c: 10: tick_TIME();
+      000006 CDr00r00         [ 4]  139 	call	_tick_TIME
+                                    140 ;	main.c: 11: }
+      000009 80               [11]  141 	iret
+                                    142 ;	main.c: 13: void main(void) {
+                                    143 ;	-----------------------------------------
+                                    144 ;	 function main
+                                    145 ;	-----------------------------------------
+      00000A                        146 _main:
+      00000A 52 0B            [ 2]  147 	sub	sp, #11
+                                    148 ;	main.c: 14: CLK_CKDIVR = 0;
+      00000C 35 00 50 C6      [ 1]  149 	mov	0x50c6+0, #0x00
+                                    150 ;	main.c: 15: init_TIME();
+      000010 CDr00r00         [ 4]  151 	call	_init_TIME
+                                    152 ;	main.c: 16: init_UART(9600);
+      000013 4B 80            [ 1]  153 	push	#0x80
+      000015 4B 25            [ 1]  154 	push	#0x25
+      000017 5F               [ 1]  155 	clrw	x
+      000018 89               [ 2]  156 	pushw	x
+      000019 CDr00r00         [ 4]  157 	call	_init_UART
+                                    158 ;	main.c: 17: init_I2C();
+      00001C CDr00r00         [ 4]  159 	call	_init_I2C
+                                    160 ;	main.c: 18: enableInterrupts();
+      00001F 9A               [ 1]  161 	rim
+                                    162 ;	main.c: 21: pinMode(PORTD, 5, OUTPUT);
+      000020 4B 00            [ 1]  163 	push	#0x00
+      000022 A6 05            [ 1]  164 	ld	a, #0x05
+      000024 AE 50 0F         [ 2]  165 	ldw	x, #0x500f
+      000027 CDr00r00         [ 4]  166 	call	_pinMode
+                                    167 ;	main.c: 24: pinMode(PORTB, 4, OUTPUT_OD);
+      00002A 4B 04            [ 1]  168 	push	#0x04
+      00002C A6 04            [ 1]  169 	ld	a, #0x04
+      00002E AE 50 05         [ 2]  170 	ldw	x, #0x5005
+      000031 CDr00r00         [ 4]  171 	call	_pinMode
+                                    172 ;	main.c: 25: pinMode(PORTB, 5, OUTPUT_OD);
+      000034 4B 04            [ 1]  173 	push	#0x04
+      000036 A6 05            [ 1]  174 	ld	a, #0x05
+      000038 AE 50 05         [ 2]  175 	ldw	x, #0x5005
+      00003B CDr00r00         [ 4]  176 	call	_pinMode
+                                    177 ;	main.c: 29: if (start_I2C() && sendAddress_I2C(0xEC)) {
+      00003E CDr00r00         [ 4]  178 	call	_start_I2C
+      000041 4D               [ 1]  179 	tnz	a
+      000042 27 1B            [ 1]  180 	jreq	00108$
+      000044 A6 EC            [ 1]  181 	ld	a, #0xec
+      000046 CDr00r00         [ 4]  182 	call	_sendAddress_I2C
+      000049 4D               [ 1]  183 	tnz	a
+      00004A 27 13            [ 1]  184 	jreq	00108$
+                                    185 ;	main.c: 30: write_I2C(0xF4); // Регистр ctrl_meas
+      00004C A6 F4            [ 1]  186 	ld	a, #0xf4
+      00004E CDr00r00         [ 4]  187 	call	_write_I2C
+                                    188 ;	main.c: 31: write_I2C(0x2E); // Значение настроек
+      000051 A6 2E            [ 1]  189 	ld	a, #0x2e
+      000053 CDr00r00         [ 4]  190 	call	_write_I2C
+                                    191 ;	main.c: 32: stop_I2C();
+      000056 CDr00r00         [ 4]  192 	call	_stop_I2C
+                                    193 ;	main.c: 33: sendString_UART("Sensor Configured!\r\n");
+      000059 AEr00r00         [ 2]  194 	ldw	x, #(___str_0+0)
+      00005C CDr00r00         [ 4]  195 	call	_sendString_UART
+                                    196 ;	main.c: 36: while(1) {
+      00005F                        197 00108$:
+                                    198 ;	main.c: 37: if (start_I2C() && sendAddress_I2C(0xEC)) {
+      00005F CDr00r00         [ 4]  199 	call	_start_I2C
+      000062 4D               [ 1]  200 	tnz	a
+      000063 27 7A            [ 1]  201 	jreq	00105$
+      000065 A6 EC            [ 1]  202 	ld	a, #0xec
+      000067 CDr00r00         [ 4]  203 	call	_sendAddress_I2C
+      00006A 4D               [ 1]  204 	tnz	a
+      00006B 27 72            [ 1]  205 	jreq	00105$
+                                    206 ;	main.c: 38: write_I2C(0xFA); // Начальный регистр температуры
+      00006D A6 FA            [ 1]  207 	ld	a, #0xfa
+      00006F CDr00r00         [ 4]  208 	call	_write_I2C
+                                    209 ;	main.c: 40: start_I2C();     // Restart
+      000072 CDr00r00         [ 4]  210 	call	_start_I2C
+                                    211 ;	main.c: 41: sendAddress_I2C(0xED); // Переходим на чтение
+      000075 A6 ED            [ 1]  212 	ld	a, #0xed
+      000077 CDr00r00         [ 4]  213 	call	_sendAddress_I2C
+                                    214 ;	main.c: 44: uint32_t msb  = readAck_I2C();
+      00007A CDr00r00         [ 4]  215 	call	_readAck_I2C
+      00007D 6B 03            [ 1]  216 	ld	(0x03, sp), a
+      00007F 0F 02            [ 1]  217 	clr	(0x02, sp)
+                                    218 ;	main.c: 45: uint32_t lsb  = readAck_I2C();
+      000081 CDr00r00         [ 4]  219 	call	_readAck_I2C
+      000084 6B 05            [ 1]  220 	ld	(0x05, sp), a
+      000086 0F 04            [ 1]  221 	clr	(0x04, sp)
+                                    222 ;	main.c: 46: uint32_t xlsb = readNack_I2C(); 
+      000088 CDr00r00         [ 4]  223 	call	_readNack_I2C
+      00008B 6B 09            [ 1]  224 	ld	(0x09, sp), a
+      00008D 90 5F            [ 1]  225 	clrw	y
+      00008F 0F 06            [ 1]  226 	clr	(0x06, sp)
+                                    227 ;	main.c: 50: uint32_t raw_temp = (msb << 12) | (lsb << 4) | (xlsb >> 4);
+      000091 7B 03            [ 1]  228 	ld	a, (0x03, sp)
+      000093 6B 0A            [ 1]  229 	ld	(0x0a, sp), a
+      000095 0F 0B            [ 1]  230 	clr	(0x0b, sp)
+      000097 08 0B            [ 1]  231 	sll	(0x0b, sp)
+      000099 09 0A            [ 1]  232 	rlc	(0x0a, sp)
+      00009B 08 0B            [ 1]  233 	sll	(0x0b, sp)
+      00009D 09 0A            [ 1]  234 	rlc	(0x0a, sp)
+      00009F 08 0B            [ 1]  235 	sll	(0x0b, sp)
+      0000A1 09 0A            [ 1]  236 	rlc	(0x0a, sp)
+      0000A3 08 0B            [ 1]  237 	sll	(0x0b, sp)
+      0000A5 09 0A            [ 1]  238 	rlc	(0x0a, sp)
+      0000A7 1E 04            [ 2]  239 	ldw	x, (0x04, sp)
+      0000A9 58               [ 2]  240 	sllw	x
+      0000AA 58               [ 2]  241 	sllw	x
+      0000AB 58               [ 2]  242 	sllw	x
+      0000AC 58               [ 2]  243 	sllw	x
+      0000AD 9E               [ 1]  244 	ld	a, xh
+      0000AE 1A 0A            [ 1]  245 	or	a, (0x0a, sp)
+      0000B0 95               [ 1]  246 	ld	xh, a
+      0000B1 0F 01            [ 1]  247 	clr	(0x01, sp)
+      0000B3 90 5E            [ 1]  248 	swapw	y
+      0000B5 7B 09            [ 1]  249 	ld	a, (0x09, sp)
+      0000B7 04 01            [ 1]  250 	srl	(0x01, sp)
+      0000B9 90 56            [ 2]  251 	rrcw	y
+      0000BB 46               [ 1]  252 	rrc	a
+      0000BC 04 01            [ 1]  253 	srl	(0x01, sp)
+      0000BE 90 56            [ 2]  254 	rrcw	y
+      0000C0 46               [ 1]  255 	rrc	a
+      0000C1 04 01            [ 1]  256 	srl	(0x01, sp)
+      0000C3 90 56            [ 2]  257 	rrcw	y
+      0000C5 46               [ 1]  258 	rrc	a
+      0000C6 04 01            [ 1]  259 	srl	(0x01, sp)
+      0000C8 90 56            [ 2]  260 	rrcw	y
+      0000CA 46               [ 1]  261 	rrc	a
+      0000CB 6B 0B            [ 1]  262 	ld	(0x0b, sp), a
+      0000CD 9F               [ 1]  263 	ld	a, xl
+      0000CE 1A 0B            [ 1]  264 	or	a, (0x0b, sp)
+      0000D0 97               [ 1]  265 	ld	xl, a
+                                    266 ;	main.c: 52: sendString_UART("Raw Temp: ");
+      0000D1 89               [ 2]  267 	pushw	x
+      0000D2 AEr00r15         [ 2]  268 	ldw	x, #(___str_1+0)
+      0000D5 CDr00r00         [ 4]  269 	call	_sendString_UART
+      0000D8 85               [ 2]  270 	popw	x
+                                    271 ;	main.c: 53: sendInt_UART(raw_temp); 
+      0000D9 CDr00r00         [ 4]  272 	call	_sendInt_UART
+                                    273 ;	main.c: 54: sendLine_UART();
+      0000DC CDr00r00         [ 4]  274 	call	_sendLine_UART
+      0000DF                        275 00105$:
+                                    276 ;	main.c: 57: delay(500); // Пауза полсекунды
+      0000DF 4B F4            [ 1]  277 	push	#0xf4
+      0000E1 4B 01            [ 1]  278 	push	#0x01
+      0000E3 5F               [ 1]  279 	clrw	x
+      0000E4 89               [ 2]  280 	pushw	x
+      0000E5 CDr00r00         [ 4]  281 	call	_delay
+                                    282 ;	main.c: 59: }
+      0000E8 CCr00r5F         [ 2]  283 	jp	00108$
+                                    284 	.area CODE
+                                    285 	.area CONST
+                                    286 	.area CONST
+      000000                        287 ___str_0:
+      000000 53 65 6E 73 6F 72 20   288 	.ascii "Sensor Configured!"
+             43 6F 6E 66 69 67 75
+             72 65 64 21
+      000012 0D                     289 	.db 0x0d
+      000013 0A                     290 	.db 0x0a
+      000014 00                     291 	.db 0x00
+                                    292 	.area CODE
+                                    293 	.area CONST
+      000015                        294 ___str_1:
+      000015 52 61 77 20 54 65 6D   295 	.ascii "Raw Temp: "
+             70 3A 20
+      00001F 00                     296 	.db 0x00
+                                    297 	.area CODE
+                                    298 	.area INITIALIZER
+                                    299 	.area CABS (ABS)

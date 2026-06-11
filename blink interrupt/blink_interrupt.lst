@@ -1,0 +1,190 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.10 #15702 (MINGW64)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module blink_interrupt
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _main
+                                     11 	.globl _tim4_init
+                                     12 	.globl _TIM4_UPD_OVF_IRQHandler
+                                     13 	.globl _last_time
+                                     14 	.globl _ms_counter
+                                     15 ;--------------------------------------------------------
+                                     16 ; ram data
+                                     17 ;--------------------------------------------------------
+                                     18 	.area DATA
+                                     19 ;--------------------------------------------------------
+                                     20 ; ram data
+                                     21 ;--------------------------------------------------------
+                                     22 	.area INITIALIZED
+      000000                         23 _ms_counter::
+      000000                         24 	.ds 2
+      000002                         25 _last_time::
+      000002                         26 	.ds 2
+                                     27 ;--------------------------------------------------------
+                                     28 ; Stack segment in internal ram
+                                     29 ;--------------------------------------------------------
+                                     30 	.area SSEG
+      000000                         31 __start__stack:
+      000000                         32 	.ds	1
+                                     33 
+                                     34 ;--------------------------------------------------------
+                                     35 ; absolute external ram data
+                                     36 ;--------------------------------------------------------
+                                     37 	.area DABS (ABS)
+                                     38 
+                                     39 ; default segment ordering for linker
+                                     40 	.area HOME
+                                     41 	.area GSINIT
+                                     42 	.area GSFINAL
+                                     43 	.area CONST
+                                     44 	.area INITIALIZER
+                                     45 	.area CODE
+                                     46 
+                                     47 ;--------------------------------------------------------
+                                     48 ; interrupt vector
+                                     49 ;--------------------------------------------------------
+                                     50 	.area HOME
+      000000                         51 __interrupt_vect:
+      000000 82v00u00u00             52 	int s_GSINIT ; reset
+      000004 82 00 00 00             53 	int 0x000000 ; trap
+      000008 82 00 00 00             54 	int 0x000000 ; int0
+      00000C 82 00 00 00             55 	int 0x000000 ; int1
+      000010 82 00 00 00             56 	int 0x000000 ; int2
+      000014 82 00 00 00             57 	int 0x000000 ; int3
+      000018 82 00 00 00             58 	int 0x000000 ; int4
+      00001C 82 00 00 00             59 	int 0x000000 ; int5
+      000020 82 00 00 00             60 	int 0x000000 ; int6
+      000024 82 00 00 00             61 	int 0x000000 ; int7
+      000028 82 00 00 00             62 	int 0x000000 ; int8
+      00002C 82 00 00 00             63 	int 0x000000 ; int9
+      000030 82 00 00 00             64 	int 0x000000 ; int10
+      000034 82 00 00 00             65 	int 0x000000 ; int11
+      000038 82 00 00 00             66 	int 0x000000 ; int12
+      00003C 82 00 00 00             67 	int 0x000000 ; int13
+      000040 82 00 00 00             68 	int 0x000000 ; int14
+      000044 82 00 00 00             69 	int 0x000000 ; int15
+      000048 82 00 00 00             70 	int 0x000000 ; int16
+      00004C 82 00 00 00             71 	int 0x000000 ; int17
+      000050 82 00 00 00             72 	int 0x000000 ; int18
+      000054 82 00 00 00             73 	int 0x000000 ; int19
+      000058 82 00 00 00             74 	int 0x000000 ; int20
+      00005C 82 00 00 00             75 	int 0x000000 ; int21
+      000060 82 00 00 00             76 	int 0x000000 ; int22
+      000064 82v00u00u00             77 	int _TIM4_UPD_OVF_IRQHandler ; int23
+                                     78 ;--------------------------------------------------------
+                                     79 ; global & static initialisations
+                                     80 ;--------------------------------------------------------
+                                     81 	.area HOME
+                                     82 	.area GSINIT
+                                     83 	.area GSFINAL
+                                     84 	.area GSINIT
+      000000 CDr00r00         [ 4]   85 	call	___sdcc_external_startup
+      000003 4D               [ 1]   86 	tnz	a
+      000004 27 03            [ 1]   87 	jreq	__sdcc_init_data
+      000006 CCr00r68         [ 2]   88 	jp	__sdcc_program_startup
+      000009                         89 __sdcc_init_data:
+                                     90 ; stm8_genXINIT() start
+      000009 AEr00r00         [ 2]   91 	ldw x, #l_DATA
+      00000C 27 07            [ 1]   92 	jreq	00002$
+      00000E                         93 00001$:
+      00000E 72 4FuFFuFF      [ 1]   94 	clr (s_DATA - 1, x)
+      000012 5A               [ 2]   95 	decw x
+      000013 26 F9            [ 1]   96 	jrne	00001$
+      000015                         97 00002$:
+      000015 AEr00r00         [ 2]   98 	ldw	x, #l_INITIALIZER
+      000018 27 09            [ 1]   99 	jreq	00004$
+      00001A                        100 00003$:
+      00001A D6uFFuFF         [ 1]  101 	ld	a, (s_INITIALIZER - 1, x)
+      00001D D7uFFuFF         [ 1]  102 	ld	(s_INITIALIZED - 1, x), a
+      000020 5A               [ 2]  103 	decw	x
+      000021 26 F7            [ 1]  104 	jrne	00003$
+      000023                        105 00004$:
+                                    106 ; stm8_genXINIT() end
+                                    107 	.area GSFINAL
+      000000 CCr00r68         [ 2]  108 	jp	__sdcc_program_startup
+                                    109 ;--------------------------------------------------------
+                                    110 ; Home
+                                    111 ;--------------------------------------------------------
+                                    112 	.area HOME
+                                    113 	.area HOME
+      000068                        114 __sdcc_program_startup:
+      000068 CCr00r25         [ 2]  115 	jp	_main
+                                    116 ;	return from main will return to caller
+                                    117 ;--------------------------------------------------------
+                                    118 ; code
+                                    119 ;--------------------------------------------------------
+                                    120 	.area CODE
+                                    121 ;	blink_interrupt.c: 7: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23)
+                                    122 ;	-----------------------------------------
+                                    123 ;	 function TIM4_UPD_OVF_IRQHandler
+                                    124 ;	-----------------------------------------
+      000000                        125 _TIM4_UPD_OVF_IRQHandler:
+                                    126 ;	blink_interrupt.c: 9: TIM4_SR = 0;
+      000000 35 00 53 44      [ 1]  127 	mov	0x5344+0, #0x00
+                                    128 ;	blink_interrupt.c: 10: ms_counter++;
+      000004 CEu00u00         [ 2]  129 	ldw	x, _ms_counter+0
+      000007 5C               [ 1]  130 	incw	x
+      000008 CFu00u00         [ 2]  131 	ldw	_ms_counter+0, x
+                                    132 ;	blink_interrupt.c: 11: }
+      00000B 80               [11]  133 	iret
+                                    134 ;	blink_interrupt.c: 13: void tim4_init(void)
+                                    135 ;	-----------------------------------------
+                                    136 ;	 function tim4_init
+                                    137 ;	-----------------------------------------
+      00000C                        138 _tim4_init:
+                                    139 ;	blink_interrupt.c: 15: TIM4_CR1 = 0;      // выключаем таймер
+      00000C 35 00 53 40      [ 1]  140 	mov	0x5340+0, #0x00
+                                    141 ;	blink_interrupt.c: 17: TIM4_PSCR = 0x07;  // prescaler = 128
+      000010 35 07 53 47      [ 1]  142 	mov	0x5347+0, #0x07
+                                    143 ;	blink_interrupt.c: 18: TIM4_ARR  = 128;   // 1 мс
+      000014 35 80 53 48      [ 1]  144 	mov	0x5348+0, #0x80
+                                    145 ;	blink_interrupt.c: 20: TIM4_IER |= 0x01;  // разрешаем прерывание по переполнению
+      000018 72 10 53 43      [ 1]  146 	bset	0x5343, #0
+                                    147 ;	blink_interrupt.c: 21: TIM4_SR  = 0;      // сброс флагов
+      00001C 35 00 53 44      [ 1]  148 	mov	0x5344+0, #0x00
+                                    149 ;	blink_interrupt.c: 23: TIM4_CR1 |= 0x01;  // включаем таймер
+      000020 72 10 53 40      [ 1]  150 	bset	0x5340, #0
+                                    151 ;	blink_interrupt.c: 24: }
+      000024 81               [ 4]  152 	ret
+                                    153 ;	blink_interrupt.c: 28: int main(void)
+                                    154 ;	-----------------------------------------
+                                    155 ;	 function main
+                                    156 ;	-----------------------------------------
+      000025                        157 _main:
+                                    158 ;	blink_interrupt.c: 30: PB_DDR |= LED_MASK;
+      000025 72 1A 50 07      [ 1]  159 	bset	0x5007, #5
+                                    160 ;	blink_interrupt.c: 31: PB_CR1 |= LED_MASK;
+      000029 72 1A 50 08      [ 1]  161 	bset	0x5008, #5
+                                    162 ;	blink_interrupt.c: 33: CLK_CKDIVR = 0x00; // HSI / 1, CPU = 16 МГц
+      00002D 35 00 50 C6      [ 1]  163 	mov	0x50c6+0, #0x00
+                                    164 ;	blink_interrupt.c: 35: tim4_init();
+      000031 CDr00r0C         [ 4]  165 	call	_tim4_init
+                                    166 ;	blink_interrupt.c: 36: enableInterrupts();   // глобально разрешаем прерывания
+      000034 9A               [ 1]  167 	rim
+                                    168 ;	blink_interrupt.c: 38: while (1)
+      000035                        169 00104$:
+                                    170 ;	blink_interrupt.c: 40: if ((uint16_t)(ms_counter - last_time) >= 1000)
+      000035 CEu00u00         [ 2]  171 	ldw	x, _ms_counter+0
+      000038 72 B0u00u02      [ 2]  172 	subw	x, _last_time+0
+      00003C A3 03 E8         [ 2]  173 	cpw	x, #0x03e8
+      00003F 25 F4            [ 1]  174 	jrc	00104$
+                                    175 ;	blink_interrupt.c: 42: PB_ODR ^= LED_MASK;   // переключаем светодиод
+      000041 90 1A 50 05      [ 1]  176 	bcpl	0x5005, #5
+                                    177 ;	blink_interrupt.c: 43: last_time = ms_counter;
+      000045 CEu00u00         [ 2]  178 	ldw	x, _ms_counter+0
+      000048 CFu00u02         [ 2]  179 	ldw	_last_time+0, x
+      00004B 20 E8            [ 2]  180 	jra	00104$
+                                    181 ;	blink_interrupt.c: 46: }
+      00004D 81               [ 4]  182 	ret
+                                    183 	.area CODE
+                                    184 	.area CONST
+                                    185 	.area INITIALIZER
+      000000                        186 __xinit__ms_counter:
+      000000 00 00                  187 	.dw #0x0000
+      000002                        188 __xinit__last_time:
+      000002 00 00                  189 	.dw #0x0000
+                                    190 	.area CABS (ABS)

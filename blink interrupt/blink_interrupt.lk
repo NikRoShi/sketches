@@ -1,0 +1,9 @@
+-muwx
+-s blink_interrupt.s19
+-b HOME = 0x8000
+-b DATA = 0x0001
+-k C:\Program Files\sdcc\bin\..\lib\stm8
+-l stm8
+blink_interrupt.rel
+
+-e

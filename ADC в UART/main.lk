@@ -1,0 +1,12 @@
+-muwx
+-i main.ihx
+-b HOME = 0x8000
+-b DATA = 0x0001
+-k C:\Program Files\sdcc\bin\..\lib\stm8
+-l stm8
+main.rel
+stm8_TIM4.rel
+stm8_ADC.rel
+stm8_UART.rel
+
+-e

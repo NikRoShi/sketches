@@ -1,0 +1,46 @@
+XH3
+H B areas 4 global symbols
+M stm8_time
+S .__.ABS. Def000000
+A _CODE size 0 flags 0 addr 0
+A DATA size 0 flags 0 addr 0
+A INITIALIZED size 4 flags 0 addr 0
+A DABS size 0 flags 8 addr 0
+A HOME size 0 flags 0 addr 0
+A GSINIT size 0 flags 0 addr 0
+A GSFINAL size 0 flags 0 addr 0
+A CONST size 0 flags 0 addr 0
+A INITIALIZER size 4 flags 0 addr 0
+A CODE size 42 flags 0 addr 0
+S _time_init Def000014
+S _tim4_tick Def000000
+S _millis Def000038
+A CABS size 0 flags 8 addr 0
+T 00 00 00
+R 00 00 00 02
+T 00 00 00
+R 00 00 00 02
+T 00 00 00
+R 00 00 00 09
+T 00 00 00 CE 00 02 90 CE 00 00 5C 26 02 90 5C
+R 00 00 00 09 10 04 00 02 10 08 00 02
+T 00 00 0C
+R 00 00 00 09
+T 00 00 0C CF 00 02 90 CF 00 00 81
+R 00 00 00 09 10 04 00 02 10 08 00 02
+T 00 00 14
+R 00 00 00 09
+T 00 00 14 5F CF 00 02 CF 00 00 35 00 50 C6 35 00
+R 00 00 00 09 10 05 00 02 10 08 00 02
+T 00 00 21 53 40 35 07 53 47 35 7C 53 48 72 10
+R 00 00 00 09
+T 00 00 2D 53 43 35 00 53 44 72 10 53 40 81
+R 00 00 00 09
+T 00 00 38
+R 00 00 00 09
+T 00 00 38 9B CE 00 02 90 CE 00 00 9A 81
+R 00 00 00 09 10 05 00 02 10 09 00 02
+T 00 00 00
+R 00 00 00 08
+T 00 00 00 00 00 00 00
+R 00 00 00 08

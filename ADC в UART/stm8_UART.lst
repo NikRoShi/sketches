@@ -1,0 +1,233 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.10 #15702 (MINGW64)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module stm8_UART
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _init_UART
+                                     11 	.globl _sendByte_UART
+                                     12 	.globl _sendString_UART
+                                     13 	.globl _sendLine_UART
+                                     14 	.globl _sendInt_UART
+                                     15 ;--------------------------------------------------------
+                                     16 ; ram data
+                                     17 ;--------------------------------------------------------
+                                     18 	.area DATA
+                                     19 ;--------------------------------------------------------
+                                     20 ; ram data
+                                     21 ;--------------------------------------------------------
+                                     22 	.area INITIALIZED
+                                     23 ;--------------------------------------------------------
+                                     24 ; absolute external ram data
+                                     25 ;--------------------------------------------------------
+                                     26 	.area DABS (ABS)
+                                     27 
+                                     28 ; default segment ordering for linker
+                                     29 	.area HOME
+                                     30 	.area GSINIT
+                                     31 	.area GSFINAL
+                                     32 	.area CONST
+                                     33 	.area INITIALIZER
+                                     34 	.area CODE
+                                     35 
+                                     36 ;--------------------------------------------------------
+                                     37 ; global & static initialisations
+                                     38 ;--------------------------------------------------------
+                                     39 	.area HOME
+                                     40 	.area GSINIT
+                                     41 	.area GSFINAL
+                                     42 	.area GSINIT
+                                     43 ;--------------------------------------------------------
+                                     44 ; Home
+                                     45 ;--------------------------------------------------------
+                                     46 	.area HOME
+                                     47 	.area HOME
+                                     48 ;--------------------------------------------------------
+                                     49 ; code
+                                     50 ;--------------------------------------------------------
+                                     51 	.area CODE
+                                     52 ;	stm8_UART.c: 3: void init_UART(uint32_t baudRate) {
+                                     53 ;	-----------------------------------------
+                                     54 ;	 function init_UART
+                                     55 ;	-----------------------------------------
+      000000                         56 _init_UART:
+      000000 88               [ 1]   57 	push	a
+                                     58 ;	stm8_UART.c: 5: CLK_PCKENR1 |= (1 << 3); 
+      000001 72 16 50 C7      [ 1]   59 	bset	0x50c7, #3
+                                     60 ;	stm8_UART.c: 8: PD_DDR |= (1 << TX_PIN);
+      000005 72 1A 50 11      [ 1]   61 	bset	0x5011, #5
+                                     62 ;	stm8_UART.c: 9: PD_CR1 |= (1 << TX_PIN);
+      000009 72 1A 50 12      [ 1]   63 	bset	0x5012, #5
+                                     64 ;	stm8_UART.c: 10: PD_CR2 |= (1 << TX_PIN);
+      00000D 72 1A 50 13      [ 1]   65 	bset	0x5013, #5
+                                     66 ;	stm8_UART.c: 12: PD_DDR &= ~(1 << RX_PIN);
+      000011 72 1D 50 11      [ 1]   67 	bres	0x5011, #6
+                                     68 ;	stm8_UART.c: 13: PD_CR1 &= ~(1 << RX_PIN);
+      000015 72 1D 50 12      [ 1]   69 	bres	0x5012, #6
+                                     70 ;	stm8_UART.c: 15: uint16_t uart_div = (uint32_t)(16000000 / baudRate);
+      000019 1E 06            [ 2]   71 	ldw	x, (0x06, sp)
+      00001B 89               [ 2]   72 	pushw	x
+      00001C 1E 06            [ 2]   73 	ldw	x, (0x06, sp)
+      00001E 89               [ 2]   74 	pushw	x
+      00001F 4B 00            [ 1]   75 	push	#0x00
+      000021 4B 24            [ 1]   76 	push	#0x24
+      000023 4B F4            [ 1]   77 	push	#0xf4
+      000025 4B 00            [ 1]   78 	push	#0x00
+      000027 CDr00r00         [ 4]   79 	call	__divulong
+      00002A 5B 08            [ 2]   80 	addw	sp, #8
+                                     81 ;	stm8_UART.c: 16: UART1_BRR2 = ((uart_div >> 12) << 4) | (uart_div & 0x000F);
+      00002C 9E               [ 1]   82 	ld	a, xh
+      00002D 90 5F            [ 1]   83 	clrw	y
+      00002F A4 F0            [ 1]   84 	and	a, #240
+      000031 6B 01            [ 1]   85 	ld	(0x01, sp), a
+      000033 9F               [ 1]   86 	ld	a, xl
+      000034 A4 0F            [ 1]   87 	and	a, #0x0f
+      000036 1A 01            [ 1]   88 	or	a, (0x01, sp)
+      000038 C7 52 33         [ 1]   89 	ld	0x5233, a
+                                     90 ;	stm8_UART.c: 17: UART1_BRR1 = (uart_div >> 4) & 0x00FF;
+      00003B A6 10            [ 1]   91 	ld	a, #0x10
+      00003D 62               [ 2]   92 	div	x, a
+      00003E 9F               [ 1]   93 	ld	a, xl
+      00003F C7 52 32         [ 1]   94 	ld	0x5232, a
+                                     95 ;	stm8_UART.c: 19: UART1_CR2 |= (1 << 3) | (1 << 2);
+      000042 C6 52 35         [ 1]   96 	ld	a, 0x5235
+      000045 AA 0C            [ 1]   97 	or	a, #0x0c
+      000047 C7 52 35         [ 1]   98 	ld	0x5235, a
+                                     99 ;	stm8_UART.c: 20: }
+      00004A 1E 02            [ 2]  100 	ldw	x, (2, sp)
+      00004C 5B 07            [ 2]  101 	addw	sp, #7
+      00004E FC               [ 2]  102 	jp	(x)
+                                    103 ;	stm8_UART.c: 22: void sendByte_UART(uint8_t byte) {
+                                    104 ;	-----------------------------------------
+                                    105 ;	 function sendByte_UART
+                                    106 ;	-----------------------------------------
+      00004F                        107 _sendByte_UART:
+      00004F 88               [ 1]  108 	push	a
+      000050 6B 01            [ 1]  109 	ld	(0x01, sp), a
+                                    110 ;	stm8_UART.c: 23: while(!(UART1_SR & (1 << 7))) {}
+      000052                        111 00101$:
+      000052 C6 52 30         [ 1]  112 	ld	a, 0x5230
+      000055 2A FB            [ 1]  113 	jrpl	00101$
+                                    114 ;	stm8_UART.c: 24: UART1_DR = byte;
+      000057 AE 52 31         [ 2]  115 	ldw	x, #0x5231
+      00005A 7B 01            [ 1]  116 	ld	a, (0x01, sp)
+      00005C F7               [ 1]  117 	ld	(x), a
+                                    118 ;	stm8_UART.c: 25: }	
+      00005D 84               [ 1]  119 	pop	a
+      00005E 81               [ 4]  120 	ret
+                                    121 ;	stm8_UART.c: 27: void sendString_UART(const char *str) {
+                                    122 ;	-----------------------------------------
+                                    123 ;	 function sendString_UART
+                                    124 ;	-----------------------------------------
+      00005F                        125 _sendString_UART:
+                                    126 ;	stm8_UART.c: 28: while (*str) {               // Пока текущий символ не '\0' (не ноль)
+      00005F                        127 00101$:
+      00005F F6               [ 1]  128 	ld	a, (x)
+      000060 26 01            [ 1]  129 	jrne	00121$
+      000062 81               [ 4]  130 	ret
+      000063                        131 00121$:
+                                    132 ;	stm8_UART.c: 29: sendByte_UART(*str);     // Отправляем текущий символ
+      000063 89               [ 2]  133 	pushw	x
+      000064 CDr00r4F         [ 4]  134 	call	_sendByte_UART
+      000067 85               [ 2]  135 	popw	x
+                                    136 ;	stm8_UART.c: 30: str++;                   // Переходим к следующему адресу в памяти
+      000068 5C               [ 1]  137 	incw	x
+      000069 20 F4            [ 2]  138 	jra	00101$
+                                    139 ;	stm8_UART.c: 32: }
+      00006B 81               [ 4]  140 	ret
+                                    141 ;	stm8_UART.c: 34: void sendLine_UART(void) {
+                                    142 ;	-----------------------------------------
+                                    143 ;	 function sendLine_UART
+                                    144 ;	-----------------------------------------
+      00006C                        145 _sendLine_UART:
+                                    146 ;	stm8_UART.c: 35: sendByte_UART('\r');
+      00006C A6 0D            [ 1]  147 	ld	a, #0x0d
+      00006E CDr00r4F         [ 4]  148 	call	_sendByte_UART
+                                    149 ;	stm8_UART.c: 36: sendByte_UART('\n');
+      000071 A6 0A            [ 1]  150 	ld	a, #0x0a
+                                    151 ;	stm8_UART.c: 37: }
+      000073 CCr00r4F         [ 2]  152 	jp	_sendByte_UART
+                                    153 ;	stm8_UART.c: 39: void sendInt_UART(uint16_t num) {
+                                    154 ;	-----------------------------------------
+                                    155 ;	 function sendInt_UART
+                                    156 ;	-----------------------------------------
+      000076                        157 _sendInt_UART:
+      000076 52 0F            [ 2]  158 	sub	sp, #15
+                                    159 ;	stm8_UART.c: 40: if (num == 0) {
+      000078 1F 0D            [ 2]  160 	ldw	(0x0d, sp), x
+      00007A 26 07            [ 1]  161 	jrne	00113$
+                                    162 ;	stm8_UART.c: 41: sendByte_UART('0');
+      00007C A6 30            [ 1]  163 	ld	a, #0x30
+      00007E 5B 0F            [ 2]  164 	addw	sp, #15
+                                    165 ;	stm8_UART.c: 42: return;
+      000080 CCr00r4F         [ 2]  166 	jp	_sendByte_UART
+                                    167 ;	stm8_UART.c: 49: while (num > 0) {
+      000083                        168 00113$:
+      000083 4F               [ 1]  169 	clr	a
+      000084                        170 00103$:
+      000084 1E 0D            [ 2]  171 	ldw	x, (0x0d, sp)
+      000086 27 2F            [ 1]  172 	jreq	00115$
+                                    173 ;	stm8_UART.c: 50: digits[i++] = (num % 10) + '0'; // Берем остаток и превращаем в символ
+      000088 97               [ 1]  174 	ld	xl, a
+      000089 88               [ 1]  175 	push	a
+      00008A 9F               [ 1]  176 	ld	a, xl
+      00008B 49               [ 1]  177 	rlc	a
+      00008C 4F               [ 1]  178 	clr	a
+      00008D A2 00            [ 1]  179 	sbc	a, #0x00
+      00008F 95               [ 1]  180 	ld	xh, a
+      000090 84               [ 1]  181 	pop	a
+      000091 4C               [ 1]  182 	inc	a
+      000092 58               [ 2]  183 	sllw	x
+      000093 1F 0B            [ 2]  184 	ldw	(0x0b, sp), x
+      000095 96               [ 1]  185 	ldw	x, sp
+      000096 5C               [ 1]  186 	incw	x
+      000097 72 FB 0B         [ 2]  187 	addw	x, (0x0b, sp)
+      00009A 16 0D            [ 2]  188 	ldw	y, (0x0d, sp)
+      00009C 17 0B            [ 2]  189 	ldw	(0x0b, sp), y
+      00009E 89               [ 2]  190 	pushw	x
+      00009F 1E 0D            [ 2]  191 	ldw	x, (0x0d, sp)
+      0000A1 90 AE 00 0A      [ 2]  192 	ldw	y, #0x000a
+      0000A5 65               [ 2]  193 	divw	x, y
+      0000A6 85               [ 2]  194 	popw	x
+      0000A7 72 A9 00 30      [ 2]  195 	addw	y, #0x0030
+      0000AB FF               [ 2]  196 	ldw	(x), y
+                                    197 ;	stm8_UART.c: 51: num /= 10;
+      0000AC 1E 0B            [ 2]  198 	ldw	x, (0x0b, sp)
+      0000AE 90 AE 00 0A      [ 2]  199 	ldw	y, #0x000a
+      0000B2 65               [ 2]  200 	divw	x, y
+      0000B3 1F 0D            [ 2]  201 	ldw	(0x0d, sp), x
+      0000B5 20 CD            [ 2]  202 	jra	00103$
+                                    203 ;	stm8_UART.c: 55: while (i > 0) {
+      0000B7                        204 00115$:
+      0000B7 6B 0F            [ 1]  205 	ld	(0x0f, sp), a
+      0000B9                        206 00106$:
+      0000B9 7B 0F            [ 1]  207 	ld	a, (0x0f, sp)
+      0000BB A1 00            [ 1]  208 	cp	a, #0x00
+      0000BD 2D 19            [ 1]  209 	jrsle	00109$
+                                    210 ;	stm8_UART.c: 56: sendByte_UART(digits[--i]);
+      0000BF 0A 0F            [ 1]  211 	dec	(0x0f, sp)
+      0000C1 7B 0F            [ 1]  212 	ld	a, (0x0f, sp)
+      0000C3 97               [ 1]  213 	ld	xl, a
+      0000C4 49               [ 1]  214 	rlc	a
+      0000C5 4F               [ 1]  215 	clr	a
+      0000C6 A2 00            [ 1]  216 	sbc	a, #0x00
+      0000C8 95               [ 1]  217 	ld	xh, a
+      0000C9 58               [ 2]  218 	sllw	x
+      0000CA 1F 0B            [ 2]  219 	ldw	(0x0b, sp), x
+      0000CC 96               [ 1]  220 	ldw	x, sp
+      0000CD 5C               [ 1]  221 	incw	x
+      0000CE 72 FB 0B         [ 2]  222 	addw	x, (0x0b, sp)
+      0000D1 E6 01            [ 1]  223 	ld	a, (0x1, x)
+      0000D3 CDr00r4F         [ 4]  224 	call	_sendByte_UART
+      0000D6 20 E1            [ 2]  225 	jra	00106$
+      0000D8                        226 00109$:
+                                    227 ;	stm8_UART.c: 58: }
+      0000D8 5B 0F            [ 2]  228 	addw	sp, #15
+      0000DA 81               [ 4]  229 	ret
+                                    230 	.area CODE
+                                    231 	.area CONST
+                                    232 	.area INITIALIZER
+                                    233 	.area CABS (ABS)
