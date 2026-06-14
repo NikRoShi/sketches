@@ -93,33 +93,33 @@
       00802A                         93 _main:
                                      94 ;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
       00802A 35 00 50 C6      [ 1]   95 	mov	0x50c6+0, #0x00
-                                     96 ;	main.c: 10: pinMode(PORTC, 8, OUTPUT);
+                                     96 ;	main.c: 10: pinMode(PORTC, 3, OUTPUT);
       00802E 4B 00            [ 1]   97 	push	#0x00
-      008030 A6 08            [ 1]   98 	ld	a, #0x08
+      008030 A6 03            [ 1]   98 	ld	a, #0x03
       008032 AE 50 0A         [ 2]   99 	ldw	x, #0x500a
       008035 CD 80 F1         [ 4]  100 	call	_pinMode
                                     101 ;	main.c: 12: init_I2C();
       008038 CD 81 F6         [ 4]  102 	call	_init_I2C
-                                    103 ;	main.c: 13: if (ping_I2C(0x3F)) writePin(PORTC, 8, HIGH);
+                                    103 ;	main.c: 14: if (ping_I2C(0x3F)) writePin(PORTC, 3, HIGH);
       00803B A6 3F            [ 1]  104 	ld	a, #0x3f
-      00803D CD 82 1F         [ 4]  105 	call	_ping_I2C
+      00803D CD 82 0F         [ 4]  105 	call	_ping_I2C
       008040 4D               [ 1]  106 	tnz	a
       008041 27 0C            [ 1]  107 	jreq	00102$
       008043 4B 01            [ 1]  108 	push	#0x01
-      008045 A6 08            [ 1]  109 	ld	a, #0x08
+      008045 A6 03            [ 1]  109 	ld	a, #0x03
       008047 AE 50 0A         [ 2]  110 	ldw	x, #0x500a
       00804A CD 81 7F         [ 4]  111 	call	_writePin
       00804D 20 0A            [ 2]  112 	jra	00105$
       00804F                        113 00102$:
-                                    114 ;	main.c: 14: else writePin(PORTC, 8, LOW);
+                                    114 ;	main.c: 15: else writePin(PORTC, 3, LOW);
       00804F 4B 00            [ 1]  115 	push	#0x00
-      008051 A6 08            [ 1]  116 	ld	a, #0x08
+      008051 A6 03            [ 1]  116 	ld	a, #0x03
       008053 AE 50 0A         [ 2]  117 	ldw	x, #0x500a
       008056 CD 81 7F         [ 4]  118 	call	_writePin
-                                    119 ;	main.c: 16: while (1)
+                                    119 ;	main.c: 17: while (1)
       008059                        120 00105$:
       008059 20 FE            [ 2]  121 	jra	00105$
-                                    122 ;	main.c: 20: }
+                                    122 ;	main.c: 21: }
       00805B 81               [ 4]  123 	ret
                                     124 	.area CODE
                                     125 	.area CONST

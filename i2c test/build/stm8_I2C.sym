@@ -8,7 +8,7 @@ Symbol Table
     .__.CPU.                                                    =  000000 L
     .__.H$L.                                                    =  000001 L
   9 _init_I2C                                                      000000 GR
-  9 _ping_I2C                                                      000029 GR
+  9 _ping_I2C                                                      000019 GR
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8), page 2.
 Hexadecimal [24-Bits]
@@ -24,6 +24,6 @@ Area Table
    6 GSFINAL                                    size      0   flags    0
    7 CONST                                      size      0   flags    0
    8 INITIALIZER                                size      0   flags    0
-   9 CODE                                       size     86   flags    0
+   9 CODE                                       size     76   flags    0
    A CABS                                       size      0   flags    8
 

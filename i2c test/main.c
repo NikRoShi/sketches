@@ -7,11 +7,12 @@ int main(void)
 {
 	CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	
-	pinMode(PORTC, 8, OUTPUT);
+	pinMode(PORTC, 3, OUTPUT);
 	
 	init_I2C();
-	if (ping_I2C(0x3F)) writePin(PORTC, 8, HIGH);
-	else writePin(PORTC, 8, LOW);
+	
+	if (ping_I2C(0x3F)) writePin(PORTC, 3, HIGH);
+	else writePin(PORTC, 3, LOW);
 	
     while (1)
     {

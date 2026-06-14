@@ -93,33 +93,33 @@ __sdcc_program_startup:
 _main:
 ;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 10: pinMode(PORTC, 8, OUTPUT);
+;	main.c: 10: pinMode(PORTC, 3, OUTPUT);
 	push	#0x00
-	ld	a, #0x08
+	ld	a, #0x03
 	ldw	x, #0x500a
 	call	_pinMode
 ;	main.c: 12: init_I2C();
 	call	_init_I2C
-;	main.c: 13: if (ping_I2C(0x3F)) writePin(PORTC, 8, HIGH);
+;	main.c: 14: if (ping_I2C(0x3F)) writePin(PORTC, 3, HIGH);
 	ld	a, #0x3f
 	call	_ping_I2C
 	tnz	a
 	jreq	00102$
 	push	#0x01
-	ld	a, #0x08
+	ld	a, #0x03
 	ldw	x, #0x500a
 	call	_writePin
 	jra	00105$
 00102$:
-;	main.c: 14: else writePin(PORTC, 8, LOW);
+;	main.c: 15: else writePin(PORTC, 3, LOW);
 	push	#0x00
-	ld	a, #0x08
+	ld	a, #0x03
 	ldw	x, #0x500a
 	call	_writePin
-;	main.c: 16: while (1)
+;	main.c: 17: while (1)
 00105$:
 	jra	00105$
-;	main.c: 20: }
+;	main.c: 21: }
 	ret
 	.area CODE
 	.area CONST
