@@ -9,7 +9,7 @@ void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23) {
 
 int main(void)
 {
-	CLK_CKDIVR = 0;
+	CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	
     PB_DDR |= (1 << 5);
     PB_CR1 |= (1 << 5);
