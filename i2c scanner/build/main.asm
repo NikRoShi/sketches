@@ -109,11 +109,12 @@ _main:
 	call	_sendString_UART
 ;	main.c: 14: sendLine_UART();
 	call	_sendLine_UART
-	clr	(0x01, sp)
+;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
+	ld	a, #0x01
+	ld	(0x01, sp), a
 00108$:
-;	main.c: 15: for (uint8_t i; i < 255; i++)
 	ld	a, (0x01, sp)
-	cp	a, #0xff
+	cp	a, #0x80
 	jrnc	00103$
 ;	main.c: 17: if (ping_I2C(i) == 1)
 	ld	a, (0x01, sp)
@@ -129,7 +130,7 @@ _main:
 ;	main.c: 21: sendLine_UART();
 	call	_sendLine_UART
 00109$:
-;	main.c: 15: for (uint8_t i; i < 255; i++)
+;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
 	inc	(0x01, sp)
 	jra	00108$
 00103$:

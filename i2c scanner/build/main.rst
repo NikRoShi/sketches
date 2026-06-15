@@ -101,70 +101,71 @@
       00805F 4B 25            [ 1]  101 	push	#0x25
       008061 5F               [ 1]  102 	clrw	x
       008062 89               [ 2]  103 	pushw	x
-      008063 CD 85 02         [ 4]  104 	call	_init_UART
+      008063 CD 85 04         [ 4]  104 	call	_init_UART
                                     105 ;	main.c: 11: init_I2C();
-      008066 CD 82 3B         [ 4]  106 	call	_init_I2C
+      008066 CD 82 3D         [ 4]  106 	call	_init_I2C
                                     107 ;	main.c: 13: sendString_UART("--Star scanning--");
       008069 AE 80 24         [ 2]  108 	ldw	x, #(___str_0+0)
-      00806C CD 85 65         [ 4]  109 	call	_sendString_UART
+      00806C CD 85 67         [ 4]  109 	call	_sendString_UART
                                     110 ;	main.c: 14: sendLine_UART();
-      00806F CD 85 72         [ 4]  111 	call	_sendLine_UART
-      008072 0F 01            [ 1]  112 	clr	(0x01, sp)
-      008074                        113 00108$:
-                                    114 ;	main.c: 15: for (uint8_t i; i < 255; i++)
-      008074 7B 01            [ 1]  115 	ld	a, (0x01, sp)
-      008076 A1 FF            [ 1]  116 	cp	a, #0xff
-      008078 24 1A            [ 1]  117 	jrnc	00103$
-                                    118 ;	main.c: 17: if (ping_I2C(i) == 1)
-      00807A 7B 01            [ 1]  119 	ld	a, (0x01, sp)
-      00807C CD 82 C7         [ 4]  120 	call	_ping_I2C
-      00807F 4A               [ 1]  121 	dec	a
-      008080 26 0E            [ 1]  122 	jrne	00109$
-                                    123 ;	main.c: 19: sendString_UART("devise in ");
-      008082 AE 80 36         [ 2]  124 	ldw	x, #(___str_1+0)
-      008085 CD 85 65         [ 4]  125 	call	_sendString_UART
-                                    126 ;	main.c: 20: sendHex_UART(i);
-      008088 7B 01            [ 1]  127 	ld	a, (0x01, sp)
-      00808A CD 85 EF         [ 4]  128 	call	_sendHex_UART
-                                    129 ;	main.c: 21: sendLine_UART();
-      00808D CD 85 72         [ 4]  130 	call	_sendLine_UART
-      008090                        131 00109$:
-                                    132 ;	main.c: 15: for (uint8_t i; i < 255; i++)
-      008090 0C 01            [ 1]  133 	inc	(0x01, sp)
-      008092 20 E0            [ 2]  134 	jra	00108$
-      008094                        135 00103$:
-                                    136 ;	main.c: 24: sendString_UART("--end scanning--");
-      008094 AE 80 41         [ 2]  137 	ldw	x, #(___str_2+0)
-      008097 CD 85 65         [ 4]  138 	call	_sendString_UART
-                                    139 ;	main.c: 25: sendLine_UART();
-      00809A CD 85 72         [ 4]  140 	call	_sendLine_UART
-                                    141 ;	main.c: 26: while (1)
-      00809D                        142 00105$:
-      00809D 20 FE            [ 2]  143 	jra	00105$
-                                    144 ;	main.c: 30: }
-      00809F 84               [ 1]  145 	pop	a
-      0080A0 81               [ 4]  146 	ret
-                                    147 	.area CODE
-                                    148 	.area CONST
+      00806F CD 85 74         [ 4]  111 	call	_sendLine_UART
+                                    112 ;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
+      008072 A6 01            [ 1]  113 	ld	a, #0x01
+      008074 6B 01            [ 1]  114 	ld	(0x01, sp), a
+      008076                        115 00108$:
+      008076 7B 01            [ 1]  116 	ld	a, (0x01, sp)
+      008078 A1 80            [ 1]  117 	cp	a, #0x80
+      00807A 24 1A            [ 1]  118 	jrnc	00103$
+                                    119 ;	main.c: 17: if (ping_I2C(i) == 1)
+      00807C 7B 01            [ 1]  120 	ld	a, (0x01, sp)
+      00807E CD 82 C9         [ 4]  121 	call	_ping_I2C
+      008081 4A               [ 1]  122 	dec	a
+      008082 26 0E            [ 1]  123 	jrne	00109$
+                                    124 ;	main.c: 19: sendString_UART("devise in ");
+      008084 AE 80 36         [ 2]  125 	ldw	x, #(___str_1+0)
+      008087 CD 85 67         [ 4]  126 	call	_sendString_UART
+                                    127 ;	main.c: 20: sendHex_UART(i);
+      00808A 7B 01            [ 1]  128 	ld	a, (0x01, sp)
+      00808C CD 85 F1         [ 4]  129 	call	_sendHex_UART
+                                    130 ;	main.c: 21: sendLine_UART();
+      00808F CD 85 74         [ 4]  131 	call	_sendLine_UART
+      008092                        132 00109$:
+                                    133 ;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
+      008092 0C 01            [ 1]  134 	inc	(0x01, sp)
+      008094 20 E0            [ 2]  135 	jra	00108$
+      008096                        136 00103$:
+                                    137 ;	main.c: 24: sendString_UART("--end scanning--");
+      008096 AE 80 41         [ 2]  138 	ldw	x, #(___str_2+0)
+      008099 CD 85 67         [ 4]  139 	call	_sendString_UART
+                                    140 ;	main.c: 25: sendLine_UART();
+      00809C CD 85 74         [ 4]  141 	call	_sendLine_UART
+                                    142 ;	main.c: 26: while (1)
+      00809F                        143 00105$:
+      00809F 20 FE            [ 2]  144 	jra	00105$
+                                    145 ;	main.c: 30: }
+      0080A1 84               [ 1]  146 	pop	a
+      0080A2 81               [ 4]  147 	ret
+                                    148 	.area CODE
                                     149 	.area CONST
-      008024                        150 ___str_0:
-      008024 2D 2D 53 74 61 72 20   151 	.ascii "--Star scanning--"
+                                    150 	.area CONST
+      008024                        151 ___str_0:
+      008024 2D 2D 53 74 61 72 20   152 	.ascii "--Star scanning--"
              73 63 61 6E 6E 69 6E
              67 2D 2D
-      008035 00                     152 	.db 0x00
-                                    153 	.area CODE
-                                    154 	.area CONST
-      008036                        155 ___str_1:
-      008036 64 65 76 69 73 65 20   156 	.ascii "devise in "
+      008035 00                     153 	.db 0x00
+                                    154 	.area CODE
+                                    155 	.area CONST
+      008036                        156 ___str_1:
+      008036 64 65 76 69 73 65 20   157 	.ascii "devise in "
              69 6E 20
-      008040 00                     157 	.db 0x00
-                                    158 	.area CODE
-                                    159 	.area CONST
-      008041                        160 ___str_2:
-      008041 2D 2D 65 6E 64 20 73   161 	.ascii "--end scanning--"
+      008040 00                     158 	.db 0x00
+                                    159 	.area CODE
+                                    160 	.area CONST
+      008041                        161 ___str_2:
+      008041 2D 2D 65 6E 64 20 73   162 	.ascii "--end scanning--"
              63 61 6E 6E 69 6E 67
              2D 2D
-      008051 00                     162 	.db 0x00
-                                    163 	.area CODE
-                                    164 	.area INITIALIZER
-                                    165 	.area CABS (ABS)
+      008051 00                     163 	.db 0x00
+                                    164 	.area CODE
+                                    165 	.area INITIALIZER
+                                    166 	.area CABS (ABS)

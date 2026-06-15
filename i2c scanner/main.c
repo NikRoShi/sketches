@@ -12,7 +12,7 @@ int main(void)
 	
 	sendString_UART("--Star scanning--");
 	sendLine_UART();
-	for (uint8_t i; i < 255; i++)
+	for (uint8_t i = 1; i < 128; i++)
 	{
 		if (ping_I2C(i) == 1)
 		{

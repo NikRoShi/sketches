@@ -113,7 +113,7 @@
       000053                        113 _sendByte_UART:
       000053 88               [ 1]  114 	push	a
       000054 6B 01            [ 1]  115 	ld	(0x01, sp), a
-                                    116 ;	../../my_STM8_libraries/stm8_UART.c: 23: while(!(UART1_SR & (1 << 7))) {}
+                                    116 ;	../../my_STM8_libraries/stm8_UART.c: 23: while(!(UART1_SR & (1 << 7)));
       000056                        117 00101$:
       000056 C6 52 30         [ 1]  118 	ld	a, 0x5230
       000059 2A FB            [ 1]  119 	jrpl	00101$
@@ -272,10 +272,10 @@
       0000F4 A4 0F            [ 1]  272 	and	a, #0x0f
       0000F6 6B 02            [ 1]  273 	ld	(0x02, sp), a
       0000F8 84               [ 1]  274 	pop	a
-                                    275 ;	../../my_STM8_libraries/stm8_UART.c: 76: if (high < 10) sendByte_UART(high + '0');
+                                    275 ;	../../my_STM8_libraries/stm8_UART.c: 76: if (high <= 9) sendByte_UART(high + '0');
       0000F9 97               [ 1]  276 	ld	xl, a
-      0000FA A1 0A            [ 1]  277 	cp	a, #0x0a
-      0000FC 24 08            [ 1]  278 	jrnc	00102$
+      0000FA A1 09            [ 1]  277 	cp	a, #0x09
+      0000FC 22 08            [ 1]  278 	jrugt	00102$
       0000FE 9F               [ 1]  279 	ld	a, xl
       0000FF AB 30            [ 1]  280 	add	a, #0x30
       000101 CDr00r53         [ 4]  281 	call	_sendByte_UART
@@ -286,13 +286,13 @@
       000107 AB 37            [ 1]  286 	add	a, #0x37
       000109 CDr00r53         [ 4]  287 	call	_sendByte_UART
       00010C                        288 00103$:
-                                    289 ;	../../my_STM8_libraries/stm8_UART.c: 79: if (low < 10) sendByte_UART(low + '0');
+                                    289 ;	../../my_STM8_libraries/stm8_UART.c: 79: if (low <= 9) sendByte_UART(low + '0');
       00010C 7B 01            [ 1]  290 	ld	a, (0x01, sp)
       00010E 88               [ 1]  291 	push	a
       00010F 7B 02            [ 1]  292 	ld	a, (0x02, sp)
-      000111 A1 0A            [ 1]  293 	cp	a, #0x0a
+      000111 A1 09            [ 1]  293 	cp	a, #0x09
       000113 84               [ 1]  294 	pop	a
-      000114 24 06            [ 1]  295 	jrnc	00105$
+      000114 22 06            [ 1]  295 	jrugt	00105$
       000116 AB 30            [ 1]  296 	add	a, #0x30
       000118 84               [ 1]  297 	pop	a
       000119 CCr00r53         [ 2]  298 	jp	_sendByte_UART

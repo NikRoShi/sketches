@@ -113,7 +113,7 @@ _init_UART:
 _sendByte_UART:
 	push	a
 	ld	(0x01, sp), a
-;	../../my_STM8_libraries/stm8_UART.c: 23: while(!(UART1_SR & (1 << 7))) {}
+;	../../my_STM8_libraries/stm8_UART.c: 23: while(!(UART1_SR & (1 << 7)));
 00101$:
 	ld	a, 0x5230
 	jrpl	00101$
@@ -272,10 +272,10 @@ _sendHex_UART:
 	and	a, #0x0f
 	ld	(0x02, sp), a
 	pop	a
-;	../../my_STM8_libraries/stm8_UART.c: 76: if (high < 10) sendByte_UART(high + '0');
+;	../../my_STM8_libraries/stm8_UART.c: 76: if (high <= 9) sendByte_UART(high + '0');
 	ld	xl, a
-	cp	a, #0x0a
-	jrnc	00102$
+	cp	a, #0x09
+	jrugt	00102$
 	ld	a, xl
 	add	a, #0x30
 	call	_sendByte_UART
@@ -286,13 +286,13 @@ _sendHex_UART:
 	add	a, #0x37
 	call	_sendByte_UART
 00103$:
-;	../../my_STM8_libraries/stm8_UART.c: 79: if (low < 10) sendByte_UART(low + '0');
+;	../../my_STM8_libraries/stm8_UART.c: 79: if (low <= 9) sendByte_UART(low + '0');
 	ld	a, (0x01, sp)
 	push	a
 	ld	a, (0x02, sp)
-	cp	a, #0x0a
+	cp	a, #0x09
 	pop	a
-	jrnc	00105$
+	jrugt	00105$
 	add	a, #0x30
 	pop	a
 	jp	_sendByte_UART
