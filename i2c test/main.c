@@ -21,8 +21,8 @@ int main(void)
     while (1)
     {
 		writeByte_I2C(0x08);
-		delay(333);
+		delay(1000);
 		writeByte_I2C(0x00);
-		delay(333);
+		delay(1000);
     }
 }

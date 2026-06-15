@@ -9,13 +9,11 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
-	.globl _TIM4_UPD_OVF_IRQHandler
-	.globl _delay
-	.globl _init_TIME
-	.globl _tick_TIME
-	.globl _writeByte_I2C
-	.globl _writeAddr_I2C
-	.globl _start_I2C
+	.globl _sendHex_UART
+	.globl _sendLine_UART
+	.globl _sendString_UART
+	.globl _init_UART
+	.globl _ping_I2C
 	.globl _init_I2C
 ;--------------------------------------------------------
 ; ram data
@@ -51,31 +49,6 @@ __start__stack:
 	.area HOME
 __interrupt_vect:
 	int s_GSINIT ; reset
-	int 0x000000 ; trap
-	int 0x000000 ; int0
-	int 0x000000 ; int1
-	int 0x000000 ; int2
-	int 0x000000 ; int3
-	int 0x000000 ; int4
-	int 0x000000 ; int5
-	int 0x000000 ; int6
-	int 0x000000 ; int7
-	int 0x000000 ; int8
-	int 0x000000 ; int9
-	int 0x000000 ; int10
-	int 0x000000 ; int11
-	int 0x000000 ; int12
-	int 0x000000 ; int13
-	int 0x000000 ; int14
-	int 0x000000 ; int15
-	int 0x000000 ; int16
-	int 0x000000 ; int17
-	int 0x000000 ; int18
-	int 0x000000 ; int19
-	int 0x000000 ; int20
-	int 0x000000 ; int21
-	int 0x000000 ; int22
-	int _TIM4_UPD_OVF_IRQHandler ; int23
 ;--------------------------------------------------------
 ; global & static initialisations
 ;--------------------------------------------------------
@@ -115,59 +88,78 @@ __sdcc_program_startup:
 ; code
 ;--------------------------------------------------------
 	.area CODE
-;	main.c: 6: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23) {
-;	-----------------------------------------
-;	 function TIM4_UPD_OVF_IRQHandler
-;	-----------------------------------------
-_TIM4_UPD_OVF_IRQHandler:
-	clr	a
-	div	x, a
-;	main.c: 7: TIM4_SR &= ~(1 << 0);
-	bres	0x5344, #0
-;	main.c: 8: tick_TIME();
-	call	_tick_TIME
-;	main.c: 9: }
-	iret
-;	main.c: 11: int main(void)
+;	main.c: 6: int main(void)
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-;	main.c: 13: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+	push	a
+;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 15: init_I2C();
+;	main.c: 10: init_UART(9600);
+	push	#0x80
+	push	#0x25
+	clrw	x
+	pushw	x
+	call	_init_UART
+;	main.c: 11: init_I2C();
 	call	_init_I2C
-;	main.c: 16: init_TIME();
-	call	_init_TIME
-;	main.c: 18: start_I2C();
-	call	_start_I2C
-;	main.c: 19: writeAddr_I2C(0x3F);
-	ld	a, #0x3f
-	call	_writeAddr_I2C
-;	main.c: 21: while (1)
-00102$:
-;	main.c: 23: writeByte_I2C(0x08);
-	ld	a, #0x08
-	call	_writeByte_I2C
-;	main.c: 24: delay(1000);
-	push	#0xe8
-	push	#0x03
-	clrw	x
-	pushw	x
-	call	_delay
-;	main.c: 25: writeByte_I2C(0x00);
-	clr	a
-	call	_writeByte_I2C
-;	main.c: 26: delay(1000);
-	push	#0xe8
-	push	#0x03
-	clrw	x
-	pushw	x
-	call	_delay
-	jra	00102$
-;	main.c: 28: }
+;	main.c: 13: sendString_UART("--Star scanning--");
+	ldw	x, #(___str_0+0)
+	call	_sendString_UART
+;	main.c: 14: sendLine_UART();
+	call	_sendLine_UART
+	clr	(0x01, sp)
+00108$:
+;	main.c: 15: for (uint8_t i; i < 255; i++)
+	ld	a, (0x01, sp)
+	cp	a, #0xff
+	jrnc	00103$
+;	main.c: 17: if (ping_I2C(i) == 1)
+	ld	a, (0x01, sp)
+	call	_ping_I2C
+	dec	a
+	jrne	00109$
+;	main.c: 19: sendString_UART("devise in ");
+	ldw	x, #(___str_1+0)
+	call	_sendString_UART
+;	main.c: 20: sendHex_UART(i);
+	ld	a, (0x01, sp)
+	call	_sendHex_UART
+;	main.c: 21: sendLine_UART();
+	call	_sendLine_UART
+00109$:
+;	main.c: 15: for (uint8_t i; i < 255; i++)
+	inc	(0x01, sp)
+	jra	00108$
+00103$:
+;	main.c: 24: sendString_UART("--end scanning--");
+	ldw	x, #(___str_2+0)
+	call	_sendString_UART
+;	main.c: 25: sendLine_UART();
+	call	_sendLine_UART
+;	main.c: 26: while (1)
+00105$:
+	jra	00105$
+;	main.c: 30: }
+	pop	a
 	ret
 	.area CODE
 	.area CONST
+	.area CONST
+___str_0:
+	.ascii "--Star scanning--"
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_1:
+	.ascii "devise in "
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_2:
+	.ascii "--end scanning--"
+	.db 0x00
+	.area CODE
 	.area INITIALIZER
 	.area CABS (ABS)

@@ -149,18 +149,18 @@
                                     149 ;	main.c: 23: writeByte_I2C(0x08);
       0080AA A6 08            [ 1]  150 	ld	a, #0x08
       0080AC CD 82 C9         [ 4]  151 	call	_writeByte_I2C
-                                    152 ;	main.c: 24: delay(333);
-      0080AF 4B 4D            [ 1]  153 	push	#0x4d
-      0080B1 4B 01            [ 1]  154 	push	#0x01
+                                    152 ;	main.c: 24: delay(1000);
+      0080AF 4B E8            [ 1]  153 	push	#0xe8
+      0080B1 4B 03            [ 1]  154 	push	#0x03
       0080B3 5F               [ 1]  155 	clrw	x
       0080B4 89               [ 2]  156 	pushw	x
       0080B5 CD 84 F5         [ 4]  157 	call	_delay
                                     158 ;	main.c: 25: writeByte_I2C(0x00);
       0080B8 4F               [ 1]  159 	clr	a
       0080B9 CD 82 C9         [ 4]  160 	call	_writeByte_I2C
-                                    161 ;	main.c: 26: delay(333);
-      0080BC 4B 4D            [ 1]  162 	push	#0x4d
-      0080BE 4B 01            [ 1]  163 	push	#0x01
+                                    161 ;	main.c: 26: delay(1000);
+      0080BC 4B E8            [ 1]  162 	push	#0xe8
+      0080BE 4B 03            [ 1]  163 	push	#0x03
       0080C0 5F               [ 1]  164 	clrw	x
       0080C1 89               [ 2]  165 	pushw	x
       0080C2 CD 84 F5         [ 4]  166 	call	_delay
