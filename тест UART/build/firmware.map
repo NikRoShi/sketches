@@ -9,7 +9,6 @@ Area                                    Addr        Size        Decimal Bytes (A
       -----  --------------------------------   ------------------------
      00000000  .__.ABS.                           
      00000000  l_CABS                          
-     00000000  l_CONST                         
      00000000  l_DABS                          
      00000000  l_DATA                          
      00000000  l__CODE                         
@@ -25,13 +24,14 @@ Area                                    Addr        Size        Decimal Bytes (A
      00000007  l_HOME                          
      00000007  s_SSEG                          
      0000001A  l_GSINIT                        
-     0000067A  l_CODE                          
+     0000001E  l_CONST                         
+     0000065B  l_CODE                          
      00008000  s_HOME                          
      00008007  s_GSINIT                        
      00008021  s_GSFINAL                       
      00008024  s_CONST                         
-     00008024  s_INITIALIZER                   
-     0000802A  s_CODE                          
+     00008042  s_INITIALIZER                   
+     00008048  s_CODE                          
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
 Hexadecimal  [32-Bits]
@@ -83,7 +83,7 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-INITIALIZER                         00008024    00000006 =           6. bytes (REL,CON)
+CONST                               00008024    0000001E =          30. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -92,47 +92,56 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-CODE                                0000802A    0000067A =        1658. bytes (REL,CON)
+INITIALIZER                         00008042    00000006 =           6. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     0000802A  _main                              main
-     0000804B  _init_ADC                          stm8_ADC
-     000080B7  _start_ADC                         stm8_ADC
-     000080BC  _isReady_ADC                       stm8_ADC
-     000080C6  _getValue_ADC                      stm8_ADC
-     000080E0  _pinMode                           stm8_GPIO
-     0000816E  _writePin                          stm8_GPIO
-     00008197  _togglePin                         stm8_GPIO
-     000081B6  _readPin                           stm8_GPIO
-     000081E5  _init_I2C                          stm8_I2C
-     000081FE  _stop_I2C                          stm8_I2C
-     00008203  _start_I2C                         stm8_I2C
-     0000821B  _writeAddr_I2C                     stm8_I2C
-     0000824C  _writeByte_I2C                     stm8_I2C
-     00008271  _ping_I2C                          stm8_I2C
-     00008290  _writeReg                          stm8_I2C
-     000082C7  _init_PWM                          stm8_PWM
-     00008333  _startChannel_PWM                  stm8_PWM
-     00008367  _stopChannel_PWM                   stm8_PWM
-     00008383  _write_PWM                         stm8_PWM
-     000083B3  _writePercent_PWM                  stm8_PWM
-     000083FC  _tick_TIME                         stm8_TIME
-     00008410  _init_TIME                         stm8_TIME
-     00008430  _get_ms                            stm8_TIME
-     0000843A  _get_mcs                           stm8_TIME
-     00008478  _delay                             stm8_TIME
-     000084AC  _init_UART                         stm8_UART
-     000084FF  _sendByte_UART                     stm8_UART
-     0000850F  _sendString_UART                   stm8_UART
-     0000851C  _sendLine_UART                     stm8_UART
-     00008526  _sendInt_UART                      stm8_UART
-     0000858B  _available_UART                    stm8_UART
-     00008595  _read_UART                         stm8_UART
-     00008599  _sendHex_UART                      stm8_UART
-     000085CF  __divulong                         _divulong
-     00008628  __mullong                          
 ASxxxx Linker V03.00 + NoICE + sdld,  page 9.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+CODE                                00008048    0000065B =        1627. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00008048  _main                              main
+     00008061  _init_ADC                          stm8_ADC
+     000080CD  _start_ADC                         stm8_ADC
+     000080D2  _isReady_ADC                       stm8_ADC
+     000080DC  _getValue_ADC                      stm8_ADC
+     000080F6  _pinMode                           stm8_GPIO
+     00008184  _writePin                          stm8_GPIO
+     000081AD  _togglePin                         stm8_GPIO
+     000081CC  _readPin                           stm8_GPIO
+     000081FB  _init_I2C                          stm8_I2C
+     00008214  _stop_I2C                          stm8_I2C
+     00008219  _start_I2C                         stm8_I2C
+     00008231  _writeAddr_I2C                     stm8_I2C
+     00008262  _writeByte_I2C                     stm8_I2C
+     00008287  _ping_I2C                          stm8_I2C
+     000082A6  _writeReg                          stm8_I2C
+     000082DD  _init_PWM                          stm8_PWM
+     00008349  _startChannel_PWM                  stm8_PWM
+     0000837D  _stopChannel_PWM                   stm8_PWM
+     00008399  _write_PWM                         stm8_PWM
+     000083C9  _writePercent_PWM                  stm8_PWM
+     00008412  _tick_TIME                         stm8_TIME
+     00008426  _init_TIME                         stm8_TIME
+     00008446  _get_ms                            stm8_TIME
+     00008450  _get_mcs                           stm8_TIME
+     0000848E  _delay                             stm8_TIME
+     000084C2  _init_UART                         stm8_UART
+     00008515  _sendByte_UART                     stm8_UART
+     00008525  _sendString_UART                   stm8_UART
+     00008532  _sendLine_UART                     stm8_UART
+     0000853C  _sendInt_UART                      stm8_UART
+     000085A1  _available_UART                    stm8_UART
+     000085AB  _read_UART                         stm8_UART
+     000085AF  _sendHex_UART                      stm8_UART
+     000085CE  __divulong                         _divulong
+     00008627  __mullong                          
+ASxxxx Linker V03.00 + NoICE + sdld,  page 10.
 
 Files Linked                              [ module(s) ]
 
@@ -150,7 +159,7 @@ Libraries Linked                          [ object file ]
 /usr/bin/../share/sdcc/lib/stm8/stm8.lib  [ _divulong.rel ]
 /usr/bin/../share/sdcc/lib/stm8/stm8.lib  [ _mullong.rel ]
 
-ASxxxx Linker V03.00 + NoICE + sdld,  page 10.
+ASxxxx Linker V03.00 + NoICE + sdld,  page 11.
 
 User Base Address Definitions
 

@@ -13,6 +13,7 @@ Symbol Table
   9 _read_UART                                                     0000E9 GR
   9 _sendByte_UART                                                 000053 GR
   9 _sendHex_UART                                                  0000ED GR
+  7 _sendHex_UART_hex_65536_30                                     000000 R
   9 _sendInt_UART                                                  00007A GR
   9 _sendLine_UART                                                 000070 GR
   9 _sendString_UART                                               000063 GR
@@ -30,8 +31,8 @@ Area Table
    4 HOME                                       size      0   flags    0
    5 GSINIT                                     size      0   flags    0
    6 GSFINAL                                    size      0   flags    0
-   7 CONST                                      size      0   flags    0
+   7 CONST                                      size     11   flags    0
    8 INITIALIZER                                size      0   flags    0
-   9 CODE                                       size    123   flags    0
+   9 CODE                                       size    10C   flags    0
    A CABS                                       size      0   flags    8
 

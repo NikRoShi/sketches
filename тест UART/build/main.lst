@@ -10,7 +10,7 @@
                                      10 ;--------------------------------------------------------
                                      11 	.globl _main
                                      12 	.globl _sendLine_UART
-                                     13 	.globl _sendByte_UART
+                                     13 	.globl _sendString_UART
                                      14 	.globl _init_UART
                                      15 ;--------------------------------------------------------
                                      16 ; ram data
@@ -98,27 +98,23 @@
       000008 5F               [ 1]   98 	clrw	x
       000009 89               [ 2]   99 	pushw	x
       00000A CDr00r00         [ 4]  100 	call	_init_UART
-                                    101 ;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
-      00000D A6 20            [ 1]  102 	ld	a, #0x20
-      00000F                        103 00106$:
-      00000F A1 80            [ 1]  104 	cp	a, #0x80
-      000011 24 08            [ 1]  105 	jrnc	00101$
-                                    106 ;	main.c: 13: sendByte_UART(i);
-      000013 88               [ 1]  107 	push	a
-      000014 CDr00r00         [ 4]  108 	call	_sendByte_UART
-      000017 84               [ 1]  109 	pop	a
-                                    110 ;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
-      000018 4C               [ 1]  111 	inc	a
-      000019 20 F4            [ 2]  112 	jra	00106$
-      00001B                        113 00101$:
-                                    114 ;	main.c: 15: sendLine_UART();
-      00001B CDr00r00         [ 4]  115 	call	_sendLine_UART
-                                    116 ;	main.c: 17: while(1)
-      00001E                        117 00103$:
-      00001E 20 FE            [ 2]  118 	jra	00103$
-                                    119 ;	main.c: 21: }
-      000020 81               [ 4]  120 	ret
-                                    121 	.area CODE
-                                    122 	.area CONST
-                                    123 	.area INITIALIZER
-                                    124 	.area CABS (ABS)
+                                    101 ;	main.c: 11: sendString_UART("Hello world!");
+      00000D AEr00r00         [ 2]  102 	ldw	x, #(___str_0+0)
+      000010 CDr00r00         [ 4]  103 	call	_sendString_UART
+                                    104 ;	main.c: 12: sendLine_UART();
+      000013 CDr00r00         [ 4]  105 	call	_sendLine_UART
+                                    106 ;	main.c: 14: while(1)
+      000016                        107 00102$:
+      000016 20 FE            [ 2]  108 	jra	00102$
+                                    109 ;	main.c: 18: }
+      000018 81               [ 4]  110 	ret
+                                    111 	.area CODE
+                                    112 	.area CONST
+                                    113 	.area CONST
+      000000                        114 ___str_0:
+      000000 48 65 6C 6C 6F 20 77   115 	.ascii "Hello world!"
+             6F 72 6C 64 21
+      00000C 00                     116 	.db 0x00
+                                    117 	.area CODE
+                                    118 	.area INITIALIZER
+                                    119 	.area CABS (ABS)

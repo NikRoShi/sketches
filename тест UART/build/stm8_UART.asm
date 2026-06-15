@@ -262,48 +262,31 @@ _read_UART:
 ;	-----------------------------------------
 _sendHex_UART:
 	push	a
-;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = num >> 4;
-	ld	xl, a
+;	../../my_STM8_libraries/stm8_UART.c: 75: sendByte_UART(hex[num >> 4]);
+	ld	(0x01, sp), a
 	swap	a
 	and	a, #0x0f
-	exg	a, xl
-;	../../my_STM8_libraries/stm8_UART.c: 74: uint8_t low = num & 0x0F;
-	and	a, #0x0f
-	ld	(0x01, sp), a
-;	../../my_STM8_libraries/stm8_UART.c: 76: if (high <= 9) sendByte_UART(high + '0');
-	ld	a, xl
-	push	a
-	ld	a, xl
-	cp	a, #0x09
-	pop	a
-	jrugt	00102$
-	add	a, #0x30
+	clrw	x
+	ld	xl, a
+	ld	a, (_sendHex_UART_hex_65536_30+0, x)
 	call	_sendByte_UART
-	jra	00103$
-00102$:
-;	../../my_STM8_libraries/stm8_UART.c: 77: else sendByte_UART((uint8_t)(65 + high - 10));
-	add	a, #0x37
-	call	_sendByte_UART
-00103$:
-;	../../my_STM8_libraries/stm8_UART.c: 79: if (low <= 9) sendByte_UART(low + '0');
+;	../../my_STM8_libraries/stm8_UART.c: 76: sendByte_UART(hex[num & 0x0F]);
 	ld	a, (0x01, sp)
-	push	a
-	ld	a, (0x02, sp)
-	cp	a, #0x09
-	pop	a
-	jrugt	00105$
-	add	a, #0x30
-	pop	a
-	jp	_sendByte_UART
-00105$:
-;	../../my_STM8_libraries/stm8_UART.c: 80: else sendByte_UART((uint8_t)(65 + low - 10));
-	add	a, #0x37
+	and	a, #0x0f
+	ld	xl, a
+	clr	a
+	ld	xh, a
+	addw	x, #(_sendHex_UART_hex_65536_30+0)
+	ld	a, (x)
 	pop	a
 	jp	_sendByte_UART
-;	../../my_STM8_libraries/stm8_UART.c: 81: }
+;	../../my_STM8_libraries/stm8_UART.c: 77: }
 	pop	a
 	ret
 	.area CODE
 	.area CONST
+_sendHex_UART_hex_65536_30:
+	.ascii "0123456789ABCDEF"
+	.db 0x00
 	.area INITIALIZER
 	.area CABS (ABS)

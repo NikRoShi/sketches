@@ -10,7 +10,7 @@
 ;--------------------------------------------------------
 	.globl _main
 	.globl _sendLine_UART
-	.globl _sendByte_UART
+	.globl _sendString_UART
 	.globl _init_UART
 ;--------------------------------------------------------
 ; ram data
@@ -98,27 +98,22 @@ _main:
 	clrw	x
 	pushw	x
 	call	_init_UART
-;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
-	ld	a, #0x20
-00106$:
-	cp	a, #0x80
-	jrnc	00101$
-;	main.c: 13: sendByte_UART(i);
-	push	a
-	call	_sendByte_UART
-	pop	a
-;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
-	inc	a
-	jra	00106$
-00101$:
-;	main.c: 15: sendLine_UART();
+;	main.c: 11: sendString_UART("Hello world!");
+	ldw	x, #(___str_0+0)
+	call	_sendString_UART
+;	main.c: 12: sendLine_UART();
 	call	_sendLine_UART
-;	main.c: 17: while(1)
-00103$:
-	jra	00103$
-;	main.c: 21: }
+;	main.c: 14: while(1)
+00102$:
+	jra	00102$
+;	main.c: 18: }
 	ret
 	.area CODE
 	.area CONST
+	.area CONST
+___str_0:
+	.ascii "Hello world!"
+	.db 0x00
+	.area CODE
 	.area INITIALIZER
 	.area CABS (ABS)

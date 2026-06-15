@@ -104,45 +104,49 @@ _main:
 	call	_init_UART
 ;	main.c: 11: init_I2C();
 	call	_init_I2C
-;	main.c: 13: sendString_UART("--Star scanning--");
-	ldw	x, #(___str_0+0)
-	call	_sendString_UART
+;	main.c: 13: sendLine_UART();
+	call	_sendLine_UART
 ;	main.c: 14: sendLine_UART();
 	call	_sendLine_UART
-;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
+;	main.c: 15: sendString_UART("--Star scanning--");
+	ldw	x, #(___str_0+0)
+	call	_sendString_UART
+;	main.c: 16: sendLine_UART();
+	call	_sendLine_UART
+;	main.c: 17: for (uint8_t i = 1; i < 128; i++)
 	ld	a, #0x01
 	ld	(0x01, sp), a
 00108$:
 	ld	a, (0x01, sp)
 	cp	a, #0x80
 	jrnc	00103$
-;	main.c: 17: if (ping_I2C(i) == 1)
+;	main.c: 19: if (ping_I2C(i) == 1)
 	ld	a, (0x01, sp)
 	call	_ping_I2C
 	dec	a
 	jrne	00109$
-;	main.c: 19: sendString_UART("devise in 0x");
+;	main.c: 21: sendString_UART("devise in 0x");
 	ldw	x, #(___str_1+0)
 	call	_sendString_UART
-;	main.c: 20: sendHex_UART(i);
+;	main.c: 22: sendHex_UART(i);
 	ld	a, (0x01, sp)
 	call	_sendHex_UART
-;	main.c: 21: sendLine_UART();
+;	main.c: 23: sendLine_UART();
 	call	_sendLine_UART
 00109$:
-;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
+;	main.c: 17: for (uint8_t i = 1; i < 128; i++)
 	inc	(0x01, sp)
 	jra	00108$
 00103$:
-;	main.c: 24: sendString_UART("--end scanning--");
+;	main.c: 26: sendString_UART("--end scanning--");
 	ldw	x, #(___str_2+0)
 	call	_sendString_UART
-;	main.c: 25: sendLine_UART();
+;	main.c: 27: sendLine_UART();
 	call	_sendLine_UART
-;	main.c: 26: while (1)
+;	main.c: 28: while (1)
 00105$:
 	jra	00105$
-;	main.c: 30: }
+;	main.c: 32: }
 	pop	a
 	ret
 	.area CODE

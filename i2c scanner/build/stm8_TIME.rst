@@ -56,140 +56,140 @@
                                      56 ;	-----------------------------------------
                                      57 ;	 function tick_TIME
                                      58 ;	-----------------------------------------
-      008456                         59 _tick_TIME:
+      00845C                         59 _tick_TIME:
                                      60 ;	../../my_STM8_libraries/stm8_TIME.c: 6: _milsec++;
-      008456 CE 00 05         [ 2]   61 	ldw	x, __milsec+2
-      008459 90 CE 00 03      [ 2]   62 	ldw	y, __milsec+0
-      00845D 5C               [ 1]   63 	incw	x
-      00845E 26 02            [ 1]   64 	jrne	00103$
-      008460 90 5C            [ 1]   65 	incw	y
-      008462                         66 00103$:
-      008462 CF 00 05         [ 2]   67 	ldw	__milsec+2, x
-      008465 90 CF 00 03      [ 2]   68 	ldw	__milsec+0, y
+      00845C CE 00 05         [ 2]   61 	ldw	x, __milsec+2
+      00845F 90 CE 00 03      [ 2]   62 	ldw	y, __milsec+0
+      008463 5C               [ 1]   63 	incw	x
+      008464 26 02            [ 1]   64 	jrne	00103$
+      008466 90 5C            [ 1]   65 	incw	y
+      008468                         66 00103$:
+      008468 CF 00 05         [ 2]   67 	ldw	__milsec+2, x
+      00846B 90 CF 00 03      [ 2]   68 	ldw	__milsec+0, y
                                      69 ;	../../my_STM8_libraries/stm8_TIME.c: 7: }
-      008469 81               [ 4]   70 	ret
+      00846F 81               [ 4]   70 	ret
                                      71 ;	../../my_STM8_libraries/stm8_TIME.c: 9: void init_TIME(void) {
                                      72 ;	-----------------------------------------
                                      73 ;	 function init_TIME
                                      74 ;	-----------------------------------------
-      00846A                         75 _init_TIME:
+      008470                         75 _init_TIME:
                                      76 ;	../../my_STM8_libraries/stm8_TIME.c: 10: _milsec = 0;
-      00846A 5F               [ 1]   77 	clrw	x
-      00846B CF 00 05         [ 2]   78 	ldw	__milsec+2, x
-      00846E CF 00 03         [ 2]   79 	ldw	__milsec+0, x
+      008470 5F               [ 1]   77 	clrw	x
+      008471 CF 00 05         [ 2]   78 	ldw	__milsec+2, x
+      008474 CF 00 03         [ 2]   79 	ldw	__milsec+0, x
                                      80 ;	../../my_STM8_libraries/stm8_TIME.c: 11: TIM4_CR1 = 0;
-      008471 35 00 53 40      [ 1]   81 	mov	0x5340+0, #0x00
+      008477 35 00 53 40      [ 1]   81 	mov	0x5340+0, #0x00
                                      82 ;	../../my_STM8_libraries/stm8_TIME.c: 12: TIM4_PSCR = 0x07;
-      008475 35 07 53 47      [ 1]   83 	mov	0x5347+0, #0x07
+      00847B 35 07 53 47      [ 1]   83 	mov	0x5347+0, #0x07
                                      84 ;	../../my_STM8_libraries/stm8_TIME.c: 13: TIM4_ARR  = 124;
-      008479 35 7C 53 48      [ 1]   85 	mov	0x5348+0, #0x7c
+      00847F 35 7C 53 48      [ 1]   85 	mov	0x5348+0, #0x7c
                                      86 ;	../../my_STM8_libraries/stm8_TIME.c: 14: TIM4_IER |= 0x01;
-      00847D 72 10 53 43      [ 1]   87 	bset	0x5343, #0
+      008483 72 10 53 43      [ 1]   87 	bset	0x5343, #0
                                      88 ;	../../my_STM8_libraries/stm8_TIME.c: 15: TIM4_CR1 |= (1 << 0);
-      008481 72 10 53 40      [ 1]   89 	bset	0x5340, #0
+      008487 72 10 53 40      [ 1]   89 	bset	0x5340, #0
                                      90 ;	../../my_STM8_libraries/stm8_TIME.c: 16: TIM4_SR = 0;
-      008485 35 00 53 44      [ 1]   91 	mov	0x5344+0, #0x00
+      00848B 35 00 53 44      [ 1]   91 	mov	0x5344+0, #0x00
                                      92 ;	../../my_STM8_libraries/stm8_TIME.c: 17: }
-      008489 81               [ 4]   93 	ret
+      00848F 81               [ 4]   93 	ret
                                      94 ;	../../my_STM8_libraries/stm8_TIME.c: 19: uint32_t get_ms(void) {
                                      95 ;	-----------------------------------------
                                      96 ;	 function get_ms
                                      97 ;	-----------------------------------------
-      00848A                         98 _get_ms:
+      008490                         98 _get_ms:
                                      99 ;	../../my_STM8_libraries/stm8_TIME.c: 22: disableInterrupts();
-      00848A 9B               [ 1]  100 	sim
+      008490 9B               [ 1]  100 	sim
                                     101 ;	../../my_STM8_libraries/stm8_TIME.c: 23: ms = _milsec;
-      00848B CE 00 05         [ 2]  102 	ldw	x, __milsec+2
-      00848E 90 CE 00 03      [ 2]  103 	ldw	y, __milsec+0
+      008491 CE 00 05         [ 2]  102 	ldw	x, __milsec+2
+      008494 90 CE 00 03      [ 2]  103 	ldw	y, __milsec+0
                                     104 ;	../../my_STM8_libraries/stm8_TIME.c: 24: enableInterrupts();
-      008492 9A               [ 1]  105 	rim
+      008498 9A               [ 1]  105 	rim
                                     106 ;	../../my_STM8_libraries/stm8_TIME.c: 26: return ms;
                                     107 ;	../../my_STM8_libraries/stm8_TIME.c: 27: }
-      008493 81               [ 4]  108 	ret
+      008499 81               [ 4]  108 	ret
                                     109 ;	../../my_STM8_libraries/stm8_TIME.c: 30: uint32_t get_mcs(void) {
                                     110 ;	-----------------------------------------
                                     111 ;	 function get_mcs
                                     112 ;	-----------------------------------------
-      008494                        113 _get_mcs:
-      008494 52 05            [ 2]  114 	sub	sp, #5
+      00849A                        113 _get_mcs:
+      00849A 52 05            [ 2]  114 	sub	sp, #5
                                     115 ;	../../my_STM8_libraries/stm8_TIME.c: 34: disableInterrupts();
-      008496 9B               [ 1]  116 	sim
+      00849C 9B               [ 1]  116 	sim
                                     117 ;	../../my_STM8_libraries/stm8_TIME.c: 35: ms = _milsec;
-      008497 CE 00 05         [ 2]  118 	ldw	x, __milsec+2
-      00849A 90 CE 00 03      [ 2]  119 	ldw	y, __milsec+0
+      00849D CE 00 05         [ 2]  118 	ldw	x, __milsec+2
+      0084A0 90 CE 00 03      [ 2]  119 	ldw	y, __milsec+0
                                     120 ;	../../my_STM8_libraries/stm8_TIME.c: 36: ticks = TIM4_CNTR; // Текущее значение счетчика (0-124)
-      00849E C6 53 46         [ 1]  121 	ld	a, 0x5346
-      0084A1 6B 01            [ 1]  122 	ld	(0x01, sp), a
+      0084A4 C6 53 46         [ 1]  121 	ld	a, 0x5346
+      0084A7 6B 01            [ 1]  122 	ld	(0x01, sp), a
                                     123 ;	../../my_STM8_libraries/stm8_TIME.c: 37: enableInterrupts();
-      0084A3 9A               [ 1]  124 	rim
+      0084A9 9A               [ 1]  124 	rim
                                     125 ;	../../my_STM8_libraries/stm8_TIME.c: 39: return (ms * 1000) + (uint32_t)(ticks * 8);
-      0084A4 89               [ 2]  126 	pushw	x
-      0084A5 90 89            [ 2]  127 	pushw	y
-      0084A7 4B E8            [ 1]  128 	push	#0xe8
-      0084A9 4B 03            [ 1]  129 	push	#0x03
-      0084AB 5F               [ 1]  130 	clrw	x
-      0084AC 89               [ 2]  131 	pushw	x
-      0084AD CD 86 B9         [ 4]  132 	call	__mullong
-      0084B0 5B 08            [ 2]  133 	addw	sp, #8
-      0084B2 1F 04            [ 2]  134 	ldw	(0x04, sp), x
-      0084B4 17 02            [ 2]  135 	ldw	(0x02, sp), y
-      0084B6 5F               [ 1]  136 	clrw	x
-      0084B7 7B 01            [ 1]  137 	ld	a, (0x01, sp)
-      0084B9 97               [ 1]  138 	ld	xl, a
-      0084BA 58               [ 2]  139 	sllw	x
-      0084BB 58               [ 2]  140 	sllw	x
-      0084BC 58               [ 2]  141 	sllw	x
-      0084BD 51               [ 1]  142 	exgw	x, y
-      0084BE 5F               [ 1]  143 	clrw	x
-      0084BF 90 5D            [ 2]  144 	tnzw	y
-      0084C1 2A 01            [ 1]  145 	jrpl	00103$
-      0084C3 5A               [ 2]  146 	decw	x
-      0084C4                        147 00103$:
-      0084C4 72 F9 04         [ 2]  148 	addw	y, (0x04, sp)
-      0084C7 9F               [ 1]  149 	ld	a, xl
-      0084C8 19 03            [ 1]  150 	adc	a, (0x03, sp)
-      0084CA 02               [ 1]  151 	rlwa	x
-      0084CB 19 02            [ 1]  152 	adc	a, (0x02, sp)
-      0084CD 95               [ 1]  153 	ld	xh, a
-      0084CE 51               [ 1]  154 	exgw	x, y
+      0084AA 89               [ 2]  126 	pushw	x
+      0084AB 90 89            [ 2]  127 	pushw	y
+      0084AD 4B E8            [ 1]  128 	push	#0xe8
+      0084AF 4B 03            [ 1]  129 	push	#0x03
+      0084B1 5F               [ 1]  130 	clrw	x
+      0084B2 89               [ 2]  131 	pushw	x
+      0084B3 CD 86 BF         [ 4]  132 	call	__mullong
+      0084B6 5B 08            [ 2]  133 	addw	sp, #8
+      0084B8 1F 04            [ 2]  134 	ldw	(0x04, sp), x
+      0084BA 17 02            [ 2]  135 	ldw	(0x02, sp), y
+      0084BC 5F               [ 1]  136 	clrw	x
+      0084BD 7B 01            [ 1]  137 	ld	a, (0x01, sp)
+      0084BF 97               [ 1]  138 	ld	xl, a
+      0084C0 58               [ 2]  139 	sllw	x
+      0084C1 58               [ 2]  140 	sllw	x
+      0084C2 58               [ 2]  141 	sllw	x
+      0084C3 51               [ 1]  142 	exgw	x, y
+      0084C4 5F               [ 1]  143 	clrw	x
+      0084C5 90 5D            [ 2]  144 	tnzw	y
+      0084C7 2A 01            [ 1]  145 	jrpl	00103$
+      0084C9 5A               [ 2]  146 	decw	x
+      0084CA                        147 00103$:
+      0084CA 72 F9 04         [ 2]  148 	addw	y, (0x04, sp)
+      0084CD 9F               [ 1]  149 	ld	a, xl
+      0084CE 19 03            [ 1]  150 	adc	a, (0x03, sp)
+      0084D0 02               [ 1]  151 	rlwa	x
+      0084D1 19 02            [ 1]  152 	adc	a, (0x02, sp)
+      0084D3 95               [ 1]  153 	ld	xh, a
+      0084D4 51               [ 1]  154 	exgw	x, y
                                     155 ;	../../my_STM8_libraries/stm8_TIME.c: 40: }
-      0084CF 5B 05            [ 2]  156 	addw	sp, #5
-      0084D1 81               [ 4]  157 	ret
+      0084D5 5B 05            [ 2]  156 	addw	sp, #5
+      0084D7 81               [ 4]  157 	ret
                                     158 ;	../../my_STM8_libraries/stm8_TIME.c: 43: void delay(uint32_t ms) {
                                     159 ;	-----------------------------------------
                                     160 ;	 function delay
                                     161 ;	-----------------------------------------
-      0084D2                        162 _delay:
-      0084D2 52 0C            [ 2]  163 	sub	sp, #12
+      0084D8                        162 _delay:
+      0084D8 52 0C            [ 2]  163 	sub	sp, #12
                                     164 ;	../../my_STM8_libraries/stm8_TIME.c: 44: uint32_t start = get_ms();
-      0084D4 CD 84 8A         [ 4]  165 	call	_get_ms
-      0084D7 1F 03            [ 2]  166 	ldw	(0x03, sp), x
-      0084D9 17 01            [ 2]  167 	ldw	(0x01, sp), y
+      0084DA CD 84 90         [ 4]  165 	call	_get_ms
+      0084DD 1F 03            [ 2]  166 	ldw	(0x03, sp), x
+      0084DF 17 01            [ 2]  167 	ldw	(0x01, sp), y
                                     168 ;	../../my_STM8_libraries/stm8_TIME.c: 45: while ((get_ms() - start) < ms);
-      0084DB                        169 00101$:
-      0084DB CD 84 8A         [ 4]  170 	call	_get_ms
-      0084DE 1F 07            [ 2]  171 	ldw	(0x07, sp), x
-      0084E0 17 05            [ 2]  172 	ldw	(0x05, sp), y
-      0084E2 1E 07            [ 2]  173 	ldw	x, (0x07, sp)
-      0084E4 72 F0 03         [ 2]  174 	subw	x, (0x03, sp)
-      0084E7 1F 0B            [ 2]  175 	ldw	(0x0b, sp), x
-      0084E9 7B 06            [ 1]  176 	ld	a, (0x06, sp)
-      0084EB 12 02            [ 1]  177 	sbc	a, (0x02, sp)
-      0084ED 6B 0A            [ 1]  178 	ld	(0x0a, sp), a
-      0084EF 7B 05            [ 1]  179 	ld	a, (0x05, sp)
-      0084F1 12 01            [ 1]  180 	sbc	a, (0x01, sp)
-      0084F3 88               [ 1]  181 	push	a
-      0084F4 1E 0C            [ 2]  182 	ldw	x, (0x0c, sp)
-      0084F6 13 12            [ 2]  183 	cpw	x, (0x12, sp)
-      0084F8 7B 0B            [ 1]  184 	ld	a, (0x0b, sp)
-      0084FA 12 11            [ 1]  185 	sbc	a, (0x11, sp)
-      0084FC 84               [ 1]  186 	pop	a
-      0084FD 12 0F            [ 1]  187 	sbc	a, (0x0f, sp)
-      0084FF 25 DA            [ 1]  188 	jrc	00101$
+      0084E1                        169 00101$:
+      0084E1 CD 84 90         [ 4]  170 	call	_get_ms
+      0084E4 1F 07            [ 2]  171 	ldw	(0x07, sp), x
+      0084E6 17 05            [ 2]  172 	ldw	(0x05, sp), y
+      0084E8 1E 07            [ 2]  173 	ldw	x, (0x07, sp)
+      0084EA 72 F0 03         [ 2]  174 	subw	x, (0x03, sp)
+      0084ED 1F 0B            [ 2]  175 	ldw	(0x0b, sp), x
+      0084EF 7B 06            [ 1]  176 	ld	a, (0x06, sp)
+      0084F1 12 02            [ 1]  177 	sbc	a, (0x02, sp)
+      0084F3 6B 0A            [ 1]  178 	ld	(0x0a, sp), a
+      0084F5 7B 05            [ 1]  179 	ld	a, (0x05, sp)
+      0084F7 12 01            [ 1]  180 	sbc	a, (0x01, sp)
+      0084F9 88               [ 1]  181 	push	a
+      0084FA 1E 0C            [ 2]  182 	ldw	x, (0x0c, sp)
+      0084FC 13 12            [ 2]  183 	cpw	x, (0x12, sp)
+      0084FE 7B 0B            [ 1]  184 	ld	a, (0x0b, sp)
+      008500 12 11            [ 1]  185 	sbc	a, (0x11, sp)
+      008502 84               [ 1]  186 	pop	a
+      008503 12 0F            [ 1]  187 	sbc	a, (0x0f, sp)
+      008505 25 DA            [ 1]  188 	jrc	00101$
                                     189 ;	../../my_STM8_libraries/stm8_TIME.c: 46: }
-      008501 1E 0D            [ 2]  190 	ldw	x, (13, sp)
-      008503 5B 12            [ 2]  191 	addw	sp, #18
-      008505 FC               [ 2]  192 	jp	(x)
+      008507 1E 0D            [ 2]  190 	ldw	x, (13, sp)
+      008509 5B 12            [ 2]  191 	addw	sp, #18
+      00850B FC               [ 2]  192 	jp	(x)
                                     193 	.area CODE
                                     194 	.area CONST
                                     195 	.area INITIALIZER

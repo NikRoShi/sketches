@@ -10,7 +10,7 @@
                                      10 ;--------------------------------------------------------
                                      11 	.globl _main
                                      12 	.globl _sendLine_UART
-                                     13 	.globl _sendByte_UART
+                                     13 	.globl _sendString_UART
                                      14 	.globl _init_UART
                                      15 ;--------------------------------------------------------
                                      16 ; ram data
@@ -65,7 +65,7 @@
       008013 AE 00 06         [ 2]   65 	ldw	x, #l_INITIALIZER
       008016 27 09            [ 1]   66 	jreq	00004$
       008018                         67 00003$:
-      008018 D6 80 23         [ 1]   68 	ld	a, (s_INITIALIZER - 1, x)
+      008018 D6 80 41         [ 1]   68 	ld	a, (s_INITIALIZER - 1, x)
       00801B D7 00 00         [ 1]   69 	ld	(s_INITIALIZED - 1, x), a
       00801E 5A               [ 2]   70 	decw	x
       00801F 26 F7            [ 1]   71 	jrne	00003$
@@ -79,7 +79,7 @@
                                      79 	.area HOME
                                      80 	.area HOME
       008004                         81 __sdcc_program_startup:
-      008004 CC 80 2A         [ 2]   82 	jp	_main
+      008004 CC 80 48         [ 2]   82 	jp	_main
                                      83 ;	return from main will return to caller
                                      84 ;--------------------------------------------------------
                                      85 ; code
@@ -89,36 +89,32 @@
                                      89 ;	-----------------------------------------
                                      90 ;	 function main
                                      91 ;	-----------------------------------------
-      00802A                         92 _main:
+      008048                         92 _main:
                                      93 ;	main.c: 7: CLK_CKDIVR = 0;		// 1. Устанавливаем частоту 16 МГц
-      00802A 35 00 50 C6      [ 1]   94 	mov	0x50c6+0, #0x00
+      008048 35 00 50 C6      [ 1]   94 	mov	0x50c6+0, #0x00
                                      95 ;	main.c: 9: init_UART(9600);	// 2. Инициализируем периферию
-      00802E 4B 80            [ 1]   96 	push	#0x80
-      008030 4B 25            [ 1]   97 	push	#0x25
-      008032 5F               [ 1]   98 	clrw	x
-      008033 89               [ 2]   99 	pushw	x
-      008034 CD 84 AC         [ 4]  100 	call	_init_UART
-                                    101 ;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
-      008037 A6 20            [ 1]  102 	ld	a, #0x20
-      008039                        103 00106$:
-      008039 A1 80            [ 1]  104 	cp	a, #0x80
-      00803B 24 08            [ 1]  105 	jrnc	00101$
-                                    106 ;	main.c: 13: sendByte_UART(i);
-      00803D 88               [ 1]  107 	push	a
-      00803E CD 84 FF         [ 4]  108 	call	_sendByte_UART
-      008041 84               [ 1]  109 	pop	a
-                                    110 ;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
-      008042 4C               [ 1]  111 	inc	a
-      008043 20 F4            [ 2]  112 	jra	00106$
-      008045                        113 00101$:
-                                    114 ;	main.c: 15: sendLine_UART();
-      008045 CD 85 1C         [ 4]  115 	call	_sendLine_UART
-                                    116 ;	main.c: 17: while(1)
-      008048                        117 00103$:
-      008048 20 FE            [ 2]  118 	jra	00103$
-                                    119 ;	main.c: 21: }
-      00804A 81               [ 4]  120 	ret
-                                    121 	.area CODE
-                                    122 	.area CONST
-                                    123 	.area INITIALIZER
-                                    124 	.area CABS (ABS)
+      00804C 4B 80            [ 1]   96 	push	#0x80
+      00804E 4B 25            [ 1]   97 	push	#0x25
+      008050 5F               [ 1]   98 	clrw	x
+      008051 89               [ 2]   99 	pushw	x
+      008052 CD 84 C2         [ 4]  100 	call	_init_UART
+                                    101 ;	main.c: 11: sendString_UART("Hello world!");
+      008055 AE 80 24         [ 2]  102 	ldw	x, #(___str_0+0)
+      008058 CD 85 25         [ 4]  103 	call	_sendString_UART
+                                    104 ;	main.c: 12: sendLine_UART();
+      00805B CD 85 32         [ 4]  105 	call	_sendLine_UART
+                                    106 ;	main.c: 14: while(1)
+      00805E                        107 00102$:
+      00805E 20 FE            [ 2]  108 	jra	00102$
+                                    109 ;	main.c: 18: }
+      008060 81               [ 4]  110 	ret
+                                    111 	.area CODE
+                                    112 	.area CONST
+                                    113 	.area CONST
+      008024                        114 ___str_0:
+      008024 48 65 6C 6C 6F 20 77   115 	.ascii "Hello world!"
+             6F 72 6C 64 21
+      008030 00                     116 	.db 0x00
+                                    117 	.area CODE
+                                    118 	.area INITIALIZER
+                                    119 	.area CABS (ABS)
