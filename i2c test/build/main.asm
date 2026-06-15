@@ -9,10 +9,14 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
-	.globl _ping_I2C
+	.globl _TIM4_UPD_OVF_IRQHandler
+	.globl _delay
+	.globl _init_TIME
+	.globl _tick_TIME
+	.globl _writeByte_I2C
+	.globl _writeAddr_I2C
+	.globl _start_I2C
 	.globl _init_I2C
-	.globl _writePin
-	.globl _pinMode
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -47,6 +51,31 @@ __start__stack:
 	.area HOME
 __interrupt_vect:
 	int s_GSINIT ; reset
+	int 0x000000 ; trap
+	int 0x000000 ; int0
+	int 0x000000 ; int1
+	int 0x000000 ; int2
+	int 0x000000 ; int3
+	int 0x000000 ; int4
+	int 0x000000 ; int5
+	int 0x000000 ; int6
+	int 0x000000 ; int7
+	int 0x000000 ; int8
+	int 0x000000 ; int9
+	int 0x000000 ; int10
+	int 0x000000 ; int11
+	int 0x000000 ; int12
+	int 0x000000 ; int13
+	int 0x000000 ; int14
+	int 0x000000 ; int15
+	int 0x000000 ; int16
+	int 0x000000 ; int17
+	int 0x000000 ; int18
+	int 0x000000 ; int19
+	int 0x000000 ; int20
+	int 0x000000 ; int21
+	int 0x000000 ; int22
+	int _TIM4_UPD_OVF_IRQHandler ; int23
 ;--------------------------------------------------------
 ; global & static initialisations
 ;--------------------------------------------------------
@@ -86,40 +115,57 @@ __sdcc_program_startup:
 ; code
 ;--------------------------------------------------------
 	.area CODE
-;	main.c: 6: int main(void)
+;	main.c: 6: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23) {
+;	-----------------------------------------
+;	 function TIM4_UPD_OVF_IRQHandler
+;	-----------------------------------------
+_TIM4_UPD_OVF_IRQHandler:
+	clr	a
+	div	x, a
+;	main.c: 7: TIM4_SR &= ~(1 << 0);
+	bres	0x5344, #0
+;	main.c: 8: tick_TIME();
+	call	_tick_TIME
+;	main.c: 9: }
+	iret
+;	main.c: 11: int main(void)
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+;	main.c: 13: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 10: pinMode(PORTC, 3, OUTPUT);
-	push	#0x00
-	ld	a, #0x03
-	ldw	x, #0x500a
-	call	_pinMode
-;	main.c: 12: init_I2C();
+;	main.c: 15: init_I2C();
 	call	_init_I2C
-;	main.c: 14: if (ping_I2C(0x3F)) writePin(PORTC, 3, HIGH);
+;	main.c: 16: init_TIME();
+	call	_init_TIME
+;	main.c: 18: start_I2C();
+	call	_start_I2C
+;	main.c: 19: writeAddr_I2C(0x3F);
 	ld	a, #0x3f
-	call	_ping_I2C
-	tnz	a
-	jreq	00102$
-	push	#0x01
-	ld	a, #0x03
-	ldw	x, #0x500a
-	call	_writePin
-	jra	00105$
+	call	_writeAddr_I2C
+;	main.c: 21: while (1)
 00102$:
-;	main.c: 15: else writePin(PORTC, 3, LOW);
-	push	#0x00
-	ld	a, #0x03
-	ldw	x, #0x500a
-	call	_writePin
-;	main.c: 17: while (1)
-00105$:
-	jra	00105$
-;	main.c: 21: }
+;	main.c: 23: writeByte_I2C(0x08);
+	ld	a, #0x08
+	call	_writeByte_I2C
+;	main.c: 24: delay(333);
+	push	#0x4d
+	push	#0x01
+	clrw	x
+	pushw	x
+	call	_delay
+;	main.c: 25: writeByte_I2C(0x00);
+	clr	a
+	call	_writeByte_I2C
+;	main.c: 26: delay(333);
+	push	#0x4d
+	push	#0x01
+	clrw	x
+	pushw	x
+	call	_delay
+	jra	00102$
+;	main.c: 28: }
 	ret
 	.area CODE
 	.area CONST
