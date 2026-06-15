@@ -9,12 +9,9 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
-	.globl _sendInt_UART
+	.globl _sendHex_UART
 	.globl _sendLine_UART
-	.globl _sendString_UART
 	.globl _init_UART
-	.globl _ping_I2C
-	.globl _init_I2C
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -88,81 +85,38 @@ __sdcc_program_startup:
 ; code
 ;--------------------------------------------------------
 	.area CODE
-;	main.c: 6: int main(void)
+;	main.c: 5: void main(void) {
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-	push	a
-;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+;	main.c: 7: CLK_CKDIVR = 0;		// 1. Устанавливаем частоту 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 10: init_UART(9600);
+;	main.c: 9: init_UART(9600);	// 2. Инициализируем периферию
 	push	#0x80
 	push	#0x25
 	clrw	x
 	pushw	x
 	call	_init_UART
-;	main.c: 11: init_I2C();
-	call	_init_I2C
-;	main.c: 13: sendString_UART("--Star scanning--");
-	ldw	x, #(___str_0+0)
-	call	_sendString_UART
-;	main.c: 14: sendLine_UART();
-	call	_sendLine_UART
-;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
+;	main.c: 11: for (uint8_t i = 1; i < 128; i++)
 	ld	a, #0x01
-	ld	(0x01, sp), a
-00108$:
-	ld	a, (0x01, sp)
+00106$:
 	cp	a, #0x80
 	jrnc	00103$
-;	main.c: 17: if (ping_I2C(i) == 1)
-	ld	a, (0x01, sp)
-	call	_ping_I2C
-	dec	a
-	jrne	00109$
-;	main.c: 19: sendString_UART("devise in ");
-	ldw	x, #(___str_1+0)
-	call	_sendString_UART
-;	main.c: 20: sendInt_UART(i);
-	ld	a, (0x01, sp)
-	clrw	x
-	ld	xl, a
-	call	_sendInt_UART
-;	main.c: 21: sendLine_UART();
+;	main.c: 13: sendHex_UART(i);
+	push	a
+	call	_sendHex_UART
 	call	_sendLine_UART
-00109$:
-;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
-	inc	(0x01, sp)
-	jra	00108$
-00103$:
-;	main.c: 24: sendString_UART("--end scanning--");
-	ldw	x, #(___str_2+0)
-	call	_sendString_UART
-;	main.c: 25: sendLine_UART();
-	call	_sendLine_UART
-;	main.c: 26: while (1)
-00105$:
-	jra	00105$
-;	main.c: 30: }
 	pop	a
+;	main.c: 11: for (uint8_t i = 1; i < 128; i++)
+	inc	a
+	jra	00106$
+;	main.c: 17: while(1)
+00103$:
+	jra	00103$
+;	main.c: 21: }
 	ret
 	.area CODE
 	.area CONST
-	.area CONST
-___str_0:
-	.ascii "--Star scanning--"
-	.db 0x00
-	.area CODE
-	.area CONST
-___str_1:
-	.ascii "devise in "
-	.db 0x00
-	.area CODE
-	.area CONST
-___str_2:
-	.ascii "--end scanning--"
-	.db 0x00
-	.area CODE
 	.area INITIALIZER
 	.area CABS (ABS)

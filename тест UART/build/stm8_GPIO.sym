@@ -1,4 +1,4 @@
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8)  Page 1
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8), page 1.
 Hexadecimal [24-Bits]
 
 Symbol Table
@@ -7,15 +7,13 @@ Symbol Table
     .__.ABS.                                                    =  000000 G
     .__.CPU.                                                    =  000000 L
     .__.H$L.                                                    =  000001 L
-    __divulong                                                     ****** GX
-  9 _init_UART                                                     000000 GR
-  9 _sendByte_UART                                                 00004F GR
-  9 _sendInt_UART                                                  000076 GR
-  9 _sendLine_UART                                                 00006C GR
-  9 _sendString_UART                                               00005F GR
+  9 _pinMode                                                       000000 GR
+  9 _readPin                                                       0000D6 GR
+  9 _togglePin                                                     0000B7 GR
+  9 _writePin                                                      00008E GR
 
 
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8)  Page 2
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8), page 2.
 Hexadecimal [24-Bits]
 
 Area Table
@@ -29,6 +27,6 @@ Area Table
    6 GSFINAL                                    size      0   flags    0
    7 CONST                                      size      0   flags    0
    8 INITIALIZER                                size      0   flags    0
-   9 CODE                                       size     CF   flags    0
+   9 CODE                                       size    105   flags    0
    A CABS                                       size      0   flags    8
 

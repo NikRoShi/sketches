@@ -18,7 +18,7 @@ Symbol Table
     _init_UART                                                     ****** GX
   A _main                                                          000000 GR
     _ping_I2C                                                      ****** GX
-    _sendHex_UART                                                  ****** GX
+    _sendInt_UART                                                  ****** GX
     _sendLine_UART                                                 ****** GX
     _sendString_UART                                               ****** GX
     l_DATA                                                         ****** GX
@@ -43,6 +43,6 @@ Area Table
    7 GSFINAL                                    size      3   flags    0
    8 CONST                                      size     2E   flags    0
    9 INITIALIZER                                size      0   flags    0
-   A CODE                                       size     4B   flags    0
+   A CODE                                       size     4D   flags    0
    B CABS                                       size      0   flags    8
 

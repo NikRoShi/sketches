@@ -9,7 +9,7 @@
                                       9 ; Public variables in this module
                                      10 ;--------------------------------------------------------
                                      11 	.globl _main
-                                     12 	.globl _sendHex_UART
+                                     12 	.globl _sendInt_UART
                                      13 	.globl _sendLine_UART
                                      14 	.globl _sendString_UART
                                      15 	.globl _init_UART
@@ -115,57 +115,59 @@
       00001E                        115 00108$:
       00001E 7B 01            [ 1]  116 	ld	a, (0x01, sp)
       000020 A1 80            [ 1]  117 	cp	a, #0x80
-      000022 24 1A            [ 1]  118 	jrnc	00103$
+      000022 24 1C            [ 1]  118 	jrnc	00103$
                                     119 ;	main.c: 17: if (ping_I2C(i) == 1)
       000024 7B 01            [ 1]  120 	ld	a, (0x01, sp)
       000026 CDr00r00         [ 4]  121 	call	_ping_I2C
       000029 4A               [ 1]  122 	dec	a
-      00002A 26 0E            [ 1]  123 	jrne	00109$
+      00002A 26 10            [ 1]  123 	jrne	00109$
                                     124 ;	main.c: 19: sendString_UART("devise in ");
       00002C AEr00r12         [ 2]  125 	ldw	x, #(___str_1+0)
       00002F CDr00r00         [ 4]  126 	call	_sendString_UART
-                                    127 ;	main.c: 20: sendHex_UART(i);
+                                    127 ;	main.c: 20: sendInt_UART(i);
       000032 7B 01            [ 1]  128 	ld	a, (0x01, sp)
-      000034 CDr00r00         [ 4]  129 	call	_sendHex_UART
-                                    130 ;	main.c: 21: sendLine_UART();
-      000037 CDr00r00         [ 4]  131 	call	_sendLine_UART
-      00003A                        132 00109$:
-                                    133 ;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
-      00003A 0C 01            [ 1]  134 	inc	(0x01, sp)
-      00003C 20 E0            [ 2]  135 	jra	00108$
-      00003E                        136 00103$:
-                                    137 ;	main.c: 24: sendString_UART("--end scanning--");
-      00003E AEr00r1D         [ 2]  138 	ldw	x, #(___str_2+0)
-      000041 CDr00r00         [ 4]  139 	call	_sendString_UART
-                                    140 ;	main.c: 25: sendLine_UART();
-      000044 CDr00r00         [ 4]  141 	call	_sendLine_UART
-                                    142 ;	main.c: 26: while (1)
-      000047                        143 00105$:
-      000047 20 FE            [ 2]  144 	jra	00105$
-                                    145 ;	main.c: 30: }
-      000049 84               [ 1]  146 	pop	a
-      00004A 81               [ 4]  147 	ret
-                                    148 	.area CODE
-                                    149 	.area CONST
-                                    150 	.area CONST
-      000000                        151 ___str_0:
-      000000 2D 2D 53 74 61 72 20   152 	.ascii "--Star scanning--"
+      000034 5F               [ 1]  129 	clrw	x
+      000035 97               [ 1]  130 	ld	xl, a
+      000036 CDr00r00         [ 4]  131 	call	_sendInt_UART
+                                    132 ;	main.c: 21: sendLine_UART();
+      000039 CDr00r00         [ 4]  133 	call	_sendLine_UART
+      00003C                        134 00109$:
+                                    135 ;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
+      00003C 0C 01            [ 1]  136 	inc	(0x01, sp)
+      00003E 20 DE            [ 2]  137 	jra	00108$
+      000040                        138 00103$:
+                                    139 ;	main.c: 24: sendString_UART("--end scanning--");
+      000040 AEr00r1D         [ 2]  140 	ldw	x, #(___str_2+0)
+      000043 CDr00r00         [ 4]  141 	call	_sendString_UART
+                                    142 ;	main.c: 25: sendLine_UART();
+      000046 CDr00r00         [ 4]  143 	call	_sendLine_UART
+                                    144 ;	main.c: 26: while (1)
+      000049                        145 00105$:
+      000049 20 FE            [ 2]  146 	jra	00105$
+                                    147 ;	main.c: 30: }
+      00004B 84               [ 1]  148 	pop	a
+      00004C 81               [ 4]  149 	ret
+                                    150 	.area CODE
+                                    151 	.area CONST
+                                    152 	.area CONST
+      000000                        153 ___str_0:
+      000000 2D 2D 53 74 61 72 20   154 	.ascii "--Star scanning--"
              73 63 61 6E 6E 69 6E
              67 2D 2D
-      000011 00                     153 	.db 0x00
-                                    154 	.area CODE
-                                    155 	.area CONST
-      000012                        156 ___str_1:
-      000012 64 65 76 69 73 65 20   157 	.ascii "devise in "
+      000011 00                     155 	.db 0x00
+                                    156 	.area CODE
+                                    157 	.area CONST
+      000012                        158 ___str_1:
+      000012 64 65 76 69 73 65 20   159 	.ascii "devise in "
              69 6E 20
-      00001C 00                     158 	.db 0x00
-                                    159 	.area CODE
-                                    160 	.area CONST
-      00001D                        161 ___str_2:
-      00001D 2D 2D 65 6E 64 20 73   162 	.ascii "--end scanning--"
+      00001C 00                     160 	.db 0x00
+                                    161 	.area CODE
+                                    162 	.area CONST
+      00001D                        163 ___str_2:
+      00001D 2D 2D 65 6E 64 20 73   164 	.ascii "--end scanning--"
              63 61 6E 6E 69 6E 67
              2D 2D
-      00002D 00                     163 	.db 0x00
-                                    164 	.area CODE
-                                    165 	.area INITIALIZER
-                                    166 	.area CABS (ABS)
+      00002D 00                     165 	.db 0x00
+                                    166 	.area CODE
+                                    167 	.area INITIALIZER
+                                    168 	.area CABS (ABS)
