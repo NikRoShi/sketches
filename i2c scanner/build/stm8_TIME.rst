@@ -129,7 +129,7 @@
       0084A9 4B 03            [ 1]  129 	push	#0x03
       0084AB 5F               [ 1]  130 	clrw	x
       0084AC 89               [ 2]  131 	pushw	x
-      0084AD CD 86 83         [ 4]  132 	call	__mullong
+      0084AD CD 86 B9         [ 4]  132 	call	__mullong
       0084B0 5B 08            [ 2]  133 	addw	sp, #8
       0084B2 1F 04            [ 2]  134 	ldw	(0x04, sp), x
       0084B4 17 02            [ 2]  135 	ldw	(0x02, sp), y
@@ -193,6 +193,6 @@
                                     193 	.area CODE
                                     194 	.area CONST
                                     195 	.area INITIALIZER
-      008054                        196 __xinit___milsec:
-      008054 00 00 00 00            197 	.byte #0x00, #0x00, #0x00, #0x00	; 0
+      008056                        196 __xinit___milsec:
+      008056 00 00 00 00            197 	.byte #0x00, #0x00, #0x00, #0x00	; 0
                                     198 	.area CABS (ABS)

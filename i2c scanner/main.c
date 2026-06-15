@@ -16,8 +16,8 @@ int main(void)
 	{
 		if (ping_I2C(i) == 1)
 		{
-			sendString_UART("devise in ");
-			sendInt_UART(i);
+			sendString_UART("devise in 0x");
+			sendHex_UART(i);
 			sendLine_UART();
 		}
 	}

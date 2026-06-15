@@ -80,7 +80,7 @@
       0084CD 4B 24            [ 1]   80 	push	#0x24
       0084CF 4B F4            [ 1]   81 	push	#0xf4
       0084D1 4B 00            [ 1]   82 	push	#0x00
-      0084D3 CD 85 D0         [ 4]   83 	call	__divulong
+      0084D3 CD 85 CF         [ 4]   83 	call	__divulong
       0084D6 5B 08            [ 2]   84 	addw	sp, #8
                                      85 ;	../../my_STM8_libraries/stm8_UART.c: 16: UART1_BRR2 = ((uart_div >> 12) << 4) | (uart_div & 0x000F);
       0084D8 9E               [ 1]   86 	ld	a, xh
@@ -262,49 +262,48 @@
                                     262 ;	-----------------------------------------
       008599                        263 _sendHex_UART:
       008599 88               [ 1]  264 	push	a
-                                    265 ;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = (num >> 4) & 0x0F;
+                                    265 ;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = num >> 4;
       00859A 97               [ 1]  266 	ld	xl, a
       00859B 4E               [ 1]  267 	swap	a
-      00859C A4 0F            [ 1]  268 	and	a, #15
-                                    269 ;	../../my_STM8_libraries/stm8_UART.c: 74: uint8_t low = num & 0x0F;
-      00859E 88               [ 1]  270 	push	a
-      00859F 9F               [ 1]  271 	ld	a, xl
-      0085A0 A4 0F            [ 1]  272 	and	a, #0x0f
-      0085A2 6B 02            [ 1]  273 	ld	(0x02, sp), a
-      0085A4 84               [ 1]  274 	pop	a
-                                    275 ;	../../my_STM8_libraries/stm8_UART.c: 76: if (high <= 9) sendByte_UART(high + '0');
-      0085A5 97               [ 1]  276 	ld	xl, a
+      00859C A4 0F            [ 1]  268 	and	a, #0x0f
+      00859E 41               [ 1]  269 	exg	a, xl
+                                    270 ;	../../my_STM8_libraries/stm8_UART.c: 74: uint8_t low = num & 0x0F;
+      00859F A4 0F            [ 1]  271 	and	a, #0x0f
+      0085A1 6B 01            [ 1]  272 	ld	(0x01, sp), a
+                                    273 ;	../../my_STM8_libraries/stm8_UART.c: 76: if (high <= 9) sendByte_UART(high + '0');
+      0085A3 9F               [ 1]  274 	ld	a, xl
+      0085A4 88               [ 1]  275 	push	a
+      0085A5 9F               [ 1]  276 	ld	a, xl
       0085A6 A1 09            [ 1]  277 	cp	a, #0x09
-      0085A8 22 08            [ 1]  278 	jrugt	00102$
-      0085AA 9F               [ 1]  279 	ld	a, xl
+      0085A8 84               [ 1]  278 	pop	a
+      0085A9 22 07            [ 1]  279 	jrugt	00102$
       0085AB AB 30            [ 1]  280 	add	a, #0x30
       0085AD CD 84 FF         [ 4]  281 	call	_sendByte_UART
-      0085B0 20 06            [ 2]  282 	jra	00103$
+      0085B0 20 05            [ 2]  282 	jra	00103$
       0085B2                        283 00102$:
-                                    284 ;	../../my_STM8_libraries/stm8_UART.c: 77: else sendByte_UART(high - 10 + 'A');
-      0085B2 9F               [ 1]  285 	ld	a, xl
-      0085B3 AB 37            [ 1]  286 	add	a, #0x37
-      0085B5 CD 84 FF         [ 4]  287 	call	_sendByte_UART
-      0085B8                        288 00103$:
-                                    289 ;	../../my_STM8_libraries/stm8_UART.c: 79: if (low <= 9) sendByte_UART(low + '0');
-      0085B8 7B 01            [ 1]  290 	ld	a, (0x01, sp)
-      0085BA 88               [ 1]  291 	push	a
-      0085BB 7B 02            [ 1]  292 	ld	a, (0x02, sp)
-      0085BD A1 09            [ 1]  293 	cp	a, #0x09
-      0085BF 84               [ 1]  294 	pop	a
-      0085C0 22 06            [ 1]  295 	jrugt	00105$
-      0085C2 AB 30            [ 1]  296 	add	a, #0x30
-      0085C4 84               [ 1]  297 	pop	a
-      0085C5 CC 84 FF         [ 2]  298 	jp	_sendByte_UART
-      0085C8                        299 00105$:
-                                    300 ;	../../my_STM8_libraries/stm8_UART.c: 80: else sendByte_UART(low - 10 + 'A');
-      0085C8 AB 37            [ 1]  301 	add	a, #0x37
-      0085CA 84               [ 1]  302 	pop	a
-      0085CB CC 84 FF         [ 2]  303 	jp	_sendByte_UART
-                                    304 ;	../../my_STM8_libraries/stm8_UART.c: 81: }
-      0085CE 84               [ 1]  305 	pop	a
-      0085CF 81               [ 4]  306 	ret
-                                    307 	.area CODE
-                                    308 	.area CONST
-                                    309 	.area INITIALIZER
-                                    310 	.area CABS (ABS)
+                                    284 ;	../../my_STM8_libraries/stm8_UART.c: 77: else sendByte_UART((uint8_t)(65 + high - 10));
+      0085B2 AB 37            [ 1]  285 	add	a, #0x37
+      0085B4 CD 84 FF         [ 4]  286 	call	_sendByte_UART
+      0085B7                        287 00103$:
+                                    288 ;	../../my_STM8_libraries/stm8_UART.c: 79: if (low <= 9) sendByte_UART(low + '0');
+      0085B7 7B 01            [ 1]  289 	ld	a, (0x01, sp)
+      0085B9 88               [ 1]  290 	push	a
+      0085BA 7B 02            [ 1]  291 	ld	a, (0x02, sp)
+      0085BC A1 09            [ 1]  292 	cp	a, #0x09
+      0085BE 84               [ 1]  293 	pop	a
+      0085BF 22 06            [ 1]  294 	jrugt	00105$
+      0085C1 AB 30            [ 1]  295 	add	a, #0x30
+      0085C3 84               [ 1]  296 	pop	a
+      0085C4 CC 84 FF         [ 2]  297 	jp	_sendByte_UART
+      0085C7                        298 00105$:
+                                    299 ;	../../my_STM8_libraries/stm8_UART.c: 80: else sendByte_UART((uint8_t)(65 + low - 10));
+      0085C7 AB 37            [ 1]  300 	add	a, #0x37
+      0085C9 84               [ 1]  301 	pop	a
+      0085CA CC 84 FF         [ 2]  302 	jp	_sendByte_UART
+                                    303 ;	../../my_STM8_libraries/stm8_UART.c: 81: }
+      0085CD 84               [ 1]  304 	pop	a
+      0085CE 81               [ 4]  305 	ret
+                                    306 	.area CODE
+                                    307 	.area CONST
+                                    308 	.area INITIALIZER
+                                    309 	.area CABS (ABS)

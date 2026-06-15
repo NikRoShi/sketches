@@ -269,7 +269,7 @@
       008430 88               [ 1]  269 	push	a
       008431 1E 07            [ 2]  270 	ldw	x, (0x07, sp)
       008433 89               [ 2]  271 	pushw	x
-      008434 CD 86 83         [ 4]  272 	call	__mullong
+      008434 CD 86 B9         [ 4]  272 	call	__mullong
       008437 5B 08            [ 2]  273 	addw	sp, #8
       008439 4B 64            [ 1]  274 	push	#0x64
       00843B 4B 00            [ 1]  275 	push	#0x00
@@ -277,7 +277,7 @@
       00843F 4B 00            [ 1]  277 	push	#0x00
       008441 89               [ 2]  278 	pushw	x
       008442 90 89            [ 2]  279 	pushw	y
-      008444 CD 86 2A         [ 4]  280 	call	__divulong
+      008444 CD 86 60         [ 4]  280 	call	__divulong
       008447 5B 08            [ 2]  281 	addw	sp, #8
                                     282 ;	../../my_STM8_libraries/stm8_PWM.c: 89: write_PWM(channel, value);
       008449 7B 09            [ 1]  283 	ld	a, (0x09, sp)
@@ -291,6 +291,6 @@
                                     291 	.area CODE
                                     292 	.area CONST
                                     293 	.area INITIALIZER
-      008052                        294 __xinit__memory_period:
-      008052 00 00                  295 	.dw #0x0000
+      008054                        294 __xinit__memory_period:
+      008054 00 00                  295 	.dw #0x0000
                                     296 	.area CABS (ABS)

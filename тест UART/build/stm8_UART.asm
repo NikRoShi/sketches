@@ -262,27 +262,26 @@ _read_UART:
 ;	-----------------------------------------
 _sendHex_UART:
 	push	a
-;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = (num >> 4) & 0x0F;
+;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = num >> 4;
 	ld	xl, a
 	swap	a
-	and	a, #15
+	and	a, #0x0f
+	exg	a, xl
 ;	../../my_STM8_libraries/stm8_UART.c: 74: uint8_t low = num & 0x0F;
+	and	a, #0x0f
+	ld	(0x01, sp), a
+;	../../my_STM8_libraries/stm8_UART.c: 76: if (high <= 9) sendByte_UART(high + '0');
+	ld	a, xl
 	push	a
 	ld	a, xl
-	and	a, #0x0f
-	ld	(0x02, sp), a
-	pop	a
-;	../../my_STM8_libraries/stm8_UART.c: 76: if (high <= 9) sendByte_UART(high + '0');
-	ld	xl, a
 	cp	a, #0x09
+	pop	a
 	jrugt	00102$
-	ld	a, xl
 	add	a, #0x30
 	call	_sendByte_UART
 	jra	00103$
 00102$:
-;	../../my_STM8_libraries/stm8_UART.c: 77: else sendByte_UART(high - 10 + 'A');
-	ld	a, xl
+;	../../my_STM8_libraries/stm8_UART.c: 77: else sendByte_UART((uint8_t)(65 + high - 10));
 	add	a, #0x37
 	call	_sendByte_UART
 00103$:
@@ -297,7 +296,7 @@ _sendHex_UART:
 	pop	a
 	jp	_sendByte_UART
 00105$:
-;	../../my_STM8_libraries/stm8_UART.c: 80: else sendByte_UART(low - 10 + 'A');
+;	../../my_STM8_libraries/stm8_UART.c: 80: else sendByte_UART((uint8_t)(65 + low - 10));
 	add	a, #0x37
 	pop	a
 	jp	_sendByte_UART

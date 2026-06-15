@@ -261,48 +261,67 @@ _read_UART:
 ;	 function sendHex_UART
 ;	-----------------------------------------
 _sendHex_UART:
-	push	a
-;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = (num >> 4) & 0x0F;
-	ld	xl, a
-	swap	a
-	and	a, #15
-;	../../my_STM8_libraries/stm8_UART.c: 74: uint8_t low = num & 0x0F;
-	push	a
-	ld	a, xl
-	and	a, #0x0f
+	sub	sp, #20
+	ld	(0x14, sp), a
+;	../../my_STM8_libraries/stm8_UART.c: 73: char hex[] = "0123456789ABCDEF";
+	ld	a, #0x30
+	ld	(0x01, sp), a
+	ld	a, #0x31
 	ld	(0x02, sp), a
-	pop	a
-;	../../my_STM8_libraries/stm8_UART.c: 76: if (high <= 9) sendByte_UART(high + '0');
+	ld	a, #0x32
+	ld	(0x03, sp), a
+	ld	a, #0x33
+	ld	(0x04, sp), a
+	ld	a, #0x34
+	ld	(0x05, sp), a
+	ld	a, #0x35
+	ld	(0x06, sp), a
+	ld	a, #0x36
+	ld	(0x07, sp), a
+	ld	a, #0x37
+	ld	(0x08, sp), a
+	ld	a, #0x38
+	ld	(0x09, sp), a
+	ld	a, #0x39
+	ld	(0x0a, sp), a
+	ld	a, #0x41
+	ld	(0x0b, sp), a
+	ld	a, #0x42
+	ld	(0x0c, sp), a
+	ld	a, #0x43
+	ld	(0x0d, sp), a
+	ld	a, #0x44
+	ld	(0x0e, sp), a
+	ld	a, #0x45
+	ld	(0x0f, sp), a
+	ld	a, #0x46
+	ld	(0x10, sp), a
+	clr	(0x11, sp)
+;	../../my_STM8_libraries/stm8_UART.c: 75: sendByte_UART(hex[num >> 4]);
+	ld	a, (0x14, sp)
+	swap	a
+	and	a, #0x0f
+	ldw	x, sp
+	incw	x
+	pushw	x
+	clrw	x
 	ld	xl, a
-	cp	a, #0x09
-	jrugt	00102$
-	ld	a, xl
-	add	a, #0x30
+	addw	x, (1, sp)
+	addw	sp, #2
+	ld	a, (x)
 	call	_sendByte_UART
-	jra	00103$
-00102$:
-;	../../my_STM8_libraries/stm8_UART.c: 77: else sendByte_UART(high - 10 + 'A');
-	ld	a, xl
-	add	a, #0x37
+;	../../my_STM8_libraries/stm8_UART.c: 76: sendByte_UART(hex[num & 0x0F]);
+	ld	a, (0x14, sp)
+	and	a, #0x0f
+	ld	(0x13, sp), a
+	clr	(0x12, sp)
+	ldw	x, sp
+	incw	x
+	addw	x, (0x12, sp)
+	ld	a, (x)
 	call	_sendByte_UART
-00103$:
-;	../../my_STM8_libraries/stm8_UART.c: 79: if (low <= 9) sendByte_UART(low + '0');
-	ld	a, (0x01, sp)
-	push	a
-	ld	a, (0x02, sp)
-	cp	a, #0x09
-	pop	a
-	jrugt	00105$
-	add	a, #0x30
-	pop	a
-	jp	_sendByte_UART
-00105$:
-;	../../my_STM8_libraries/stm8_UART.c: 80: else sendByte_UART(low - 10 + 'A');
-	add	a, #0x37
-	pop	a
-	jp	_sendByte_UART
-;	../../my_STM8_libraries/stm8_UART.c: 81: }
-	pop	a
+;	../../my_STM8_libraries/stm8_UART.c: 77: }
+	addw	sp, #20
 	ret
 	.area CODE
 	.area CONST

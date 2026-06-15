@@ -25,7 +25,7 @@ Area                                    Addr        Size        Decimal Bytes (A
      00000007  l_HOME                          
      00000007  s_SSEG                          
      0000001A  l_GSINIT                        
-     0000067B  l_CODE                          
+     0000067A  l_CODE                          
      00008000  s_HOME                          
      00008007  s_GSINIT                        
      00008021  s_GSFINAL                       
@@ -92,7 +92,7 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-CODE                                0000802A    0000067B =        1659. bytes (REL,CON)
+CODE                                0000802A    0000067A =        1658. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -130,8 +130,8 @@ CODE                                0000802A    0000067B =        1659. bytes (R
      0000858B  _available_UART                    stm8_UART
      00008595  _read_UART                         stm8_UART
      00008599  _sendHex_UART                      stm8_UART
-     000085D0  __divulong                         _divulong
-     00008629  __mullong                          
+     000085CF  __divulong                         _divulong
+     00008628  __mullong                          
 ASxxxx Linker V03.00 + NoICE + sdld,  page 9.
 
 Files Linked                              [ module(s) ]

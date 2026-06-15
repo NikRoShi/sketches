@@ -9,7 +9,7 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
-	.globl _sendInt_UART
+	.globl _sendHex_UART
 	.globl _sendLine_UART
 	.globl _sendString_UART
 	.globl _init_UART
@@ -121,14 +121,12 @@ _main:
 	call	_ping_I2C
 	dec	a
 	jrne	00109$
-;	main.c: 19: sendString_UART("devise in ");
+;	main.c: 19: sendString_UART("devise in 0x");
 	ldw	x, #(___str_1+0)
 	call	_sendString_UART
-;	main.c: 20: sendInt_UART(i);
+;	main.c: 20: sendHex_UART(i);
 	ld	a, (0x01, sp)
-	clrw	x
-	ld	xl, a
-	call	_sendInt_UART
+	call	_sendHex_UART
 ;	main.c: 21: sendLine_UART();
 	call	_sendLine_UART
 00109$:
@@ -156,7 +154,7 @@ ___str_0:
 	.area CODE
 	.area CONST
 ___str_1:
-	.ascii "devise in "
+	.ascii "devise in 0x"
 	.db 0x00
 	.area CODE
 	.area CONST

@@ -13,7 +13,7 @@ Symbol Table
   3 __start__stack                                                 000000 R
     _init_UART                                                     ****** GX
   A _main                                                          000000 GR
-    _sendHex_UART                                                  ****** GX
+    _sendByte_UART                                                 ****** GX
     _sendLine_UART                                                 ****** GX
     l_DATA                                                         ****** GX
     l_INITIALIZER                                                  ****** GX

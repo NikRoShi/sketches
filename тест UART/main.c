@@ -8,11 +8,11 @@ void main(void) {
     
 	init_UART(9600);	// 2. Инициализируем периферию
 	
-	for (uint8_t i = 1; i < 128; i++)
+	for (uint8_t i = 32; i < 128; i++)
 	{
-	sendHex_UART(i);
-    sendLine_UART();
+		sendByte_UART(i);
 	}
+	sendLine_UART();
 	
     while(1)
     {

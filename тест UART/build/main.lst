@@ -9,8 +9,8 @@
                                       9 ; Public variables in this module
                                      10 ;--------------------------------------------------------
                                      11 	.globl _main
-                                     12 	.globl _sendHex_UART
-                                     13 	.globl _sendLine_UART
+                                     12 	.globl _sendLine_UART
+                                     13 	.globl _sendByte_UART
                                      14 	.globl _init_UART
                                      15 ;--------------------------------------------------------
                                      16 ; ram data
@@ -98,25 +98,27 @@
       000008 5F               [ 1]   98 	clrw	x
       000009 89               [ 2]   99 	pushw	x
       00000A CDr00r00         [ 4]  100 	call	_init_UART
-                                    101 ;	main.c: 11: for (uint8_t i = 1; i < 128; i++)
-      00000D A6 01            [ 1]  102 	ld	a, #0x01
+                                    101 ;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
+      00000D A6 20            [ 1]  102 	ld	a, #0x20
       00000F                        103 00106$:
       00000F A1 80            [ 1]  104 	cp	a, #0x80
-      000011 24 0B            [ 1]  105 	jrnc	00103$
-                                    106 ;	main.c: 13: sendHex_UART(i);
+      000011 24 08            [ 1]  105 	jrnc	00101$
+                                    106 ;	main.c: 13: sendByte_UART(i);
       000013 88               [ 1]  107 	push	a
-      000014 CDr00r00         [ 4]  108 	call	_sendHex_UART
-      000017 CDr00r00         [ 4]  109 	call	_sendLine_UART
-      00001A 84               [ 1]  110 	pop	a
-                                    111 ;	main.c: 11: for (uint8_t i = 1; i < 128; i++)
-      00001B 4C               [ 1]  112 	inc	a
-      00001C 20 F1            [ 2]  113 	jra	00106$
-                                    114 ;	main.c: 17: while(1)
-      00001E                        115 00103$:
-      00001E 20 FE            [ 2]  116 	jra	00103$
-                                    117 ;	main.c: 21: }
-      000020 81               [ 4]  118 	ret
-                                    119 	.area CODE
-                                    120 	.area CONST
-                                    121 	.area INITIALIZER
-                                    122 	.area CABS (ABS)
+      000014 CDr00r00         [ 4]  108 	call	_sendByte_UART
+      000017 84               [ 1]  109 	pop	a
+                                    110 ;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
+      000018 4C               [ 1]  111 	inc	a
+      000019 20 F4            [ 2]  112 	jra	00106$
+      00001B                        113 00101$:
+                                    114 ;	main.c: 15: sendLine_UART();
+      00001B CDr00r00         [ 4]  115 	call	_sendLine_UART
+                                    116 ;	main.c: 17: while(1)
+      00001E                        117 00103$:
+      00001E 20 FE            [ 2]  118 	jra	00103$
+                                    119 ;	main.c: 21: }
+      000020 81               [ 4]  120 	ret
+                                    121 	.area CODE
+                                    122 	.area CONST
+                                    123 	.area INITIALIZER
+                                    124 	.area CABS (ABS)

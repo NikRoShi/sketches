@@ -9,8 +9,8 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
-	.globl _sendHex_UART
 	.globl _sendLine_UART
+	.globl _sendByte_UART
 	.globl _init_UART
 ;--------------------------------------------------------
 ; ram data
@@ -98,19 +98,21 @@ _main:
 	clrw	x
 	pushw	x
 	call	_init_UART
-;	main.c: 11: for (uint8_t i = 1; i < 128; i++)
-	ld	a, #0x01
+;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
+	ld	a, #0x20
 00106$:
 	cp	a, #0x80
-	jrnc	00103$
-;	main.c: 13: sendHex_UART(i);
+	jrnc	00101$
+;	main.c: 13: sendByte_UART(i);
 	push	a
-	call	_sendHex_UART
-	call	_sendLine_UART
+	call	_sendByte_UART
 	pop	a
-;	main.c: 11: for (uint8_t i = 1; i < 128; i++)
+;	main.c: 11: for (uint8_t i = 32; i < 128; i++)
 	inc	a
 	jra	00106$
+00101$:
+;	main.c: 15: sendLine_UART();
+	call	_sendLine_UART
 ;	main.c: 17: while(1)
 00103$:
 	jra	00103$

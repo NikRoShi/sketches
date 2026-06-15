@@ -269,7 +269,7 @@
       0083D6 88               [ 1]  269 	push	a
       0083D7 1E 07            [ 2]  270 	ldw	x, (0x07, sp)
       0083D9 89               [ 2]  271 	pushw	x
-      0083DA CD 86 29         [ 4]  272 	call	__mullong
+      0083DA CD 86 28         [ 4]  272 	call	__mullong
       0083DD 5B 08            [ 2]  273 	addw	sp, #8
       0083DF 4B 64            [ 1]  274 	push	#0x64
       0083E1 4B 00            [ 1]  275 	push	#0x00
@@ -277,7 +277,7 @@
       0083E5 4B 00            [ 1]  277 	push	#0x00
       0083E7 89               [ 2]  278 	pushw	x
       0083E8 90 89            [ 2]  279 	pushw	y
-      0083EA CD 85 D0         [ 4]  280 	call	__divulong
+      0083EA CD 85 CF         [ 4]  280 	call	__divulong
       0083ED 5B 08            [ 2]  281 	addw	sp, #8
                                     282 ;	../../my_STM8_libraries/stm8_PWM.c: 89: write_PWM(channel, value);
       0083EF 7B 09            [ 1]  283 	ld	a, (0x09, sp)
