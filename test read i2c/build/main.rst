@@ -13,7 +13,7 @@
                                      13 	.globl _sendLine_UART
                                      14 	.globl _sendString_UART
                                      15 	.globl _init_UART
-                                     16 	.globl _ping_I2C
+                                     16 	.globl _readByte_I2C
                                      17 	.globl _init_I2C
                                      18 ;--------------------------------------------------------
                                      19 ; ram data
@@ -68,7 +68,7 @@
       008013 AE 00 06         [ 2]   68 	ldw	x, #l_INITIALIZER
       008016 27 09            [ 1]   69 	jreq	00004$
       008018                         70 00003$:
-      008018 D6 80 53         [ 1]   71 	ld	a, (s_INITIALIZER - 1, x)
+      008018 D6 80 39         [ 1]   71 	ld	a, (s_INITIALIZER - 1, x)
       00801B D7 00 00         [ 1]   72 	ld	(s_INITIALIZED - 1, x), a
       00801E 5A               [ 2]   73 	decw	x
       00801F 26 F7            [ 1]   74 	jrne	00003$
@@ -82,7 +82,7 @@
                                      82 	.area HOME
                                      83 	.area HOME
       008004                         84 __sdcc_program_startup:
-      008004 CC 80 5A         [ 2]   85 	jp	_main
+      008004 CC 80 40         [ 2]   85 	jp	_main
                                      86 ;	return from main will return to caller
                                      87 ;--------------------------------------------------------
                                      88 ; code
@@ -92,80 +92,68 @@
                                      92 ;	-----------------------------------------
                                      93 ;	 function main
                                      94 ;	-----------------------------------------
-      00805A                         95 _main:
-      00805A 88               [ 1]   96 	push	a
+      008040                         95 _main:
+      008040 88               [ 1]   96 	push	a
                                      97 ;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
-      00805B 35 00 50 C6      [ 1]   98 	mov	0x50c6+0, #0x00
-                                     99 ;	main.c: 10: init_UART(9600);
-      00805F 4B 80            [ 1]  100 	push	#0x80
-      008061 4B 25            [ 1]  101 	push	#0x25
-      008063 5F               [ 1]  102 	clrw	x
-      008064 89               [ 2]  103 	pushw	x
-      008065 CD 85 5D         [ 4]  104 	call	_init_UART
-                                    105 ;	main.c: 11: init_I2C();
-      008068 CD 82 3F         [ 4]  106 	call	_init_I2C
-                                    107 ;	main.c: 13: sendString_UART("--Star scanning--");
-      00806B AE 80 24         [ 2]  108 	ldw	x, #(___str_0+0)
-      00806E CD 85 C0         [ 4]  109 	call	_sendString_UART
-                                    110 ;	main.c: 14: sendLine_UART();
-      008071 CD 85 CD         [ 4]  111 	call	_sendLine_UART
-                                    112 ;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
-      008074 A6 01            [ 1]  113 	ld	a, #0x01
-      008076 6B 01            [ 1]  114 	ld	(0x01, sp), a
-      008078                        115 00108$:
-      008078 7B 01            [ 1]  116 	ld	a, (0x01, sp)
-      00807A A1 80            [ 1]  117 	cp	a, #0x80
-      00807C 24 1A            [ 1]  118 	jrnc	00103$
-                                    119 ;	main.c: 17: if (ping_I2C(i) == 1)
-      00807E 7B 01            [ 1]  120 	ld	a, (0x01, sp)
-      008080 CD 82 E0         [ 4]  121 	call	_ping_I2C
-      008083 4A               [ 1]  122 	dec	a
-      008084 26 0E            [ 1]  123 	jrne	00109$
-                                    124 ;	main.c: 19: sendString_UART("devise in 0x");
-      008086 AE 80 36         [ 2]  125 	ldw	x, #(___str_1+0)
-      008089 CD 85 C0         [ 4]  126 	call	_sendString_UART
-                                    127 ;	main.c: 20: sendHex_UART(i);
-      00808C 7B 01            [ 1]  128 	ld	a, (0x01, sp)
-      00808E CD 86 4A         [ 4]  129 	call	_sendHex_UART
-                                    130 ;	main.c: 21: sendLine_UART();
-      008091 CD 85 CD         [ 4]  131 	call	_sendLine_UART
-      008094                        132 00109$:
-                                    133 ;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
-      008094 0C 01            [ 1]  134 	inc	(0x01, sp)
-      008096 20 E0            [ 2]  135 	jra	00108$
-      008098                        136 00103$:
-                                    137 ;	main.c: 24: sendString_UART("--end scanning--");
-      008098 AE 80 43         [ 2]  138 	ldw	x, #(___str_2+0)
-      00809B CD 85 C0         [ 4]  139 	call	_sendString_UART
-                                    140 ;	main.c: 25: sendLine_UART();
-      00809E CD 85 CD         [ 4]  141 	call	_sendLine_UART
-                                    142 ;	main.c: 27: while (1)
-      0080A1                        143 00105$:
-      0080A1 20 FE            [ 2]  144 	jra	00105$
-                                    145 ;	main.c: 31: }
-      0080A3 84               [ 1]  146 	pop	a
-      0080A4 81               [ 4]  147 	ret
-                                    148 	.area CODE
-                                    149 	.area CONST
-                                    150 	.area CONST
-      008024                        151 ___str_0:
-      008024 2D 2D 53 74 61 72 20   152 	.ascii "--Star scanning--"
-             73 63 61 6E 6E 69 6E
-             67 2D 2D
-      008035 00                     153 	.db 0x00
-                                    154 	.area CODE
-                                    155 	.area CONST
-      008036                        156 ___str_1:
-      008036 64 65 76 69 73 65 20   157 	.ascii "devise in 0x"
-             69 6E 20 30 78
-      008042 00                     158 	.db 0x00
-                                    159 	.area CODE
-                                    160 	.area CONST
-      008043                        161 ___str_2:
-      008043 2D 2D 65 6E 64 20 73   162 	.ascii "--end scanning--"
-             63 61 6E 6E 69 6E 67
-             2D 2D
-      008053 00                     163 	.db 0x00
-                                    164 	.area CODE
-                                    165 	.area INITIALIZER
-                                    166 	.area CABS (ABS)
+      008041 35 00 50 C6      [ 1]   98 	mov	0x50c6+0, #0x00
+                                     99 ;	main.c: 10: init_I2C();
+      008045 CD 82 1B         [ 4]  100 	call	_init_I2C
+                                    101 ;	main.c: 11: init_UART(9600);
+      008048 4B 80            [ 1]  102 	push	#0x80
+      00804A 4B 25            [ 1]  103 	push	#0x25
+      00804C 5F               [ 1]  104 	clrw	x
+      00804D 89               [ 2]  105 	pushw	x
+      00804E CD 85 39         [ 4]  106 	call	_init_UART
+                                    107 ;	main.c: 15: sendString_UART("start");
+      008051 AE 80 24         [ 2]  108 	ldw	x, #(___str_0+0)
+      008054 CD 85 9C         [ 4]  109 	call	_sendString_UART
+                                    110 ;	main.c: 16: sendLine_UART();
+      008057 CD 85 A9         [ 4]  111 	call	_sendLine_UART
+                                    112 ;	main.c: 18: if (readByte_I2C(0x68, &i2cData) == 1)
+      00805A 96               [ 1]  113 	ldw	x, sp
+      00805B 5C               [ 1]  114 	incw	x
+      00805C A6 68            [ 1]  115 	ld	a, #0x68
+      00805E CD 83 16         [ 4]  116 	call	_readByte_I2C
+      008061 4A               [ 1]  117 	dec	a
+      008062 26 10            [ 1]  118 	jrne	00102$
+                                    119 ;	main.c: 20: sendString_UART("data is 0x");
+      008064 AE 80 2A         [ 2]  120 	ldw	x, #(___str_1+0)
+      008067 CD 85 9C         [ 4]  121 	call	_sendString_UART
+                                    122 ;	main.c: 21: sendHex_UART(i2cData);
+      00806A 7B 01            [ 1]  123 	ld	a, (0x01, sp)
+      00806C CD 86 26         [ 4]  124 	call	_sendHex_UART
+                                    125 ;	main.c: 22: sendLine_UART();
+      00806F CD 85 A9         [ 4]  126 	call	_sendLine_UART
+      008072 20 09            [ 2]  127 	jra	00105$
+      008074                        128 00102$:
+                                    129 ;	main.c: 26: sendString_UART("fail");
+      008074 AE 80 35         [ 2]  130 	ldw	x, #(___str_2+0)
+      008077 CD 85 9C         [ 4]  131 	call	_sendString_UART
+                                    132 ;	main.c: 27: sendLine_UART();
+      00807A CD 85 A9         [ 4]  133 	call	_sendLine_UART
+                                    134 ;	main.c: 30: while (1)
+      00807D                        135 00105$:
+      00807D 20 FE            [ 2]  136 	jra	00105$
+                                    137 ;	main.c: 34: }
+      00807F 84               [ 1]  138 	pop	a
+      008080 81               [ 4]  139 	ret
+                                    140 	.area CODE
+                                    141 	.area CONST
+                                    142 	.area CONST
+      008024                        143 ___str_0:
+      008024 73 74 61 72 74         144 	.ascii "start"
+      008029 00                     145 	.db 0x00
+                                    146 	.area CODE
+                                    147 	.area CONST
+      00802A                        148 ___str_1:
+      00802A 64 61 74 61 20 69 73   149 	.ascii "data is 0x"
+             20 30 78
+      008034 00                     150 	.db 0x00
+                                    151 	.area CODE
+                                    152 	.area CONST
+      008035                        153 ___str_2:
+      008035 66 61 69 6C            154 	.ascii "fail"
+      008039 00                     155 	.db 0x00
+                                    156 	.area CODE
+                                    157 	.area INITIALIZER
+                                    158 	.area CABS (ABS)

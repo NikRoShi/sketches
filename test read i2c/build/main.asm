@@ -13,7 +13,7 @@
 	.globl _sendLine_UART
 	.globl _sendString_UART
 	.globl _init_UART
-	.globl _ping_I2C
+	.globl _readByte_I2C
 	.globl _init_I2C
 ;--------------------------------------------------------
 ; ram data
@@ -96,70 +96,62 @@ _main:
 	push	a
 ;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 10: init_UART(9600);
+;	main.c: 10: init_I2C();
+	call	_init_I2C
+;	main.c: 11: init_UART(9600);
 	push	#0x80
 	push	#0x25
 	clrw	x
 	pushw	x
 	call	_init_UART
-;	main.c: 11: init_I2C();
-	call	_init_I2C
-;	main.c: 13: sendString_UART("--Star scanning--");
+;	main.c: 15: sendString_UART("start");
 	ldw	x, #(___str_0+0)
 	call	_sendString_UART
-;	main.c: 14: sendLine_UART();
+;	main.c: 16: sendLine_UART();
 	call	_sendLine_UART
-;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
-	ld	a, #0x01
-	ld	(0x01, sp), a
-00108$:
-	ld	a, (0x01, sp)
-	cp	a, #0x80
-	jrnc	00103$
-;	main.c: 17: if (ping_I2C(i) == 1)
-	ld	a, (0x01, sp)
-	call	_ping_I2C
+;	main.c: 18: if (readByte_I2C(0x68, &i2cData) == 1)
+	ldw	x, sp
+	incw	x
+	ld	a, #0x68
+	call	_readByte_I2C
 	dec	a
-	jrne	00109$
-;	main.c: 19: sendString_UART("devise in 0x");
+	jrne	00102$
+;	main.c: 20: sendString_UART("data is 0x");
 	ldw	x, #(___str_1+0)
 	call	_sendString_UART
-;	main.c: 20: sendHex_UART(i);
+;	main.c: 21: sendHex_UART(i2cData);
 	ld	a, (0x01, sp)
 	call	_sendHex_UART
-;	main.c: 21: sendLine_UART();
+;	main.c: 22: sendLine_UART();
 	call	_sendLine_UART
-00109$:
-;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
-	inc	(0x01, sp)
-	jra	00108$
-00103$:
-;	main.c: 24: sendString_UART("--end scanning--");
+	jra	00105$
+00102$:
+;	main.c: 26: sendString_UART("fail");
 	ldw	x, #(___str_2+0)
 	call	_sendString_UART
-;	main.c: 25: sendLine_UART();
+;	main.c: 27: sendLine_UART();
 	call	_sendLine_UART
-;	main.c: 27: while (1)
+;	main.c: 30: while (1)
 00105$:
 	jra	00105$
-;	main.c: 31: }
+;	main.c: 34: }
 	pop	a
 	ret
 	.area CODE
 	.area CONST
 	.area CONST
 ___str_0:
-	.ascii "--Star scanning--"
+	.ascii "start"
 	.db 0x00
 	.area CODE
 	.area CONST
 ___str_1:
-	.ascii "devise in 0x"
+	.ascii "data is 0x"
 	.db 0x00
 	.area CODE
 	.area CONST
 ___str_2:
-	.ascii "--end scanning--"
+	.ascii "fail"
 	.db 0x00
 	.area CODE
 	.area INITIALIZER

@@ -56,241 +56,241 @@
                                      56 ;	-----------------------------------------
                                      57 ;	 function init_PWM
                                      58 ;	-----------------------------------------
-      008378                         59 _init_PWM:
+      008354                         59 _init_PWM:
                                      60 ;	../../my_STM8_libraries/stm8_PWM.c: 6: CLK_PCKENR1 |= (1 << 5);		//включить тактирование TIM2
-      008378 72 1A 50 C7      [ 1]   61 	bset	0x50c7, #5
+      008354 72 1A 50 C7      [ 1]   61 	bset	0x50c7, #5
                                      62 ;	../../my_STM8_libraries/stm8_PWM.c: 8: memory_period = period;			// запомним период чтобы считать проценты
-      00837C CF 00 01         [ 2]   63 	ldw	_memory_period+0, x
+      008358 CF 00 01         [ 2]   63 	ldw	_memory_period+0, x
                                      64 ;	../../my_STM8_libraries/stm8_PWM.c: 10: TIM2_ARRH = (uint8_t)((period >> 8));	//устанавливаем период
-      00837F 9E               [ 1]   65 	ld	a, xh
-      008380 C7 53 0F         [ 1]   66 	ld	0x530f, a
+      00835B 9E               [ 1]   65 	ld	a, xh
+      00835C C7 53 0F         [ 1]   66 	ld	0x530f, a
                                      67 ;	../../my_STM8_libraries/stm8_PWM.c: 11: TIM2_ARRL = (uint8_t)((period & 0xFF));
-      008383 9F               [ 1]   68 	ld	a, xl
-      008384 C7 53 10         [ 1]   69 	ld	0x5310, a
+      00835F 9F               [ 1]   68 	ld	a, xl
+      008360 C7 53 10         [ 1]   69 	ld	0x5310, a
                                      70 ;	../../my_STM8_libraries/stm8_PWM.c: 13: TIM2_CCMR1 &= ~(0b111 << 4);		//сбрасываем значения настройки в 0 PD4
-      008387 C6 53 07         [ 1]   71 	ld	a, 0x5307
-      00838A A4 8F            [ 1]   72 	and	a, #0x8f
-      00838C C7 53 07         [ 1]   73 	ld	0x5307, a
+      008363 C6 53 07         [ 1]   71 	ld	a, 0x5307
+      008366 A4 8F            [ 1]   72 	and	a, #0x8f
+      008368 C7 53 07         [ 1]   73 	ld	0x5307, a
                                      74 ;	../../my_STM8_libraries/stm8_PWM.c: 14: TIM2_CCMR2 &= ~(0b111 << 4);		//PD3
-      00838F C6 53 08         [ 1]   75 	ld	a, 0x5308
-      008392 A4 8F            [ 1]   76 	and	a, #0x8f
-      008394 C7 53 08         [ 1]   77 	ld	0x5308, a
+      00836B C6 53 08         [ 1]   75 	ld	a, 0x5308
+      00836E A4 8F            [ 1]   76 	and	a, #0x8f
+      008370 C7 53 08         [ 1]   77 	ld	0x5308, a
                                      78 ;	../../my_STM8_libraries/stm8_PWM.c: 15: TIM2_CCMR3 &= ~(0b111 << 4);		//PA3
-      008397 C6 53 09         [ 1]   79 	ld	a, 0x5309
-      00839A A4 8F            [ 1]   80 	and	a, #0x8f
-      00839C C7 53 09         [ 1]   81 	ld	0x5309, a
+      008373 C6 53 09         [ 1]   79 	ld	a, 0x5309
+      008376 A4 8F            [ 1]   80 	and	a, #0x8f
+      008378 C7 53 09         [ 1]   81 	ld	0x5309, a
                                      82 ;	../../my_STM8_libraries/stm8_PWM.c: 17: TIM2_CCMR1 |= (0b110 << 4);		//настроить режим работы вывода PD4
-      00839F C6 53 07         [ 1]   83 	ld	a, 0x5307
-      0083A2 AA 60            [ 1]   84 	or	a, #0x60
-      0083A4 C7 53 07         [ 1]   85 	ld	0x5307, a
+      00837B C6 53 07         [ 1]   83 	ld	a, 0x5307
+      00837E AA 60            [ 1]   84 	or	a, #0x60
+      008380 C7 53 07         [ 1]   85 	ld	0x5307, a
                                      86 ;	../../my_STM8_libraries/stm8_PWM.c: 18: TIM2_CCMR2 |= (0b110 << 4);		//PD3
-      0083A7 C6 53 08         [ 1]   87 	ld	a, 0x5308
-      0083AA AA 60            [ 1]   88 	or	a, #0x60
-      0083AC C7 53 08         [ 1]   89 	ld	0x5308, a
+      008383 C6 53 08         [ 1]   87 	ld	a, 0x5308
+      008386 AA 60            [ 1]   88 	or	a, #0x60
+      008388 C7 53 08         [ 1]   89 	ld	0x5308, a
                                      90 ;	../../my_STM8_libraries/stm8_PWM.c: 19: TIM2_CCMR3 |= (0b110 << 4);		//PA3
-      0083AF C6 53 09         [ 1]   91 	ld	a, 0x5309
-      0083B2 AA 60            [ 1]   92 	or	a, #0x60
-      0083B4 C7 53 09         [ 1]   93 	ld	0x5309, a
+      00838B C6 53 09         [ 1]   91 	ld	a, 0x5309
+      00838E AA 60            [ 1]   92 	or	a, #0x60
+      008390 C7 53 09         [ 1]   93 	ld	0x5309, a
                                      94 ;	../../my_STM8_libraries/stm8_PWM.c: 21: TIM2_CCMR1 |= (1 << 3);		//настроить PD4 как выход
-      0083B7 72 16 53 07      [ 1]   95 	bset	0x5307, #3
+      008393 72 16 53 07      [ 1]   95 	bset	0x5307, #3
                                      96 ;	../../my_STM8_libraries/stm8_PWM.c: 22: TIM2_CCMR2 |= (1 << 3);		//PD3
-      0083BB 72 16 53 08      [ 1]   97 	bset	0x5308, #3
+      008397 72 16 53 08      [ 1]   97 	bset	0x5308, #3
                                      98 ;	../../my_STM8_libraries/stm8_PWM.c: 23: TIM2_CCMR3 |= (1 << 3);		//PA3
-      0083BF 72 16 53 09      [ 1]   99 	bset	0x5309, #3
+      00839B 72 16 53 09      [ 1]   99 	bset	0x5309, #3
                                     100 ;	../../my_STM8_libraries/stm8_PWM.c: 25: TIM2_CCMR1 &= ~0b11;		//настроить PD4 как выход
-      0083C3 C6 53 07         [ 1]  101 	ld	a, 0x5307
-      0083C6 A4 FC            [ 1]  102 	and	a, #0xfc
-      0083C8 C7 53 07         [ 1]  103 	ld	0x5307, a
+      00839F C6 53 07         [ 1]  101 	ld	a, 0x5307
+      0083A2 A4 FC            [ 1]  102 	and	a, #0xfc
+      0083A4 C7 53 07         [ 1]  103 	ld	0x5307, a
                                     104 ;	../../my_STM8_libraries/stm8_PWM.c: 26: TIM2_CCMR2 &= ~0b11;		//PD3
-      0083CB C6 53 08         [ 1]  105 	ld	a, 0x5308
-      0083CE A4 FC            [ 1]  106 	and	a, #0xfc
-      0083D0 C7 53 08         [ 1]  107 	ld	0x5308, a
+      0083A7 C6 53 08         [ 1]  105 	ld	a, 0x5308
+      0083AA A4 FC            [ 1]  106 	and	a, #0xfc
+      0083AC C7 53 08         [ 1]  107 	ld	0x5308, a
                                     108 ;	../../my_STM8_libraries/stm8_PWM.c: 27: TIM2_CCMR3 &= ~0b11;		//PA3
-      0083D3 C6 53 09         [ 1]  109 	ld	a, 0x5309
-      0083D6 A4 FC            [ 1]  110 	and	a, #0xfc
-      0083D8 C7 53 09         [ 1]  111 	ld	0x5309, a
+      0083AF C6 53 09         [ 1]  109 	ld	a, 0x5309
+      0083B2 A4 FC            [ 1]  110 	and	a, #0xfc
+      0083B4 C7 53 09         [ 1]  111 	ld	0x5309, a
                                     112 ;	../../my_STM8_libraries/stm8_PWM.c: 29: TIM2_CR1 |= (1 << 7) | (1 << 0);
-      0083DB C6 53 00         [ 1]  113 	ld	a, 0x5300
-      0083DE AA 81            [ 1]  114 	or	a, #0x81
-      0083E0 C7 53 00         [ 1]  115 	ld	0x5300, a
+      0083B7 C6 53 00         [ 1]  113 	ld	a, 0x5300
+      0083BA AA 81            [ 1]  114 	or	a, #0x81
+      0083BC C7 53 00         [ 1]  115 	ld	0x5300, a
                                     116 ;	../../my_STM8_libraries/stm8_PWM.c: 30: }
-      0083E3 81               [ 4]  117 	ret
+      0083BF 81               [ 4]  117 	ret
                                     118 ;	../../my_STM8_libraries/stm8_PWM.c: 32: void startChannel_PWM(uint8_t channel) {	//функция разрешает вывод на соответствующий пин
                                     119 ;	-----------------------------------------
                                     120 ;	 function startChannel_PWM
                                     121 ;	-----------------------------------------
-      0083E4                        122 _startChannel_PWM:
+      0083C0                        122 _startChannel_PWM:
                                     123 ;	../../my_STM8_libraries/stm8_PWM.c: 33: switch (channel) {
-      0083E4 A1 01            [ 1]  124 	cp	a, #0x01
-      0083E6 27 09            [ 1]  125 	jreq	00101$
-      0083E8 A1 02            [ 1]  126 	cp	a, #0x02
-      0083EA 27 12            [ 1]  127 	jreq	00102$
-      0083EC A1 03            [ 1]  128 	cp	a, #0x03
-      0083EE 27 1B            [ 1]  129 	jreq	00103$
-      0083F0 81               [ 4]  130 	ret
+      0083C0 A1 01            [ 1]  124 	cp	a, #0x01
+      0083C2 27 09            [ 1]  125 	jreq	00101$
+      0083C4 A1 02            [ 1]  126 	cp	a, #0x02
+      0083C6 27 12            [ 1]  127 	jreq	00102$
+      0083C8 A1 03            [ 1]  128 	cp	a, #0x03
+      0083CA 27 1B            [ 1]  129 	jreq	00103$
+      0083CC 81               [ 4]  130 	ret
                                     131 ;	../../my_STM8_libraries/stm8_PWM.c: 34: case 1:		//PD4
-      0083F1                        132 00101$:
+      0083CD                        132 00101$:
                                     133 ;	../../my_STM8_libraries/stm8_PWM.c: 35: PD_DDR |= (1 << 4);
-      0083F1 72 18 50 11      [ 1]  134 	bset	0x5011, #4
+      0083CD 72 18 50 11      [ 1]  134 	bset	0x5011, #4
                                     135 ;	../../my_STM8_libraries/stm8_PWM.c: 36: PD_CR1 |= (1 << 4);
-      0083F5 72 18 50 12      [ 1]  136 	bset	0x5012, #4
+      0083D1 72 18 50 12      [ 1]  136 	bset	0x5012, #4
                                     137 ;	../../my_STM8_libraries/stm8_PWM.c: 37: TIM2_CCER1 |= (1 << 0);	
-      0083F9 72 10 53 0A      [ 1]  138 	bset	0x530a, #0
+      0083D5 72 10 53 0A      [ 1]  138 	bset	0x530a, #0
                                     139 ;	../../my_STM8_libraries/stm8_PWM.c: 38: break;
-      0083FD 81               [ 4]  140 	ret
+      0083D9 81               [ 4]  140 	ret
                                     141 ;	../../my_STM8_libraries/stm8_PWM.c: 39: case 2:		//PD3
-      0083FE                        142 00102$:
+      0083DA                        142 00102$:
                                     143 ;	../../my_STM8_libraries/stm8_PWM.c: 40: PD_DDR |= (1 << 3);
-      0083FE 72 16 50 11      [ 1]  144 	bset	0x5011, #3
+      0083DA 72 16 50 11      [ 1]  144 	bset	0x5011, #3
                                     145 ;	../../my_STM8_libraries/stm8_PWM.c: 41: PD_CR1 |= (1 << 3);
-      008402 72 16 50 12      [ 1]  146 	bset	0x5012, #3
+      0083DE 72 16 50 12      [ 1]  146 	bset	0x5012, #3
                                     147 ;	../../my_STM8_libraries/stm8_PWM.c: 42: TIM2_CCER1 |= (1 << 4);	
-      008406 72 18 53 0A      [ 1]  148 	bset	0x530a, #4
+      0083E2 72 18 53 0A      [ 1]  148 	bset	0x530a, #4
                                     149 ;	../../my_STM8_libraries/stm8_PWM.c: 43: break;
-      00840A 81               [ 4]  150 	ret
+      0083E6 81               [ 4]  150 	ret
                                     151 ;	../../my_STM8_libraries/stm8_PWM.c: 44: case 3:		//PA3
-      00840B                        152 00103$:
+      0083E7                        152 00103$:
                                     153 ;	../../my_STM8_libraries/stm8_PWM.c: 45: PA_DDR |= (1 << 3);
-      00840B 72 16 50 02      [ 1]  154 	bset	0x5002, #3
+      0083E7 72 16 50 02      [ 1]  154 	bset	0x5002, #3
                                     155 ;	../../my_STM8_libraries/stm8_PWM.c: 46: PA_CR1 |= (1 << 3);
-      00840F 72 16 50 03      [ 1]  156 	bset	0x5003, #3
+      0083EB 72 16 50 03      [ 1]  156 	bset	0x5003, #3
                                     157 ;	../../my_STM8_libraries/stm8_PWM.c: 47: TIM2_CCER2 |= (1 << 0);	
-      008413 72 10 53 0B      [ 1]  158 	bset	0x530b, #0
+      0083EF 72 10 53 0B      [ 1]  158 	bset	0x530b, #0
                                     159 ;	../../my_STM8_libraries/stm8_PWM.c: 50: }
                                     160 ;	../../my_STM8_libraries/stm8_PWM.c: 51: }
-      008417 81               [ 4]  161 	ret
+      0083F3 81               [ 4]  161 	ret
                                     162 ;	../../my_STM8_libraries/stm8_PWM.c: 53: void stopChannel_PWM(uint8_t channel) {		//функция запрещает вывод на соответствующий пин
                                     163 ;	-----------------------------------------
                                     164 ;	 function stopChannel_PWM
                                     165 ;	-----------------------------------------
-      008418                        166 _stopChannel_PWM:
+      0083F4                        166 _stopChannel_PWM:
                                     167 ;	../../my_STM8_libraries/stm8_PWM.c: 54: switch (channel) {
-      008418 A1 01            [ 1]  168 	cp	a, #0x01
-      00841A 27 09            [ 1]  169 	jreq	00101$
-      00841C A1 02            [ 1]  170 	cp	a, #0x02
-      00841E 27 0A            [ 1]  171 	jreq	00102$
-      008420 A1 03            [ 1]  172 	cp	a, #0x03
-      008422 27 0B            [ 1]  173 	jreq	00103$
-      008424 81               [ 4]  174 	ret
+      0083F4 A1 01            [ 1]  168 	cp	a, #0x01
+      0083F6 27 09            [ 1]  169 	jreq	00101$
+      0083F8 A1 02            [ 1]  170 	cp	a, #0x02
+      0083FA 27 0A            [ 1]  171 	jreq	00102$
+      0083FC A1 03            [ 1]  172 	cp	a, #0x03
+      0083FE 27 0B            [ 1]  173 	jreq	00103$
+      008400 81               [ 4]  174 	ret
                                     175 ;	../../my_STM8_libraries/stm8_PWM.c: 55: case 1:		//PD4
-      008425                        176 00101$:
+      008401                        176 00101$:
                                     177 ;	../../my_STM8_libraries/stm8_PWM.c: 56: TIM2_CCER1 &= ~(1 << 0);
-      008425 72 11 53 0A      [ 1]  178 	bres	0x530a, #0
+      008401 72 11 53 0A      [ 1]  178 	bres	0x530a, #0
                                     179 ;	../../my_STM8_libraries/stm8_PWM.c: 57: break;
-      008429 81               [ 4]  180 	ret
+      008405 81               [ 4]  180 	ret
                                     181 ;	../../my_STM8_libraries/stm8_PWM.c: 58: case 2:		//PD3
-      00842A                        182 00102$:
+      008406                        182 00102$:
                                     183 ;	../../my_STM8_libraries/stm8_PWM.c: 59: TIM2_CCER1 &= ~(1 << 4);
-      00842A 72 19 53 0A      [ 1]  184 	bres	0x530a, #4
+      008406 72 19 53 0A      [ 1]  184 	bres	0x530a, #4
                                     185 ;	../../my_STM8_libraries/stm8_PWM.c: 60: break;
-      00842E 81               [ 4]  186 	ret
+      00840A 81               [ 4]  186 	ret
                                     187 ;	../../my_STM8_libraries/stm8_PWM.c: 61: case 3:		//PA3
-      00842F                        188 00103$:
+      00840B                        188 00103$:
                                     189 ;	../../my_STM8_libraries/stm8_PWM.c: 62: TIM2_CCER2 &= ~(1 << 0);
-      00842F 72 11 53 0B      [ 1]  190 	bres	0x530b, #0
+      00840B 72 11 53 0B      [ 1]  190 	bres	0x530b, #0
                                     191 ;	../../my_STM8_libraries/stm8_PWM.c: 65: }
                                     192 ;	../../my_STM8_libraries/stm8_PWM.c: 66: }
-      008433 81               [ 4]  193 	ret
+      00840F 81               [ 4]  193 	ret
                                     194 ;	../../my_STM8_libraries/stm8_PWM.c: 68: void write_PWM(uint8_t channel, uint16_t value) {
                                     195 ;	-----------------------------------------
                                     196 ;	 function write_PWM
                                     197 ;	-----------------------------------------
-      008434                        198 _write_PWM:
+      008410                        198 _write_PWM:
                                     199 ;	../../my_STM8_libraries/stm8_PWM.c: 72: TIM2_CCR1L = (uint8_t)(value & 0xFF);
-      008434 90 93            [ 1]  200 	ldw	y, x
+      008410 90 93            [ 1]  200 	ldw	y, x
                                     201 ;	../../my_STM8_libraries/stm8_PWM.c: 69: switch (channel) {
-      008436 A1 01            [ 1]  202 	cp	a, #0x01
-      008438 27 09            [ 1]  203 	jreq	00101$
-      00843A A1 02            [ 1]  204 	cp	a, #0x02
-      00843C 27 10            [ 1]  205 	jreq	00102$
-      00843E A1 03            [ 1]  206 	cp	a, #0x03
-      008440 27 17            [ 1]  207 	jreq	00103$
-      008442 81               [ 4]  208 	ret
+      008412 A1 01            [ 1]  202 	cp	a, #0x01
+      008414 27 09            [ 1]  203 	jreq	00101$
+      008416 A1 02            [ 1]  204 	cp	a, #0x02
+      008418 27 10            [ 1]  205 	jreq	00102$
+      00841A A1 03            [ 1]  206 	cp	a, #0x03
+      00841C 27 17            [ 1]  207 	jreq	00103$
+      00841E 81               [ 4]  208 	ret
                                     209 ;	../../my_STM8_libraries/stm8_PWM.c: 70: case 1:
-      008443                        210 00101$:
+      00841F                        210 00101$:
                                     211 ;	../../my_STM8_libraries/stm8_PWM.c: 71: TIM2_CCR1H = (uint8_t)(value >> 8);
-      008443 9E               [ 1]  212 	ld	a, xh
-      008444 C7 53 11         [ 1]  213 	ld	0x5311, a
+      00841F 9E               [ 1]  212 	ld	a, xh
+      008420 C7 53 11         [ 1]  213 	ld	0x5311, a
                                     214 ;	../../my_STM8_libraries/stm8_PWM.c: 72: TIM2_CCR1L = (uint8_t)(value & 0xFF);
-      008447 AE 53 12         [ 2]  215 	ldw	x, #0x5312
-      00844A 90 9F            [ 1]  216 	ld	a, yl
-      00844C F7               [ 1]  217 	ld	(x), a
+      008423 AE 53 12         [ 2]  215 	ldw	x, #0x5312
+      008426 90 9F            [ 1]  216 	ld	a, yl
+      008428 F7               [ 1]  217 	ld	(x), a
                                     218 ;	../../my_STM8_libraries/stm8_PWM.c: 73: break;
-      00844D 81               [ 4]  219 	ret
+      008429 81               [ 4]  219 	ret
                                     220 ;	../../my_STM8_libraries/stm8_PWM.c: 74: case 2:
-      00844E                        221 00102$:
+      00842A                        221 00102$:
                                     222 ;	../../my_STM8_libraries/stm8_PWM.c: 75: TIM2_CCR2H = (uint8_t)(value >> 8);
-      00844E 9E               [ 1]  223 	ld	a, xh
-      00844F C7 53 13         [ 1]  224 	ld	0x5313, a
+      00842A 9E               [ 1]  223 	ld	a, xh
+      00842B C7 53 13         [ 1]  224 	ld	0x5313, a
                                     225 ;	../../my_STM8_libraries/stm8_PWM.c: 76: TIM2_CCR2L = (uint8_t)(value & 0xFF);
-      008452 AE 53 14         [ 2]  226 	ldw	x, #0x5314
-      008455 90 9F            [ 1]  227 	ld	a, yl
-      008457 F7               [ 1]  228 	ld	(x), a
+      00842E AE 53 14         [ 2]  226 	ldw	x, #0x5314
+      008431 90 9F            [ 1]  227 	ld	a, yl
+      008433 F7               [ 1]  228 	ld	(x), a
                                     229 ;	../../my_STM8_libraries/stm8_PWM.c: 77: break;
-      008458 81               [ 4]  230 	ret
+      008434 81               [ 4]  230 	ret
                                     231 ;	../../my_STM8_libraries/stm8_PWM.c: 78: case 3:
-      008459                        232 00103$:
+      008435                        232 00103$:
                                     233 ;	../../my_STM8_libraries/stm8_PWM.c: 79: TIM2_CCR3H = (uint8_t)(value >> 8);
-      008459 9E               [ 1]  234 	ld	a, xh
-      00845A C7 53 15         [ 1]  235 	ld	0x5315, a
+      008435 9E               [ 1]  234 	ld	a, xh
+      008436 C7 53 15         [ 1]  235 	ld	0x5315, a
                                     236 ;	../../my_STM8_libraries/stm8_PWM.c: 80: TIM2_CCR3L = (uint8_t)(value & 0xFF);
-      00845D AE 53 16         [ 2]  237 	ldw	x, #0x5316
-      008460 90 9F            [ 1]  238 	ld	a, yl
-      008462 F7               [ 1]  239 	ld	(x), a
+      008439 AE 53 16         [ 2]  237 	ldw	x, #0x5316
+      00843C 90 9F            [ 1]  238 	ld	a, yl
+      00843E F7               [ 1]  239 	ld	(x), a
                                     240 ;	../../my_STM8_libraries/stm8_PWM.c: 83: }
                                     241 ;	../../my_STM8_libraries/stm8_PWM.c: 84: }
-      008463 81               [ 4]  242 	ret
+      00843F 81               [ 4]  242 	ret
                                     243 ;	../../my_STM8_libraries/stm8_PWM.c: 86: void writePercent_PWM(uint8_t channel, uint8_t percent) {
                                     244 ;	-----------------------------------------
                                     245 ;	 function writePercent_PWM
                                     246 ;	-----------------------------------------
-      008464                        247 _writePercent_PWM:
-      008464 52 09            [ 2]  248 	sub	sp, #9
-      008466 6B 09            [ 1]  249 	ld	(0x09, sp), a
+      008440                        247 _writePercent_PWM:
+      008440 52 09            [ 2]  248 	sub	sp, #9
+      008442 6B 09            [ 1]  249 	ld	(0x09, sp), a
                                     250 ;	../../my_STM8_libraries/stm8_PWM.c: 87: if (percent > 100) percent = 100;
-      008468 7B 0C            [ 1]  251 	ld	a, (0x0c, sp)
-      00846A A1 64            [ 1]  252 	cp	a, #0x64
-      00846C 23 04            [ 2]  253 	jrule	00102$
-      00846E A6 64            [ 1]  254 	ld	a, #0x64
-      008470 6B 0C            [ 1]  255 	ld	(0x0c, sp), a
-      008472                        256 00102$:
+      008444 7B 0C            [ 1]  251 	ld	a, (0x0c, sp)
+      008446 A1 64            [ 1]  252 	cp	a, #0x64
+      008448 23 04            [ 2]  253 	jrule	00102$
+      00844A A6 64            [ 1]  254 	ld	a, #0x64
+      00844C 6B 0C            [ 1]  255 	ld	(0x0c, sp), a
+      00844E                        256 00102$:
                                     257 ;	../../my_STM8_libraries/stm8_PWM.c: 88: uint16_t value = (uint16_t)(((uint32_t)percent * memory_period) / 100);
-      008472 7B 0C            [ 1]  258 	ld	a, (0x0c, sp)
-      008474 5F               [ 1]  259 	clrw	x
-      008475 1F 01            [ 2]  260 	ldw	(0x01, sp), x
-      008477 90 CE 00 01      [ 2]  261 	ldw	y, _memory_period+0
-      00847B 0F 06            [ 1]  262 	clr	(0x06, sp)
-      00847D 0F 05            [ 1]  263 	clr	(0x05, sp)
-      00847F 90 89            [ 2]  264 	pushw	y
-      008481 16 07            [ 2]  265 	ldw	y, (0x07, sp)
-      008483 90 89            [ 2]  266 	pushw	y
-      008485 88               [ 1]  267 	push	a
-      008486 9E               [ 1]  268 	ld	a, xh
-      008487 88               [ 1]  269 	push	a
-      008488 1E 07            [ 2]  270 	ldw	x, (0x07, sp)
-      00848A 89               [ 2]  271 	pushw	x
-      00848B CD 86 E9         [ 4]  272 	call	__mullong
-      00848E 5B 08            [ 2]  273 	addw	sp, #8
-      008490 4B 64            [ 1]  274 	push	#0x64
-      008492 4B 00            [ 1]  275 	push	#0x00
-      008494 4B 00            [ 1]  276 	push	#0x00
-      008496 4B 00            [ 1]  277 	push	#0x00
-      008498 89               [ 2]  278 	pushw	x
-      008499 90 89            [ 2]  279 	pushw	y
-      00849B CD 86 90         [ 4]  280 	call	__divulong
-      00849E 5B 08            [ 2]  281 	addw	sp, #8
+      00844E 7B 0C            [ 1]  258 	ld	a, (0x0c, sp)
+      008450 5F               [ 1]  259 	clrw	x
+      008451 1F 01            [ 2]  260 	ldw	(0x01, sp), x
+      008453 90 CE 00 01      [ 2]  261 	ldw	y, _memory_period+0
+      008457 0F 06            [ 1]  262 	clr	(0x06, sp)
+      008459 0F 05            [ 1]  263 	clr	(0x05, sp)
+      00845B 90 89            [ 2]  264 	pushw	y
+      00845D 16 07            [ 2]  265 	ldw	y, (0x07, sp)
+      00845F 90 89            [ 2]  266 	pushw	y
+      008461 88               [ 1]  267 	push	a
+      008462 9E               [ 1]  268 	ld	a, xh
+      008463 88               [ 1]  269 	push	a
+      008464 1E 07            [ 2]  270 	ldw	x, (0x07, sp)
+      008466 89               [ 2]  271 	pushw	x
+      008467 CD 86 C5         [ 4]  272 	call	__mullong
+      00846A 5B 08            [ 2]  273 	addw	sp, #8
+      00846C 4B 64            [ 1]  274 	push	#0x64
+      00846E 4B 00            [ 1]  275 	push	#0x00
+      008470 4B 00            [ 1]  276 	push	#0x00
+      008472 4B 00            [ 1]  277 	push	#0x00
+      008474 89               [ 2]  278 	pushw	x
+      008475 90 89            [ 2]  279 	pushw	y
+      008477 CD 86 6C         [ 4]  280 	call	__divulong
+      00847A 5B 08            [ 2]  281 	addw	sp, #8
                                     282 ;	../../my_STM8_libraries/stm8_PWM.c: 89: write_PWM(channel, value);
-      0084A0 7B 09            [ 1]  283 	ld	a, (0x09, sp)
-      0084A2 16 0A            [ 2]  284 	ldw	y, (10, sp)
-      0084A4 17 0B            [ 2]  285 	ldw	(11, sp), y
-      0084A6 5B 0A            [ 2]  286 	addw	sp, #10
+      00847C 7B 09            [ 1]  283 	ld	a, (0x09, sp)
+      00847E 16 0A            [ 2]  284 	ldw	y, (10, sp)
+      008480 17 0B            [ 2]  285 	ldw	(11, sp), y
+      008482 5B 0A            [ 2]  286 	addw	sp, #10
                                     287 ;	../../my_STM8_libraries/stm8_PWM.c: 90: }
-      0084A8 CC 84 34         [ 2]  288 	jp	_write_PWM
-      0084AB 84               [ 1]  289 	pop	a
-      0084AC FC               [ 2]  290 	jp	(x)
+      008484 CC 84 10         [ 2]  288 	jp	_write_PWM
+      008487 84               [ 1]  289 	pop	a
+      008488 FC               [ 2]  290 	jp	(x)
                                     291 	.area CODE
                                     292 	.area CONST
                                     293 	.area INITIALIZER
-      008054                        294 __xinit__memory_period:
-      008054 00 00                  295 	.dw #0x0000
+      00803A                        294 __xinit__memory_period:
+      00803A 00 00                  295 	.dw #0x0000
                                     296 	.area CABS (ABS)

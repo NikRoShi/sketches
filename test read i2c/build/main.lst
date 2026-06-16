@@ -13,7 +13,7 @@
                                      13 	.globl _sendLine_UART
                                      14 	.globl _sendString_UART
                                      15 	.globl _init_UART
-                                     16 	.globl _ping_I2C
+                                     16 	.globl _readByte_I2C
                                      17 	.globl _init_I2C
                                      18 ;--------------------------------------------------------
                                      19 ; ram data
@@ -96,76 +96,64 @@
       000000 88               [ 1]   96 	push	a
                                      97 ;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
       000001 35 00 50 C6      [ 1]   98 	mov	0x50c6+0, #0x00
-                                     99 ;	main.c: 10: init_UART(9600);
-      000005 4B 80            [ 1]  100 	push	#0x80
-      000007 4B 25            [ 1]  101 	push	#0x25
-      000009 5F               [ 1]  102 	clrw	x
-      00000A 89               [ 2]  103 	pushw	x
-      00000B CDr00r00         [ 4]  104 	call	_init_UART
-                                    105 ;	main.c: 11: init_I2C();
-      00000E CDr00r00         [ 4]  106 	call	_init_I2C
-                                    107 ;	main.c: 13: sendString_UART("--Star scanning--");
+                                     99 ;	main.c: 10: init_I2C();
+      000005 CDr00r00         [ 4]  100 	call	_init_I2C
+                                    101 ;	main.c: 11: init_UART(9600);
+      000008 4B 80            [ 1]  102 	push	#0x80
+      00000A 4B 25            [ 1]  103 	push	#0x25
+      00000C 5F               [ 1]  104 	clrw	x
+      00000D 89               [ 2]  105 	pushw	x
+      00000E CDr00r00         [ 4]  106 	call	_init_UART
+                                    107 ;	main.c: 15: sendString_UART("start");
       000011 AEr00r00         [ 2]  108 	ldw	x, #(___str_0+0)
       000014 CDr00r00         [ 4]  109 	call	_sendString_UART
-                                    110 ;	main.c: 14: sendLine_UART();
+                                    110 ;	main.c: 16: sendLine_UART();
       000017 CDr00r00         [ 4]  111 	call	_sendLine_UART
-                                    112 ;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
-      00001A A6 01            [ 1]  113 	ld	a, #0x01
-      00001C 6B 01            [ 1]  114 	ld	(0x01, sp), a
-      00001E                        115 00108$:
-      00001E 7B 01            [ 1]  116 	ld	a, (0x01, sp)
-      000020 A1 80            [ 1]  117 	cp	a, #0x80
-      000022 24 1A            [ 1]  118 	jrnc	00103$
-                                    119 ;	main.c: 17: if (ping_I2C(i) == 1)
-      000024 7B 01            [ 1]  120 	ld	a, (0x01, sp)
-      000026 CDr00r00         [ 4]  121 	call	_ping_I2C
-      000029 4A               [ 1]  122 	dec	a
-      00002A 26 0E            [ 1]  123 	jrne	00109$
-                                    124 ;	main.c: 19: sendString_UART("devise in 0x");
-      00002C AEr00r12         [ 2]  125 	ldw	x, #(___str_1+0)
-      00002F CDr00r00         [ 4]  126 	call	_sendString_UART
-                                    127 ;	main.c: 20: sendHex_UART(i);
-      000032 7B 01            [ 1]  128 	ld	a, (0x01, sp)
-      000034 CDr00r00         [ 4]  129 	call	_sendHex_UART
-                                    130 ;	main.c: 21: sendLine_UART();
-      000037 CDr00r00         [ 4]  131 	call	_sendLine_UART
-      00003A                        132 00109$:
-                                    133 ;	main.c: 15: for (uint8_t i = 1; i < 128; i++)
-      00003A 0C 01            [ 1]  134 	inc	(0x01, sp)
-      00003C 20 E0            [ 2]  135 	jra	00108$
-      00003E                        136 00103$:
-                                    137 ;	main.c: 24: sendString_UART("--end scanning--");
-      00003E AEr00r1F         [ 2]  138 	ldw	x, #(___str_2+0)
-      000041 CDr00r00         [ 4]  139 	call	_sendString_UART
-                                    140 ;	main.c: 25: sendLine_UART();
-      000044 CDr00r00         [ 4]  141 	call	_sendLine_UART
-                                    142 ;	main.c: 27: while (1)
-      000047                        143 00105$:
-      000047 20 FE            [ 2]  144 	jra	00105$
-                                    145 ;	main.c: 31: }
-      000049 84               [ 1]  146 	pop	a
-      00004A 81               [ 4]  147 	ret
-                                    148 	.area CODE
-                                    149 	.area CONST
-                                    150 	.area CONST
-      000000                        151 ___str_0:
-      000000 2D 2D 53 74 61 72 20   152 	.ascii "--Star scanning--"
-             73 63 61 6E 6E 69 6E
-             67 2D 2D
-      000011 00                     153 	.db 0x00
-                                    154 	.area CODE
-                                    155 	.area CONST
-      000012                        156 ___str_1:
-      000012 64 65 76 69 73 65 20   157 	.ascii "devise in 0x"
-             69 6E 20 30 78
-      00001E 00                     158 	.db 0x00
-                                    159 	.area CODE
-                                    160 	.area CONST
-      00001F                        161 ___str_2:
-      00001F 2D 2D 65 6E 64 20 73   162 	.ascii "--end scanning--"
-             63 61 6E 6E 69 6E 67
-             2D 2D
-      00002F 00                     163 	.db 0x00
-                                    164 	.area CODE
-                                    165 	.area INITIALIZER
-                                    166 	.area CABS (ABS)
+                                    112 ;	main.c: 18: if (readByte_I2C(0x68, &i2cData) == 1)
+      00001A 96               [ 1]  113 	ldw	x, sp
+      00001B 5C               [ 1]  114 	incw	x
+      00001C A6 68            [ 1]  115 	ld	a, #0x68
+      00001E CDr00r00         [ 4]  116 	call	_readByte_I2C
+      000021 4A               [ 1]  117 	dec	a
+      000022 26 10            [ 1]  118 	jrne	00102$
+                                    119 ;	main.c: 20: sendString_UART("data is 0x");
+      000024 AEr00r06         [ 2]  120 	ldw	x, #(___str_1+0)
+      000027 CDr00r00         [ 4]  121 	call	_sendString_UART
+                                    122 ;	main.c: 21: sendHex_UART(i2cData);
+      00002A 7B 01            [ 1]  123 	ld	a, (0x01, sp)
+      00002C CDr00r00         [ 4]  124 	call	_sendHex_UART
+                                    125 ;	main.c: 22: sendLine_UART();
+      00002F CDr00r00         [ 4]  126 	call	_sendLine_UART
+      000032 20 09            [ 2]  127 	jra	00105$
+      000034                        128 00102$:
+                                    129 ;	main.c: 26: sendString_UART("fail");
+      000034 AEr00r11         [ 2]  130 	ldw	x, #(___str_2+0)
+      000037 CDr00r00         [ 4]  131 	call	_sendString_UART
+                                    132 ;	main.c: 27: sendLine_UART();
+      00003A CDr00r00         [ 4]  133 	call	_sendLine_UART
+                                    134 ;	main.c: 30: while (1)
+      00003D                        135 00105$:
+      00003D 20 FE            [ 2]  136 	jra	00105$
+                                    137 ;	main.c: 34: }
+      00003F 84               [ 1]  138 	pop	a
+      000040 81               [ 4]  139 	ret
+                                    140 	.area CODE
+                                    141 	.area CONST
+                                    142 	.area CONST
+      000000                        143 ___str_0:
+      000000 73 74 61 72 74         144 	.ascii "start"
+      000005 00                     145 	.db 0x00
+                                    146 	.area CODE
+                                    147 	.area CONST
+      000006                        148 ___str_1:
+      000006 64 61 74 61 20 69 73   149 	.ascii "data is 0x"
+             20 30 78
+      000010 00                     150 	.db 0x00
+                                    151 	.area CODE
+                                    152 	.area CONST
+      000011                        153 ___str_2:
+      000011 66 61 69 6C            154 	.ascii "fail"
+      000015 00                     155 	.db 0x00
+                                    156 	.area CODE
+                                    157 	.area INITIALIZER
+                                    158 	.area CABS (ABS)

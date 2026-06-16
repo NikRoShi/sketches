@@ -15,7 +15,7 @@ int main(void)
 	for (uint8_t i = 1; i < 128; i++)
 	{
 		if (ping_I2C(i) == 1)
-		{
+		{			
 			sendString_UART("devise in 0x");
 			sendHex_UART(i);
 			sendLine_UART();
@@ -23,6 +23,7 @@ int main(void)
 	}
 	sendString_UART("--end scanning--");
 	sendLine_UART();
+	
     while (1)
     {
 
