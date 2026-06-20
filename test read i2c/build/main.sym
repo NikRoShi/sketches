@@ -16,11 +16,11 @@ Symbol Table
   3 __start__stack                                                 000000 R
     _init_I2C                                                      ****** GX
     _init_UART                                                     ****** GX
+    _line_UART                                                     ****** GX
   A _main                                                          000000 GR
+    _printHex_UART                                                 ****** GX
+    _print_UART                                                    ****** GX
     _readByte_I2C                                                  ****** GX
-    _sendHex_UART                                                  ****** GX
-    _sendLine_UART                                                 ****** GX
-    _sendString_UART                                               ****** GX
     l_DATA                                                         ****** GX
     l_INITIALIZER                                                  ****** GX
     s_DATA                                                         ****** GX
@@ -43,6 +43,6 @@ Area Table
    7 GSFINAL                                    size      3   flags    0
    8 CONST                                      size     16   flags    0
    9 INITIALIZER                                size      0   flags    0
-   A CODE                                       size     64   flags    0
+   A CODE                                       size     3E   flags    0
    B CABS                                       size      0   flags    8
 

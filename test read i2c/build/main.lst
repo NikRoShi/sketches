@@ -9,9 +9,9 @@
                                       9 ; Public variables in this module
                                      10 ;--------------------------------------------------------
                                      11 	.globl _main
-                                     12 	.globl _sendHex_UART
-                                     13 	.globl _sendLine_UART
-                                     14 	.globl _sendString_UART
+                                     12 	.globl _printHex_UART
+                                     13 	.globl _line_UART
+                                     14 	.globl _print_UART
                                      15 	.globl _init_UART
                                      16 	.globl _readByte_I2C
                                      17 	.globl _init_I2C
@@ -99,83 +99,58 @@
                                      99 ;	main.c: 10: init_I2C();
       000005 CDr00r00         [ 4]  100 	call	_init_I2C
                                     101 ;	main.c: 11: init_UART(9600);
-      000008 4B 80            [ 1]  102 	push	#0x80
-      00000A 4B 25            [ 1]  103 	push	#0x25
-      00000C 5F               [ 1]  104 	clrw	x
-      00000D 89               [ 2]  105 	pushw	x
-      00000E CDr00r00         [ 4]  106 	call	_init_UART
-                                    107 ;	main.c: 15: sendString_UART("start");
-      000011 AEr00r00         [ 2]  108 	ldw	x, #(___str_0+0)
-      000014 CDr00r00         [ 4]  109 	call	_sendString_UART
-                                    110 ;	main.c: 16: sendLine_UART();
-      000017 CDr00r00         [ 4]  111 	call	_sendLine_UART
-                                    112 ;	main.c: 18: if (readByte_I2C(0x68, &i2cData) == 1)
-      00001A 96               [ 1]  113 	ldw	x, sp
-      00001B 5C               [ 1]  114 	incw	x
-      00001C A6 68            [ 1]  115 	ld	a, #0x68
-      00001E CDr00r00         [ 4]  116 	call	_readByte_I2C
-      000021 4A               [ 1]  117 	dec	a
-      000022 26 10            [ 1]  118 	jrne	00102$
-                                    119 ;	main.c: 20: sendString_UART("data is 0x");
-      000024 AEr00r06         [ 2]  120 	ldw	x, #(___str_1+0)
-      000027 CDr00r00         [ 4]  121 	call	_sendString_UART
-                                    122 ;	main.c: 21: sendHex_UART(i2cData);
-      00002A 7B 01            [ 1]  123 	ld	a, (0x01, sp)
-      00002C CDr00r00         [ 4]  124 	call	_sendHex_UART
-                                    125 ;	main.c: 22: sendLine_UART();
-      00002F CDr00r00         [ 4]  126 	call	_sendLine_UART
-      000032 20 09            [ 2]  127 	jra	00108$
-      000034                        128 00102$:
-                                    129 ;	main.c: 26: sendString_UART("fail");
-      000034 AEr00r11         [ 2]  130 	ldw	x, #(___str_2+0)
-      000037 CDr00r00         [ 4]  131 	call	_sendString_UART
-                                    132 ;	main.c: 27: sendLine_UART();
-      00003A CDr00r00         [ 4]  133 	call	_sendLine_UART
-                                    134 ;	main.c: 30: while (1)
-      00003D                        135 00108$:
-                                    136 ;	main.c: 32: if (readByte_I2C(0x68, &i2cData) == 1)
-      00003D 96               [ 1]  137 	ldw	x, sp
-      00003E 5C               [ 1]  138 	incw	x
-      00003F A6 68            [ 1]  139 	ld	a, #0x68
-      000041 CDr00r00         [ 4]  140 	call	_readByte_I2C
-      000044 4A               [ 1]  141 	dec	a
-      000045 26 10            [ 1]  142 	jrne	00105$
-                                    143 ;	main.c: 34: sendString_UART("data is 0x");
-      000047 AEr00r06         [ 2]  144 	ldw	x, #(___str_1+0)
-      00004A CDr00r00         [ 4]  145 	call	_sendString_UART
-                                    146 ;	main.c: 35: sendHex_UART(i2cData);
-      00004D 7B 01            [ 1]  147 	ld	a, (0x01, sp)
-      00004F CDr00r00         [ 4]  148 	call	_sendHex_UART
-                                    149 ;	main.c: 36: sendLine_UART();
-      000052 CDr00r00         [ 4]  150 	call	_sendLine_UART
-      000055 20 E6            [ 2]  151 	jra	00108$
-      000057                        152 00105$:
-                                    153 ;	main.c: 40: sendString_UART("fail");
-      000057 AEr00r11         [ 2]  154 	ldw	x, #(___str_2+0)
-      00005A CDr00r00         [ 4]  155 	call	_sendString_UART
-                                    156 ;	main.c: 41: sendLine_UART();
-      00005D CDr00r00         [ 4]  157 	call	_sendLine_UART
-      000060 20 DB            [ 2]  158 	jra	00108$
-                                    159 ;	main.c: 44: }
-      000062 84               [ 1]  160 	pop	a
-      000063 81               [ 4]  161 	ret
-                                    162 	.area CODE
-                                    163 	.area CONST
-                                    164 	.area CONST
-      000000                        165 ___str_0:
-      000000 73 74 61 72 74         166 	.ascii "start"
-      000005 00                     167 	.db 0x00
-                                    168 	.area CODE
-                                    169 	.area CONST
-      000006                        170 ___str_1:
-      000006 64 61 74 61 20 69 73   171 	.ascii "data is 0x"
+      000008 AE 25 80         [ 2]  102 	ldw	x, #0x2580
+      00000B CDr00r00         [ 4]  103 	call	_init_UART
+                                    104 ;	main.c: 15: print_UART("start");
+      00000E AEr00r00         [ 2]  105 	ldw	x, #(___str_0+0)
+      000011 CDr00r00         [ 4]  106 	call	_print_UART
+                                    107 ;	main.c: 16: line_UART();
+      000014 CDr00r00         [ 4]  108 	call	_line_UART
+                                    109 ;	main.c: 18: while (1)
+      000017                        110 00105$:
+                                    111 ;	main.c: 20: if (readByte_I2C(0x68, &i2cData) == 1)
+      000017 96               [ 1]  112 	ldw	x, sp
+      000018 5C               [ 1]  113 	incw	x
+      000019 A6 68            [ 1]  114 	ld	a, #0x68
+      00001B CDr00r00         [ 4]  115 	call	_readByte_I2C
+      00001E 4A               [ 1]  116 	dec	a
+      00001F 26 10            [ 1]  117 	jrne	00102$
+                                    118 ;	main.c: 22: print_UART("data is 0x");
+      000021 AEr00r06         [ 2]  119 	ldw	x, #(___str_1+0)
+      000024 CDr00r00         [ 4]  120 	call	_print_UART
+                                    121 ;	main.c: 23: printHex_UART(i2cData);
+      000027 7B 01            [ 1]  122 	ld	a, (0x01, sp)
+      000029 CDr00r00         [ 4]  123 	call	_printHex_UART
+                                    124 ;	main.c: 24: line_UART();
+      00002C CDr00r00         [ 4]  125 	call	_line_UART
+      00002F 20 E6            [ 2]  126 	jra	00105$
+      000031                        127 00102$:
+                                    128 ;	main.c: 28: print_UART("fail");
+      000031 AEr00r11         [ 2]  129 	ldw	x, #(___str_2+0)
+      000034 CDr00r00         [ 4]  130 	call	_print_UART
+                                    131 ;	main.c: 29: line_UART();
+      000037 CDr00r00         [ 4]  132 	call	_line_UART
+      00003A 20 DB            [ 2]  133 	jra	00105$
+                                    134 ;	main.c: 32: }
+      00003C 84               [ 1]  135 	pop	a
+      00003D 81               [ 4]  136 	ret
+                                    137 	.area CODE
+                                    138 	.area CONST
+                                    139 	.area CONST
+      000000                        140 ___str_0:
+      000000 73 74 61 72 74         141 	.ascii "start"
+      000005 00                     142 	.db 0x00
+                                    143 	.area CODE
+                                    144 	.area CONST
+      000006                        145 ___str_1:
+      000006 64 61 74 61 20 69 73   146 	.ascii "data is 0x"
              20 30 78
-      000010 00                     172 	.db 0x00
-                                    173 	.area CODE
-                                    174 	.area CONST
-      000011                        175 ___str_2:
-      000011 66 61 69 6C            176 	.ascii "fail"
-      000015 00                     177 	.db 0x00
-                                    178 	.area CODE
-                                    179 	.area INITIALIZER
-                                    180 	.area CABS (ABS)
+      000010 00                     147 	.db 0x00
+                                    148 	.area CODE
+                                    149 	.area CONST
+      000011                        150 ___str_2:
+      000011 66 61 69 6C            151 	.ascii "fail"
+      000015 00                     152 	.db 0x00
+                                    153 	.area CODE
+                                    154 	.area INITIALIZER
+                                    155 	.area CABS (ABS)

@@ -9,9 +9,9 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
-	.globl _sendHex_UART
-	.globl _sendLine_UART
-	.globl _sendString_UART
+	.globl _printHex_UART
+	.globl _line_UART
+	.globl _print_UART
 	.globl _init_UART
 	.globl _readByte_I2C
 	.globl _init_I2C
@@ -99,64 +99,39 @@ _main:
 ;	main.c: 10: init_I2C();
 	call	_init_I2C
 ;	main.c: 11: init_UART(9600);
-	push	#0x80
-	push	#0x25
-	clrw	x
-	pushw	x
+	ldw	x, #0x2580
 	call	_init_UART
-;	main.c: 15: sendString_UART("start");
+;	main.c: 15: print_UART("start");
 	ldw	x, #(___str_0+0)
-	call	_sendString_UART
-;	main.c: 16: sendLine_UART();
-	call	_sendLine_UART
-;	main.c: 18: if (readByte_I2C(0x68, &i2cData) == 1)
+	call	_print_UART
+;	main.c: 16: line_UART();
+	call	_line_UART
+;	main.c: 18: while (1)
+00105$:
+;	main.c: 20: if (readByte_I2C(0x68, &i2cData) == 1)
 	ldw	x, sp
 	incw	x
 	ld	a, #0x68
 	call	_readByte_I2C
 	dec	a
 	jrne	00102$
-;	main.c: 20: sendString_UART("data is 0x");
+;	main.c: 22: print_UART("data is 0x");
 	ldw	x, #(___str_1+0)
-	call	_sendString_UART
-;	main.c: 21: sendHex_UART(i2cData);
+	call	_print_UART
+;	main.c: 23: printHex_UART(i2cData);
 	ld	a, (0x01, sp)
-	call	_sendHex_UART
-;	main.c: 22: sendLine_UART();
-	call	_sendLine_UART
-	jra	00108$
+	call	_printHex_UART
+;	main.c: 24: line_UART();
+	call	_line_UART
+	jra	00105$
 00102$:
-;	main.c: 26: sendString_UART("fail");
+;	main.c: 28: print_UART("fail");
 	ldw	x, #(___str_2+0)
-	call	_sendString_UART
-;	main.c: 27: sendLine_UART();
-	call	_sendLine_UART
-;	main.c: 30: while (1)
-00108$:
-;	main.c: 32: if (readByte_I2C(0x68, &i2cData) == 1)
-	ldw	x, sp
-	incw	x
-	ld	a, #0x68
-	call	_readByte_I2C
-	dec	a
-	jrne	00105$
-;	main.c: 34: sendString_UART("data is 0x");
-	ldw	x, #(___str_1+0)
-	call	_sendString_UART
-;	main.c: 35: sendHex_UART(i2cData);
-	ld	a, (0x01, sp)
-	call	_sendHex_UART
-;	main.c: 36: sendLine_UART();
-	call	_sendLine_UART
-	jra	00108$
-00105$:
-;	main.c: 40: sendString_UART("fail");
-	ldw	x, #(___str_2+0)
-	call	_sendString_UART
-;	main.c: 41: sendLine_UART();
-	call	_sendLine_UART
-	jra	00108$
-;	main.c: 44: }
+	call	_print_UART
+;	main.c: 29: line_UART();
+	call	_line_UART
+	jra	00105$
+;	main.c: 32: }
 	pop	a
 	ret
 	.area CODE

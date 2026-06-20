@@ -8,14 +8,15 @@ Symbol Table
     .__.CPU.                                                    =  000000 L
     .__.H$L.                                                    =  000001 L
     __divulong                                                     ****** GX
-  9 _available_UART                                                0000DF GR
+  9 _getData_UART                                                  000113 GR
   9 _init_UART                                                     000000 GR
-  9 _read_UART                                                     0000E9 GR
-  9 _sendByte_UART                                                 000053 GR
-  9 _sendHex_UART                                                  0000ED GR
-  9 _sendInt_UART                                                  00007A GR
-  9 _sendLine_UART                                                 000070 GR
-  9 _sendString_UART                                               000063 GR
+  9 _isDataReceived_UART                                           000109 GR
+  9 _line_UART                                                     0000BC GR
+  9 _nibbleToHex                                                   0000D3 R
+  9 _printHex_UART                                                 0000E0 GR
+  9 _printInt_UART                                                 00005D GR
+  9 _print_UART                                                    00004A GR
+  9 _write_UART                                                    000031 GR
 
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8), page 2.
@@ -32,6 +33,6 @@ Area Table
    6 GSFINAL                                    size      0   flags    0
    7 CONST                                      size      0   flags    0
    8 INITIALIZER                                size      0   flags    0
-   9 CODE                                       size    133   flags    0
+   9 CODE                                       size    117   flags    0
    A CABS                                       size      0   flags    8
 

@@ -12,33 +12,21 @@ int main(void)
 	
 	uint8_t i2cData;
 	
-	sendString_UART("start");
-	sendLine_UART();
-	
-	if (readByte_I2C(0x68, &i2cData) == 1)
-	{
-		sendString_UART("data is 0x");
-		sendHex_UART(i2cData);
-		sendLine_UART();
-	}
-	else 
-	{
-		sendString_UART("fail");
-		sendLine_UART();
-	}
+	print_UART("start");
+	line_UART();
 
     while (1)
     {
 		if (readByte_I2C(0x68, &i2cData) == 1)
 		{
-			sendString_UART("data is 0x");
-			sendHex_UART(i2cData);
-			sendLine_UART();
+			print_UART("data is 0x");
+			printHex_UART(i2cData);
+			line_UART();
 		}
 		else 
 		{
-			sendString_UART("fail");
-			sendLine_UART();
+			print_UART("fail");
+			line_UART();
 		}
     }
 }
