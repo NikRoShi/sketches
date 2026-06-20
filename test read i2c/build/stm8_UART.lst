@@ -262,11 +262,11 @@
                                     262 ;	-----------------------------------------
       0000ED                        263 _sendHex_UART:
       0000ED 52 03            [ 2]  264 	sub	sp, #3
-                                    265 ;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = num >> 4;
+                                    265 ;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = (num >> 4) & 0x0F;
       0000EF 97               [ 1]  266 	ld	xl, a
       0000F0 4E               [ 1]  267 	swap	a
-      0000F1 A4 0F            [ 1]  268 	and	a, #0x0f
-                                    269 ;	../../my_STM8_libraries/stm8_UART.c: 74: uint8_t low = num &= ~0xF0;
+      0000F1 A4 0F            [ 1]  268 	and	a, #15
+                                    269 ;	../../my_STM8_libraries/stm8_UART.c: 74: uint8_t low = num & 0x0F;
       0000F3 88               [ 1]  270 	push	a
       0000F4 9F               [ 1]  271 	ld	a, xl
       0000F5 A4 0F            [ 1]  272 	and	a, #0x0f

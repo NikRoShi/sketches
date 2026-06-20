@@ -124,7 +124,7 @@ _main:
 	call	_sendHex_UART
 ;	main.c: 22: sendLine_UART();
 	call	_sendLine_UART
-	jra	00105$
+	jra	00108$
 00102$:
 ;	main.c: 26: sendString_UART("fail");
 	ldw	x, #(___str_2+0)
@@ -132,9 +132,31 @@ _main:
 ;	main.c: 27: sendLine_UART();
 	call	_sendLine_UART
 ;	main.c: 30: while (1)
+00108$:
+;	main.c: 32: if (readByte_I2C(0x68, &i2cData) == 1)
+	ldw	x, sp
+	incw	x
+	ld	a, #0x68
+	call	_readByte_I2C
+	dec	a
+	jrne	00105$
+;	main.c: 34: sendString_UART("data is 0x");
+	ldw	x, #(___str_1+0)
+	call	_sendString_UART
+;	main.c: 35: sendHex_UART(i2cData);
+	ld	a, (0x01, sp)
+	call	_sendHex_UART
+;	main.c: 36: sendLine_UART();
+	call	_sendLine_UART
+	jra	00108$
 00105$:
-	jra	00105$
-;	main.c: 34: }
+;	main.c: 40: sendString_UART("fail");
+	ldw	x, #(___str_2+0)
+	call	_sendString_UART
+;	main.c: 41: sendLine_UART();
+	call	_sendLine_UART
+	jra	00108$
+;	main.c: 44: }
 	pop	a
 	ret
 	.area CODE

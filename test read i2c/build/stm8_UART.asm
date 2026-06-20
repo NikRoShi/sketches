@@ -262,11 +262,11 @@ _read_UART:
 ;	-----------------------------------------
 _sendHex_UART:
 	sub	sp, #3
-;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = num >> 4;
+;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t high = (num >> 4) & 0x0F;
 	ld	xl, a
 	swap	a
-	and	a, #0x0f
-;	../../my_STM8_libraries/stm8_UART.c: 74: uint8_t low = num &= ~0xF0;
+	and	a, #15
+;	../../my_STM8_libraries/stm8_UART.c: 74: uint8_t low = num & 0x0F;
 	push	a
 	ld	a, xl
 	and	a, #0x0f

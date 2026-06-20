@@ -124,7 +124,7 @@
       00002C CDr00r00         [ 4]  124 	call	_sendHex_UART
                                     125 ;	main.c: 22: sendLine_UART();
       00002F CDr00r00         [ 4]  126 	call	_sendLine_UART
-      000032 20 09            [ 2]  127 	jra	00105$
+      000032 20 09            [ 2]  127 	jra	00108$
       000034                        128 00102$:
                                     129 ;	main.c: 26: sendString_UART("fail");
       000034 AEr00r11         [ 2]  130 	ldw	x, #(___str_2+0)
@@ -132,28 +132,50 @@
                                     132 ;	main.c: 27: sendLine_UART();
       00003A CDr00r00         [ 4]  133 	call	_sendLine_UART
                                     134 ;	main.c: 30: while (1)
-      00003D                        135 00105$:
-      00003D 20 FE            [ 2]  136 	jra	00105$
-                                    137 ;	main.c: 34: }
-      00003F 84               [ 1]  138 	pop	a
-      000040 81               [ 4]  139 	ret
-                                    140 	.area CODE
-                                    141 	.area CONST
-                                    142 	.area CONST
-      000000                        143 ___str_0:
-      000000 73 74 61 72 74         144 	.ascii "start"
-      000005 00                     145 	.db 0x00
-                                    146 	.area CODE
-                                    147 	.area CONST
-      000006                        148 ___str_1:
-      000006 64 61 74 61 20 69 73   149 	.ascii "data is 0x"
+      00003D                        135 00108$:
+                                    136 ;	main.c: 32: if (readByte_I2C(0x68, &i2cData) == 1)
+      00003D 96               [ 1]  137 	ldw	x, sp
+      00003E 5C               [ 1]  138 	incw	x
+      00003F A6 68            [ 1]  139 	ld	a, #0x68
+      000041 CDr00r00         [ 4]  140 	call	_readByte_I2C
+      000044 4A               [ 1]  141 	dec	a
+      000045 26 10            [ 1]  142 	jrne	00105$
+                                    143 ;	main.c: 34: sendString_UART("data is 0x");
+      000047 AEr00r06         [ 2]  144 	ldw	x, #(___str_1+0)
+      00004A CDr00r00         [ 4]  145 	call	_sendString_UART
+                                    146 ;	main.c: 35: sendHex_UART(i2cData);
+      00004D 7B 01            [ 1]  147 	ld	a, (0x01, sp)
+      00004F CDr00r00         [ 4]  148 	call	_sendHex_UART
+                                    149 ;	main.c: 36: sendLine_UART();
+      000052 CDr00r00         [ 4]  150 	call	_sendLine_UART
+      000055 20 E6            [ 2]  151 	jra	00108$
+      000057                        152 00105$:
+                                    153 ;	main.c: 40: sendString_UART("fail");
+      000057 AEr00r11         [ 2]  154 	ldw	x, #(___str_2+0)
+      00005A CDr00r00         [ 4]  155 	call	_sendString_UART
+                                    156 ;	main.c: 41: sendLine_UART();
+      00005D CDr00r00         [ 4]  157 	call	_sendLine_UART
+      000060 20 DB            [ 2]  158 	jra	00108$
+                                    159 ;	main.c: 44: }
+      000062 84               [ 1]  160 	pop	a
+      000063 81               [ 4]  161 	ret
+                                    162 	.area CODE
+                                    163 	.area CONST
+                                    164 	.area CONST
+      000000                        165 ___str_0:
+      000000 73 74 61 72 74         166 	.ascii "start"
+      000005 00                     167 	.db 0x00
+                                    168 	.area CODE
+                                    169 	.area CONST
+      000006                        170 ___str_1:
+      000006 64 61 74 61 20 69 73   171 	.ascii "data is 0x"
              20 30 78
-      000010 00                     150 	.db 0x00
-                                    151 	.area CODE
-                                    152 	.area CONST
-      000011                        153 ___str_2:
-      000011 66 61 69 6C            154 	.ascii "fail"
-      000015 00                     155 	.db 0x00
-                                    156 	.area CODE
-                                    157 	.area INITIALIZER
-                                    158 	.area CABS (ABS)
+      000010 00                     172 	.db 0x00
+                                    173 	.area CODE
+                                    174 	.area CONST
+      000011                        175 ___str_2:
+      000011 66 61 69 6C            176 	.ascii "fail"
+      000015 00                     177 	.db 0x00
+                                    178 	.area CODE
+                                    179 	.area INITIALIZER
+                                    180 	.area CABS (ABS)

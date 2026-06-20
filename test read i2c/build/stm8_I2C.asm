@@ -282,8 +282,9 @@ _writeReg_I2C:
 ;	 function readByte_I2C
 ;	-----------------------------------------
 _readByte_I2C:
-	push	a
-	ld	(0x01, sp), a
+	sub	sp, #3
+	ld	(0x03, sp), a
+	ldw	(0x01, sp), x
 ;	../../my_STM8_libraries/stm8_I2C.c: 115: if (start_I2C() == 0) return 0;
 	call	_start_I2C
 	tnz	a
@@ -291,42 +292,44 @@ _readByte_I2C:
 	clr	a
 	jra	00110$
 00102$:
-;	../../my_STM8_libraries/stm8_I2C.c: 116: if (writeAddr_I2C(address, READ) == 0) return 0;
+;	../../my_STM8_libraries/stm8_I2C.c: 117: I2C_CR2 &= ~I2C_CR2_ACK;
+	bres	0x5211, #2
+;	../../my_STM8_libraries/stm8_I2C.c: 119: if (writeAddr_I2C(address, READ) == 0) return 0;
 	push	#0x01
-	ld	a, (0x02, sp)
+	ld	a, (0x04, sp)
 	call	_writeAddr_I2C
 	tnz	a
-	jrne	00104$
+	jrne	00115$
 	clr	a
 	jra	00110$
-00104$:
-;	../../my_STM8_libraries/stm8_I2C.c: 118: I2C_CR2 &= ~I2C_CR2_ACK;
-	bres	0x5211, #2
-;	../../my_STM8_libraries/stm8_I2C.c: 120: while (!(I2C_SR1 & I2C_SR1_RXNE))
+;	../../my_STM8_libraries/stm8_I2C.c: 121: while (!(I2C_SR1 & I2C_SR1_RXNE))
+00115$:
 	ldw	x, #0xc350
 00107$:
 	btjt	0x5217, #6, 00109$
-;	../../my_STM8_libraries/stm8_I2C.c: 122: if (--timeout == 0) 
+;	../../my_STM8_libraries/stm8_I2C.c: 123: if (--timeout == 0) 
 	decw	x
 	tnzw	x
 	jrne	00107$
-;	../../my_STM8_libraries/stm8_I2C.c: 124: stop_I2C();
+;	../../my_STM8_libraries/stm8_I2C.c: 125: stop_I2C();
 	call	_stop_I2C
-;	../../my_STM8_libraries/stm8_I2C.c: 125: return 0;
+;	../../my_STM8_libraries/stm8_I2C.c: 126: return 0;
 	clr	a
 	jra	00110$
 00109$:
-;	../../my_STM8_libraries/stm8_I2C.c: 128: data = I2C_DR;
+;	../../my_STM8_libraries/stm8_I2C.c: 129: *data = I2C_DR;
 	ld	a, 0x5216
-;	../../my_STM8_libraries/stm8_I2C.c: 129: stop_I2C();
+	ldw	x, (0x01, sp)
+	ld	(x), a
+;	../../my_STM8_libraries/stm8_I2C.c: 130: stop_I2C();
 	call	_stop_I2C
-;	../../my_STM8_libraries/stm8_I2C.c: 130: I2C_CR2 |= I2C_CR2_ACK;
+;	../../my_STM8_libraries/stm8_I2C.c: 131: I2C_CR2 |= I2C_CR2_ACK;
 	bset	0x5211, #2
-;	../../my_STM8_libraries/stm8_I2C.c: 131: return 1;
+;	../../my_STM8_libraries/stm8_I2C.c: 132: return 1;
 	ld	a, #0x01
 00110$:
-;	../../my_STM8_libraries/stm8_I2C.c: 132: }
-	addw	sp, #1
+;	../../my_STM8_libraries/stm8_I2C.c: 133: }
+	addw	sp, #3
 	ret
 	.area CODE
 	.area CONST

@@ -9,6 +9,7 @@ Area                                    Addr        Size        Decimal Bytes (A
       -----  --------------------------------   ------------------------
      00000000  .__.ABS.                           
      00000000  l_CABS                          
+     00000000  l_CONST                         
      00000000  l_DABS                          
      00000000  l_DATA                          
      00000000  l__CODE                         
@@ -21,17 +22,16 @@ Area                                    Addr        Size        Decimal Bytes (A
      00000003  l_GSFINAL                       
      00000006  l_INITIALIZED                   
      00000006  l_INITIALIZER                   
-     00000007  l_HOME                          
      00000007  s_SSEG                          
      0000001A  l_GSINIT                        
-     0000001E  l_CONST                         
-     0000065B  l_CODE                          
+     0000006B  l_HOME                          
+     00000624  l_CODE                          
      00008000  s_HOME                          
-     00008007  s_GSINIT                        
-     00008021  s_GSFINAL                       
-     00008024  s_CONST                         
-     00008042  s_INITIALIZER                   
-     00008048  s_CODE                          
+     0000806B  s_GSINIT                        
+     00008085  s_GSFINAL                       
+     00008088  s_CONST                         
+     00008088  s_INITIALIZER                   
+     0000808E  s_CODE                          
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
 Hexadecimal  [32-Bits]
@@ -56,7 +56,7 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-HOME                                00008000    00000007 =           7. bytes (REL,CON)
+HOME                                00008000    0000006B =         107. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -65,7 +65,7 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-GSINIT                              00008007    0000001A =          26. bytes (REL,CON)
+GSINIT                              0000806B    0000001A =          26. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -74,7 +74,7 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-GSFINAL                             00008021    00000003 =           3. bytes (REL,CON)
+GSFINAL                             00008085    00000003 =           3. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -83,7 +83,7 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-CONST                               00008024    0000001E =          30. bytes (REL,CON)
+INITIALIZER                         00008088    00000006 =           6. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -92,56 +92,44 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-INITIALIZER                         00008042    00000006 =           6. bytes (REL,CON)
+CODE                                0000808E    00000624 =        1572. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
+     0000808E  _TIM4_UPD_OVF_IRQHandler           main
+     00008098  _main                              main
+     000080D7  _init_ADC                          stm8_ADC
+     00008143  _start_ADC                         stm8_ADC
+     00008148  _isReady_ADC                       stm8_ADC
+     00008152  _getValue_ADC                      stm8_ADC
+     0000816C  _pinMode                           stm8_GPIO
+     000081FA  _writePin                          stm8_GPIO
+     00008223  _togglePin                         stm8_GPIO
+     00008242  _readPin                           stm8_GPIO
+     00008271  _init_I2C                          stm8_I2C
+     0000828A  _stop_I2C                          stm8_I2C
+     0000828F  _start_I2C                         stm8_I2C
+     000082A7  _writeAddr_I2C                     stm8_I2C
+     000082ED  _writeByte_I2C                     stm8_I2C
+     00008312  _ping_I2C                          stm8_I2C
+     00008333  _writeReg_I2C                      stm8_I2C
+     0000836C  _readByte_I2C                      stm8_I2C
+     000083B0  _init_PWM                          stm8_PWM
+     0000841C  _startChannel_PWM                  stm8_PWM
+     00008450  _stopChannel_PWM                   stm8_PWM
+     0000846C  _write_PWM                         stm8_PWM
+     0000849C  _writePercent_PWM                  stm8_PWM
+     000084E5  _tick_TIME                         stm8_TIME
+     000084F9  _init_TIME                         stm8_TIME
+     00008519  _get_ms                            stm8_TIME
+     00008523  _get_mcs                           stm8_TIME
+     00008561  _delay                             stm8_TIME
+     00008595  _init_UART                         stm8_UART
+     000085CA  _write_UART                        stm8_UART
+     000085DD  __divulong                         _divulong
+     00008636  __mullong                          
+
 ASxxxx Linker V03.00 + NoICE + sdld,  page 9.
-Hexadecimal  [32-Bits]
-
-Area                                    Addr        Size        Decimal Bytes (Attributes)
---------------------------------        ----        ----        ------- ----- ------------
-CODE                                00008048    0000065B =        1627. bytes (REL,CON)
-
-      Value  Global                              Global Defined In Module
-      -----  --------------------------------   ------------------------
-     00008048  _main                              main
-     00008061  _init_ADC                          stm8_ADC
-     000080CD  _start_ADC                         stm8_ADC
-     000080D2  _isReady_ADC                       stm8_ADC
-     000080DC  _getValue_ADC                      stm8_ADC
-     000080F6  _pinMode                           stm8_GPIO
-     00008184  _writePin                          stm8_GPIO
-     000081AD  _togglePin                         stm8_GPIO
-     000081CC  _readPin                           stm8_GPIO
-     000081FB  _init_I2C                          stm8_I2C
-     00008214  _stop_I2C                          stm8_I2C
-     00008219  _start_I2C                         stm8_I2C
-     00008231  _writeAddr_I2C                     stm8_I2C
-     00008262  _writeByte_I2C                     stm8_I2C
-     00008287  _ping_I2C                          stm8_I2C
-     000082A6  _writeReg                          stm8_I2C
-     000082DD  _init_PWM                          stm8_PWM
-     00008349  _startChannel_PWM                  stm8_PWM
-     0000837D  _stopChannel_PWM                   stm8_PWM
-     00008399  _write_PWM                         stm8_PWM
-     000083C9  _writePercent_PWM                  stm8_PWM
-     00008412  _tick_TIME                         stm8_TIME
-     00008426  _init_TIME                         stm8_TIME
-     00008446  _get_ms                            stm8_TIME
-     00008450  _get_mcs                           stm8_TIME
-     0000848E  _delay                             stm8_TIME
-     000084C2  _init_UART                         stm8_UART
-     00008515  _sendByte_UART                     stm8_UART
-     00008525  _sendString_UART                   stm8_UART
-     00008532  _sendLine_UART                     stm8_UART
-     0000853C  _sendInt_UART                      stm8_UART
-     000085A1  _available_UART                    stm8_UART
-     000085AB  _read_UART                         stm8_UART
-     000085AF  _sendHex_UART                      stm8_UART
-     000085CE  __divulong                         _divulong
-     00008627  __mullong                          
-ASxxxx Linker V03.00 + NoICE + sdld,  page 10.
 
 Files Linked                              [ module(s) ]
 
@@ -159,7 +147,7 @@ Libraries Linked                          [ object file ]
 /usr/bin/../share/sdcc/lib/stm8/stm8.lib  [ _divulong.rel ]
 /usr/bin/../share/sdcc/lib/stm8/stm8.lib  [ _mullong.rel ]
 
-ASxxxx Linker V03.00 + NoICE + sdld,  page 11.
+ASxxxx Linker V03.00 + NoICE + sdld,  page 10.
 
 User Base Address Definitions
 
