@@ -10,102 +10,296 @@
                                      10 ;--------------------------------------------------------
                                      11 	.globl _init_UART
                                      12 	.globl _write_UART
-                                     13 ;--------------------------------------------------------
-                                     14 ; ram data
-                                     15 ;--------------------------------------------------------
-                                     16 	.area DATA
+                                     13 	.globl _print_UART
+                                     14 	.globl _printInt_UART
+                                     15 	.globl _line_UART
+                                     16 	.globl _printHex_UART
                                      17 ;--------------------------------------------------------
                                      18 ; ram data
                                      19 ;--------------------------------------------------------
-                                     20 	.area INITIALIZED
+                                     20 	.area DATA
                                      21 ;--------------------------------------------------------
-                                     22 ; absolute external ram data
+                                     22 ; ram data
                                      23 ;--------------------------------------------------------
-                                     24 	.area DABS (ABS)
-                                     25 
-                                     26 ; default segment ordering for linker
-                                     27 	.area HOME
-                                     28 	.area GSINIT
-                                     29 	.area GSFINAL
-                                     30 	.area CONST
-                                     31 	.area INITIALIZER
-                                     32 	.area CODE
-                                     33 
-                                     34 ;--------------------------------------------------------
-                                     35 ; global & static initialisations
-                                     36 ;--------------------------------------------------------
-                                     37 	.area HOME
-                                     38 	.area GSINIT
-                                     39 	.area GSFINAL
-                                     40 	.area GSINIT
-                                     41 ;--------------------------------------------------------
-                                     42 ; Home
-                                     43 ;--------------------------------------------------------
-                                     44 	.area HOME
-                                     45 	.area HOME
-                                     46 ;--------------------------------------------------------
-                                     47 ; code
-                                     48 ;--------------------------------------------------------
-                                     49 	.area CODE
-                                     50 ;	../../my_STM8_libraries/stm8_UART.c: 3: void init_UART(uint16_t baudrate)
-                                     51 ;	-----------------------------------------
-                                     52 ;	 function init_UART
-                                     53 ;	-----------------------------------------
-      000000                         54 _init_UART:
-      000000 88               [ 1]   55 	push	a
-                                     56 ;	../../my_STM8_libraries/stm8_UART.c: 7: PD_DDR |= (1 << TX_PIN);
-      000001 72 1A 50 11      [ 1]   57 	bset	0x5011, #5
-                                     58 ;	../../my_STM8_libraries/stm8_UART.c: 8: PD_CR1 |= (1 << TX_PIN);
-      000005 72 1A 50 12      [ 1]   59 	bset	0x5012, #5
-                                     60 ;	../../my_STM8_libraries/stm8_UART.c: 10: uartdiv = F_CPU / baudrate;
-      000009 90 5F            [ 1]   61 	clrw	y
-      00000B 89               [ 2]   62 	pushw	x
-      00000C 90 89            [ 2]   63 	pushw	y
-      00000E 4B 00            [ 1]   64 	push	#0x00
-      000010 4B 24            [ 1]   65 	push	#0x24
-      000012 4B F4            [ 1]   66 	push	#0xf4
-      000014 4B 00            [ 1]   67 	push	#0x00
-      000016 CDr00r00         [ 4]   68 	call	__divulong
-      000019 5B 08            [ 2]   69 	addw	sp, #8
-                                     70 ;	../../my_STM8_libraries/stm8_UART.c: 12: UART1_BRR2 = (uartdiv & 0x000F) | ((uartdiv >> 8) & 0x00F0);
-      00001B 9F               [ 1]   71 	ld	a, xl
-      00001C A4 0F            [ 1]   72 	and	a, #0x0f
-      00001E 6B 01            [ 1]   73 	ld	(0x01, sp), a
-      000020 9E               [ 1]   74 	ld	a, xh
-      000021 A4 F0            [ 1]   75 	and	a, #0xf0
-      000023 1A 01            [ 1]   76 	or	a, (0x01, sp)
-      000025 C7 52 33         [ 1]   77 	ld	0x5233, a
-                                     78 ;	../../my_STM8_libraries/stm8_UART.c: 13: UART1_BRR1 = (uartdiv >> 4) & 0x00FF;
-      000028 A6 10            [ 1]   79 	ld	a, #0x10
-      00002A 62               [ 2]   80 	div	x, a
-      00002B 9F               [ 1]   81 	ld	a, xl
-      00002C C7 52 32         [ 1]   82 	ld	0x5232, a
-                                     83 ;	../../my_STM8_libraries/stm8_UART.c: 15: UART1_CR2 |= UART1_CR2_TEN;
-      00002F 72 16 52 35      [ 1]   84 	bset	0x5235, #3
-                                     85 ;	../../my_STM8_libraries/stm8_UART.c: 16: }
-      000033 84               [ 1]   86 	pop	a
-      000034 81               [ 4]   87 	ret
-                                     88 ;	../../my_STM8_libraries/stm8_UART.c: 17: uint8_t write_UART(uint8_t data)
-                                     89 ;	-----------------------------------------
-                                     90 ;	 function write_UART
-                                     91 ;	-----------------------------------------
-      000035                         92 _write_UART:
-      000035 88               [ 1]   93 	push	a
-      000036 6B 01            [ 1]   94 	ld	(0x01, sp), a
-                                     95 ;	../../my_STM8_libraries/stm8_UART.c: 21: while (!(UART1_SR & UART1_SR_TXE))
-      000038                         96 00103$:
-      000038 C6 52 30         [ 1]   97 	ld	a, 0x5230
-      00003B 2A FB            [ 1]   98 	jrpl	00103$
-                                     99 ;	../../my_STM8_libraries/stm8_UART.c: 26: UART1_DR = data;
-      00003D AE 52 31         [ 2]  100 	ldw	x, #0x5231
-      000040 7B 01            [ 1]  101 	ld	a, (0x01, sp)
-      000042 F7               [ 1]  102 	ld	(x), a
-                                    103 ;	../../my_STM8_libraries/stm8_UART.c: 27: return 1;
-      000043 A6 01            [ 1]  104 	ld	a, #0x01
-                                    105 ;	../../my_STM8_libraries/stm8_UART.c: 28: }
-      000045 5B 01            [ 2]  106 	addw	sp, #1
-      000047 81               [ 4]  107 	ret
-                                    108 	.area CODE
-                                    109 	.area CONST
-                                    110 	.area INITIALIZER
-                                    111 	.area CABS (ABS)
+                                     24 	.area INITIALIZED
+                                     25 ;--------------------------------------------------------
+                                     26 ; absolute external ram data
+                                     27 ;--------------------------------------------------------
+                                     28 	.area DABS (ABS)
+                                     29 
+                                     30 ; default segment ordering for linker
+                                     31 	.area HOME
+                                     32 	.area GSINIT
+                                     33 	.area GSFINAL
+                                     34 	.area CONST
+                                     35 	.area INITIALIZER
+                                     36 	.area CODE
+                                     37 
+                                     38 ;--------------------------------------------------------
+                                     39 ; global & static initialisations
+                                     40 ;--------------------------------------------------------
+                                     41 	.area HOME
+                                     42 	.area GSINIT
+                                     43 	.area GSFINAL
+                                     44 	.area GSINIT
+                                     45 ;--------------------------------------------------------
+                                     46 ; Home
+                                     47 ;--------------------------------------------------------
+                                     48 	.area HOME
+                                     49 	.area HOME
+                                     50 ;--------------------------------------------------------
+                                     51 ; code
+                                     52 ;--------------------------------------------------------
+                                     53 	.area CODE
+                                     54 ;	../../my_STM8_libraries/stm8_UART.c: 3: void init_UART(uint16_t baudrate)
+                                     55 ;	-----------------------------------------
+                                     56 ;	 function init_UART
+                                     57 ;	-----------------------------------------
+      000000                         58 _init_UART:
+      000000 88               [ 1]   59 	push	a
+                                     60 ;	../../my_STM8_libraries/stm8_UART.c: 7: PD_DDR |= (1 << TX_PIN);
+      000001 72 1A 50 11      [ 1]   61 	bset	0x5011, #5
+                                     62 ;	../../my_STM8_libraries/stm8_UART.c: 8: PD_CR1 |= (1 << TX_PIN);
+      000005 72 1A 50 12      [ 1]   63 	bset	0x5012, #5
+                                     64 ;	../../my_STM8_libraries/stm8_UART.c: 10: uartdiv = F_CPU / baudrate;
+      000009 90 5F            [ 1]   65 	clrw	y
+      00000B 89               [ 2]   66 	pushw	x
+      00000C 90 89            [ 2]   67 	pushw	y
+      00000E 4B 00            [ 1]   68 	push	#0x00
+      000010 4B 24            [ 1]   69 	push	#0x24
+      000012 4B F4            [ 1]   70 	push	#0xf4
+      000014 4B 00            [ 1]   71 	push	#0x00
+      000016 CDr00r00         [ 4]   72 	call	__divulong
+      000019 5B 08            [ 2]   73 	addw	sp, #8
+                                     74 ;	../../my_STM8_libraries/stm8_UART.c: 12: UART1_BRR2 = (uartdiv & 0x000F) | ((uartdiv >> 8) & 0x00F0);
+      00001B 9F               [ 1]   75 	ld	a, xl
+      00001C A4 0F            [ 1]   76 	and	a, #0x0f
+      00001E 6B 01            [ 1]   77 	ld	(0x01, sp), a
+      000020 9E               [ 1]   78 	ld	a, xh
+      000021 A4 F0            [ 1]   79 	and	a, #0xf0
+      000023 1A 01            [ 1]   80 	or	a, (0x01, sp)
+      000025 C7 52 33         [ 1]   81 	ld	0x5233, a
+                                     82 ;	../../my_STM8_libraries/stm8_UART.c: 13: UART1_BRR1 = (uartdiv >> 4) & 0x00FF;
+      000028 A6 10            [ 1]   83 	ld	a, #0x10
+      00002A 62               [ 2]   84 	div	x, a
+      00002B 9F               [ 1]   85 	ld	a, xl
+      00002C C7 52 32         [ 1]   86 	ld	0x5232, a
+                                     87 ;	../../my_STM8_libraries/stm8_UART.c: 15: UART1_CR2 |= UART1_CR2_TEN;
+      00002F 72 16 52 35      [ 1]   88 	bset	0x5235, #3
+                                     89 ;	../../my_STM8_libraries/stm8_UART.c: 16: }
+      000033 84               [ 1]   90 	pop	a
+      000034 81               [ 4]   91 	ret
+                                     92 ;	../../my_STM8_libraries/stm8_UART.c: 17: uint8_t write_UART(uint8_t data)
+                                     93 ;	-----------------------------------------
+                                     94 ;	 function write_UART
+                                     95 ;	-----------------------------------------
+      000035                         96 _write_UART:
+      000035 90 97            [ 1]   97 	ld	yl, a
+                                     98 ;	../../my_STM8_libraries/stm8_UART.c: 21: while (!(UART1_SR & UART1_SR_TXE))
+      000037 AE C3 50         [ 2]   99 	ldw	x, #0xc350
+      00003A                        100 00103$:
+      00003A C6 52 30         [ 1]  101 	ld	a, 0x5230
+      00003D 2B 06            [ 1]  102 	jrmi	00105$
+                                    103 ;	../../my_STM8_libraries/stm8_UART.c: 23: if (--timeout == 0) return 0;
+      00003F 5A               [ 2]  104 	decw	x
+      000040 5D               [ 2]  105 	tnzw	x
+      000041 26 F7            [ 1]  106 	jrne	00103$
+      000043 4F               [ 1]  107 	clr	a
+      000044 81               [ 4]  108 	ret
+      000045                        109 00105$:
+                                    110 ;	../../my_STM8_libraries/stm8_UART.c: 26: UART1_DR = data;
+      000045 AE 52 31         [ 2]  111 	ldw	x, #0x5231
+      000048 90 9F            [ 1]  112 	ld	a, yl
+      00004A F7               [ 1]  113 	ld	(x), a
+                                    114 ;	../../my_STM8_libraries/stm8_UART.c: 27: return 1;
+      00004B A6 01            [ 1]  115 	ld	a, #0x01
+                                    116 ;	../../my_STM8_libraries/stm8_UART.c: 28: }
+      00004D 81               [ 4]  117 	ret
+                                    118 ;	../../my_STM8_libraries/stm8_UART.c: 29: uint8_t print_UART(char *str)
+                                    119 ;	-----------------------------------------
+                                    120 ;	 function print_UART
+                                    121 ;	-----------------------------------------
+      00004E                        122 _print_UART:
+                                    123 ;	../../my_STM8_libraries/stm8_UART.c: 31: while (*str != 0)
+      00004E                        124 00104$:
+      00004E F6               [ 1]  125 	ld	a, (x)
+      00004F 27 0D            [ 1]  126 	jreq	00106$
+                                    127 ;	../../my_STM8_libraries/stm8_UART.c: 33: if (write_UART(*str) == 1)
+      000051 89               [ 2]  128 	pushw	x
+      000052 CDr00r35         [ 4]  129 	call	_write_UART
+      000055 85               [ 2]  130 	popw	x
+      000056 4A               [ 1]  131 	dec	a
+      000057 26 03            [ 1]  132 	jrne	00102$
+                                    133 ;	../../my_STM8_libraries/stm8_UART.c: 35: str++;
+      000059 5C               [ 1]  134 	incw	x
+      00005A 20 F2            [ 2]  135 	jra	00104$
+      00005C                        136 00102$:
+                                    137 ;	../../my_STM8_libraries/stm8_UART.c: 37: else return 0;
+      00005C 4F               [ 1]  138 	clr	a
+      00005D 81               [ 4]  139 	ret
+      00005E                        140 00106$:
+                                    141 ;	../../my_STM8_libraries/stm8_UART.c: 39: return 1;
+      00005E A6 01            [ 1]  142 	ld	a, #0x01
+                                    143 ;	../../my_STM8_libraries/stm8_UART.c: 40: }
+      000060 81               [ 4]  144 	ret
+                                    145 ;	../../my_STM8_libraries/stm8_UART.c: 41: uint8_t printInt_UART(uint16_t data)
+                                    146 ;	-----------------------------------------
+                                    147 ;	 function printInt_UART
+                                    148 ;	-----------------------------------------
+      000061                        149 _printInt_UART:
+      000061 52 08            [ 2]  150 	sub	sp, #8
+                                    151 ;	../../my_STM8_libraries/stm8_UART.c: 46: if (data == 0)
+      000063 5D               [ 2]  152 	tnzw	x
+      000064 26 09            [ 1]  153 	jrne	00115$
+                                    154 ;	../../my_STM8_libraries/stm8_UART.c: 48: write_UART('0');
+      000066 A6 30            [ 1]  155 	ld	a, #0x30
+      000068 CDr00r35         [ 4]  156 	call	_write_UART
+                                    157 ;	../../my_STM8_libraries/stm8_UART.c: 49: return 1;
+      00006B A6 01            [ 1]  158 	ld	a, #0x01
+      00006D 20 4E            [ 2]  159 	jra	00111$
+                                    160 ;	../../my_STM8_libraries/stm8_UART.c: 51: while (data != 0)
+      00006F                        161 00115$:
+      00006F 0F 08            [ 1]  162 	clr	(0x08, sp)
+      000071                        163 00103$:
+      000071 5D               [ 2]  164 	tnzw	x
+      000072 27 2A            [ 1]  165 	jreq	00117$
+                                    166 ;	../../my_STM8_libraries/stm8_UART.c: 53: buf[i] = (data % 10) + '0';
+      000074 89               [ 2]  167 	pushw	x
+      000075 5F               [ 1]  168 	clrw	x
+      000076 7B 0A            [ 1]  169 	ld	a, (0x0a, sp)
+      000078 97               [ 1]  170 	ld	xl, a
+      000079 89               [ 2]  171 	pushw	x
+      00007A 96               [ 1]  172 	ldw	x, sp
+      00007B 1C 00 07         [ 2]  173 	addw	x, #7
+      00007E 72 FB 01         [ 2]  174 	addw	x, (1, sp)
+      000081 1F 05            [ 2]  175 	ldw	(0x05, sp), x
+      000083 5B 02            [ 2]  176 	addw	sp, #2
+      000085 85               [ 2]  177 	popw	x
+      000086 89               [ 2]  178 	pushw	x
+      000087 90 AE 00 0A      [ 2]  179 	ldw	y, #0x000a
+      00008B 65               [ 2]  180 	divw	x, y
+      00008C 85               [ 2]  181 	popw	x
+      00008D 90 9F            [ 1]  182 	ld	a, yl
+      00008F AB 30            [ 1]  183 	add	a, #0x30
+      000091 16 01            [ 2]  184 	ldw	y, (0x01, sp)
+      000093 90 F7            [ 1]  185 	ld	(y), a
+                                    186 ;	../../my_STM8_libraries/stm8_UART.c: 54: data /= 10;
+      000095 90 AE 00 0A      [ 2]  187 	ldw	y, #0x000a
+      000099 65               [ 2]  188 	divw	x, y
+                                    189 ;	../../my_STM8_libraries/stm8_UART.c: 55: i++;
+      00009A 0C 08            [ 1]  190 	inc	(0x08, sp)
+      00009C 20 D3            [ 2]  191 	jra	00103$
+                                    192 ;	../../my_STM8_libraries/stm8_UART.c: 57: while (i > 0)
+      00009E                        193 00117$:
+      00009E                        194 00108$:
+      00009E 0D 08            [ 1]  195 	tnz	(0x08, sp)
+      0000A0 27 19            [ 1]  196 	jreq	00110$
+                                    197 ;	../../my_STM8_libraries/stm8_UART.c: 59: i--;
+      0000A2 0A 08            [ 1]  198 	dec	(0x08, sp)
+                                    199 ;	../../my_STM8_libraries/stm8_UART.c: 60: if (write_UART(buf[i]) == 0) return 0;
+      0000A4 5F               [ 1]  200 	clrw	x
+      0000A5 7B 08            [ 1]  201 	ld	a, (0x08, sp)
+      0000A7 97               [ 1]  202 	ld	xl, a
+      0000A8 89               [ 2]  203 	pushw	x
+      0000A9 96               [ 1]  204 	ldw	x, sp
+      0000AA 1C 00 05         [ 2]  205 	addw	x, #5
+      0000AD 72 FB 01         [ 2]  206 	addw	x, (1, sp)
+      0000B0 5B 02            [ 2]  207 	addw	sp, #2
+      0000B2 F6               [ 1]  208 	ld	a, (x)
+      0000B3 CDr00r35         [ 4]  209 	call	_write_UART
+      0000B6 4D               [ 1]  210 	tnz	a
+      0000B7 26 E5            [ 1]  211 	jrne	00108$
+      0000B9 4F               [ 1]  212 	clr	a
+                                    213 ;	../../my_STM8_libraries/stm8_UART.c: 62: return 1;
+      0000BA C5                     214 	.byte 0xc5
+      0000BB                        215 00110$:
+      0000BB A6 01            [ 1]  216 	ld	a, #0x01
+      0000BD                        217 00111$:
+                                    218 ;	../../my_STM8_libraries/stm8_UART.c: 63: }
+      0000BD 5B 08            [ 2]  219 	addw	sp, #8
+      0000BF 81               [ 4]  220 	ret
+                                    221 ;	../../my_STM8_libraries/stm8_UART.c: 64: uint8_t line_UART(void)
+                                    222 ;	-----------------------------------------
+                                    223 ;	 function line_UART
+                                    224 ;	-----------------------------------------
+      0000C0                        225 _line_UART:
+                                    226 ;	../../my_STM8_libraries/stm8_UART.c: 66: if (write_UART('\r') == 0) return 0;
+      0000C0 A6 0D            [ 1]  227 	ld	a, #0x0d
+      0000C2 CDr00r35         [ 4]  228 	call	_write_UART
+      0000C5 4D               [ 1]  229 	tnz	a
+      0000C6 26 02            [ 1]  230 	jrne	00102$
+      0000C8 4F               [ 1]  231 	clr	a
+      0000C9 81               [ 4]  232 	ret
+      0000CA                        233 00102$:
+                                    234 ;	../../my_STM8_libraries/stm8_UART.c: 67: if (write_UART('\n') == 0) return 0;
+      0000CA A6 0A            [ 1]  235 	ld	a, #0x0a
+      0000CC CDr00r35         [ 4]  236 	call	_write_UART
+      0000CF 4D               [ 1]  237 	tnz	a
+      0000D0 26 02            [ 1]  238 	jrne	00104$
+      0000D2 4F               [ 1]  239 	clr	a
+      0000D3 81               [ 4]  240 	ret
+      0000D4                        241 00104$:
+                                    242 ;	../../my_STM8_libraries/stm8_UART.c: 68: return 1;
+      0000D4 A6 01            [ 1]  243 	ld	a, #0x01
+                                    244 ;	../../my_STM8_libraries/stm8_UART.c: 69: }
+      0000D6 81               [ 4]  245 	ret
+                                    246 ;	../../my_STM8_libraries/stm8_UART.c: 70: static char nibbleToHex(uint8_t nibble)
+                                    247 ;	-----------------------------------------
+                                    248 ;	 function nibbleToHex
+                                    249 ;	-----------------------------------------
+      0000D7                        250 _nibbleToHex:
+                                    251 ;	../../my_STM8_libraries/stm8_UART.c: 72: if (nibble < 10) return nibble + '0';
+      0000D7 97               [ 1]  252 	ld	xl, a
+      0000D8 A1 0A            [ 1]  253 	cp	a, #0x0a
+      0000DA 24 04            [ 1]  254 	jrnc	00102$
+      0000DC 9F               [ 1]  255 	ld	a, xl
+      0000DD AB 30            [ 1]  256 	add	a, #0x30
+      0000DF 81               [ 4]  257 	ret
+      0000E0                        258 00102$:
+                                    259 ;	../../my_STM8_libraries/stm8_UART.c: 73: else return nibble - 10 + 'A';
+      0000E0 9F               [ 1]  260 	ld	a, xl
+      0000E1 AB 37            [ 1]  261 	add	a, #0x37
+                                    262 ;	../../my_STM8_libraries/stm8_UART.c: 74: }
+      0000E3 81               [ 4]  263 	ret
+                                    264 ;	../../my_STM8_libraries/stm8_UART.c: 75: uint8_t printHex_UART(uint8_t data)
+                                    265 ;	-----------------------------------------
+                                    266 ;	 function printHex_UART
+                                    267 ;	-----------------------------------------
+      0000E4                        268 _printHex_UART:
+      0000E4 88               [ 1]  269 	push	a
+                                    270 ;	../../my_STM8_libraries/stm8_UART.c: 77: uint8_t high = data >> 4;
+      0000E5 97               [ 1]  271 	ld	xl, a
+      0000E6 4E               [ 1]  272 	swap	a
+      0000E7 A4 0F            [ 1]  273 	and	a, #0x0f
+      0000E9 41               [ 1]  274 	exg	a, xl
+                                    275 ;	../../my_STM8_libraries/stm8_UART.c: 78: uint8_t low = data & 0x0F;
+      0000EA A4 0F            [ 1]  276 	and	a, #0x0f
+      0000EC 6B 01            [ 1]  277 	ld	(0x01, sp), a
+                                    278 ;	../../my_STM8_libraries/stm8_UART.c: 80: if (write_UART(nibbleToHex(high)) == 0) return 0;
+      0000EE 9F               [ 1]  279 	ld	a, xl
+      0000EF CDr00rD7         [ 4]  280 	call	_nibbleToHex
+      0000F2 CDr00r35         [ 4]  281 	call	_write_UART
+      0000F5 4D               [ 1]  282 	tnz	a
+      0000F6 26 03            [ 1]  283 	jrne	00102$
+      0000F8 4F               [ 1]  284 	clr	a
+      0000F9 20 0F            [ 2]  285 	jra	00105$
+      0000FB                        286 00102$:
+                                    287 ;	../../my_STM8_libraries/stm8_UART.c: 81: if (write_UART(nibbleToHex(low)) == 0) return 0;
+      0000FB 7B 01            [ 1]  288 	ld	a, (0x01, sp)
+      0000FD CDr00rD7         [ 4]  289 	call	_nibbleToHex
+      000100 CDr00r35         [ 4]  290 	call	_write_UART
+      000103 4D               [ 1]  291 	tnz	a
+      000104 26 02            [ 1]  292 	jrne	00104$
+      000106 4F               [ 1]  293 	clr	a
+                                    294 ;	../../my_STM8_libraries/stm8_UART.c: 82: return 1;
+      000107 C5                     295 	.byte 0xc5
+      000108                        296 00104$:
+      000108 A6 01            [ 1]  297 	ld	a, #0x01
+      00010A                        298 00105$:
+                                    299 ;	../../my_STM8_libraries/stm8_UART.c: 83: }
+      00010A 5B 01            [ 2]  300 	addw	sp, #1
+      00010C 81               [ 4]  301 	ret
+                                    302 	.area CODE
+                                    303 	.area CONST
+                                    304 	.area INITIALIZER
+                                    305 	.area CABS (ABS)

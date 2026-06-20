@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include "stm8_REG.h"
-#include "stm8_GPIO.h"
 #include "stm8_TIME.h"
 #include "stm8_UART.h"
 
@@ -16,15 +15,28 @@ void main(void) {
 	init_UART(9600);	// 2. Инициализируем периферию
 	init_TIME();
 	
-	pinMode(PORTC, 3, OUTPUT);
+	for (uint8_t i = 33; i < 127; i++)
+	{
+	write_UART(i);	
+	}
+	line_UART();
+	delay(333);
+	
+	print_UART("Hello world!");
+	line_UART();
+	delay(333);
+	
+	printInt_UART(0);
+	line_UART();
+	printInt_UART(12345);
+	line_UART();
+	delay(333);
+	
+	printHex_UART(0xAB);
+	line_UART();
 	
     while(1)
     {
-          if (write_UART('A') == 0) 
-          {
-			  writePin(PORTC, 3, HIGH);
-		  }
-		  writePin(PORTC, 3, LOW);
-          delay(1000);  
+		 
     }
 }
