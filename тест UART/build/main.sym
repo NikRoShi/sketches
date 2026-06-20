@@ -14,14 +14,18 @@ Symbol Table
   5 __sdcc_program_startup                                         000068 R
   3 __start__stack                                                 000000 R
     _delay                                                         ****** GX
+    _getData_UART                                                  ****** GX
     _init_TIME                                                     ****** GX
     _init_UART                                                     ****** GX
+    _isDataReceived_UART                                           ****** GX
     _line_UART                                                     ****** GX
   A _main                                                          00000A GR
+    _pinMode                                                       ****** GX
     _printHex_UART                                                 ****** GX
     _printInt_UART                                                 ****** GX
     _print_UART                                                    ****** GX
     _tick_TIME                                                     ****** GX
+    _writePin                                                      ****** GX
     _write_UART                                                    ****** GX
     l_DATA                                                         ****** GX
     l_INITIALIZER                                                  ****** GX
@@ -29,7 +33,6 @@ Symbol Table
     s_GSINIT                                                       ****** GX
     s_INITIALIZED                                                  ****** GX
     s_INITIALIZER                                                  ****** GX
-
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8), page 2.
 Hexadecimal [24-Bits]
@@ -46,6 +49,6 @@ Area Table
    7 GSFINAL                                    size      3   flags    0
    8 CONST                                      size      D   flags    0
    9 INITIALIZER                                size      0   flags    0
-   A CODE                                       size     67   flags    0
+   A CODE                                       size     A7   flags    0
    B CABS                                       size      0   flags    8
 

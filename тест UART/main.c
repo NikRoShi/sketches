@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "stm8_REG.h"
+#include "stm8_GPIO.h"
 #include "stm8_TIME.h"
 #include "stm8_UART.h"
 
@@ -14,6 +15,8 @@ void main(void) {
     
 	init_UART(9600);	// 2. Инициализируем периферию
 	init_TIME();
+	
+	pinMode(PORTC, 3, OUTPUT);
 	
 	for (uint8_t i = 33; i < 127; i++)
 	{
@@ -37,6 +40,10 @@ void main(void) {
 	
     while(1)
     {
-		 
+		 if (isDataReceived_UART())
+		 {
+			 if (getData_UART() == 'n' || getData_UART() == 'N') writePin(PORTC, 3, HIGH);
+			 if (getData_UART() == 'f' || getData_UART() == 'F') writePin(PORTC, 3, LOW);
+		 }
     }
 }

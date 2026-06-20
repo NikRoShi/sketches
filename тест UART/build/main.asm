@@ -10,6 +10,8 @@
 ;--------------------------------------------------------
 	.globl _main
 	.globl _TIM4_UPD_OVF_IRQHandler
+	.globl _getData_UART
+	.globl _isDataReceived_UART
 	.globl _printHex_UART
 	.globl _line_UART
 	.globl _printInt_UART
@@ -19,6 +21,8 @@
 	.globl _delay
 	.globl _init_TIME
 	.globl _tick_TIME
+	.globl _writePin
+	.globl _pinMode
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -117,88 +121,122 @@ __sdcc_program_startup:
 ; code
 ;--------------------------------------------------------
 	.area CODE
-;	main.c: 6: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23) {
+;	main.c: 7: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23) {
 ;	-----------------------------------------
 ;	 function TIM4_UPD_OVF_IRQHandler
 ;	-----------------------------------------
 _TIM4_UPD_OVF_IRQHandler:
 	clr	a
 	div	x, a
-;	main.c: 7: TIM4_SR &= ~(1 << 0);
+;	main.c: 8: TIM4_SR &= ~(1 << 0);
 	bres	0x5344, #0
-;	main.c: 8: tick_TIME();
+;	main.c: 9: tick_TIME();
 	call	_tick_TIME
-;	main.c: 9: }
+;	main.c: 10: }
 	iret
-;	main.c: 11: void main(void) {
+;	main.c: 12: void main(void) {
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-;	main.c: 13: CLK_CKDIVR = 0;		// 1. Устанавливаем частоту 16 МГц
+;	main.c: 14: CLK_CKDIVR = 0;		// 1. Устанавливаем частоту 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 15: init_UART(9600);	// 2. Инициализируем периферию
+;	main.c: 16: init_UART(9600);	// 2. Инициализируем периферию
 	ldw	x, #0x2580
 	call	_init_UART
-;	main.c: 16: init_TIME();
+;	main.c: 17: init_TIME();
 	call	_init_TIME
-;	main.c: 18: for (uint8_t i = 33; i < 127; i++)
+;	main.c: 19: pinMode(PORTC, 3, OUTPUT);
+	push	#0x00
+	ld	a, #0x03
+	ldw	x, #0x500a
+	call	_pinMode
+;	main.c: 21: for (uint8_t i = 33; i < 127; i++)
 	ld	a, #0x21
-00106$:
+00114$:
 	cp	a, #0x7f
 	jrnc	00101$
-;	main.c: 20: write_UART(i);	
+;	main.c: 23: write_UART(i);	
 	push	a
 	call	_write_UART
 	pop	a
-;	main.c: 18: for (uint8_t i = 33; i < 127; i++)
+;	main.c: 21: for (uint8_t i = 33; i < 127; i++)
 	inc	a
-	jra	00106$
+	jra	00114$
 00101$:
-;	main.c: 22: line_UART();
+;	main.c: 25: line_UART();
 	call	_line_UART
-;	main.c: 23: delay(333);
+;	main.c: 26: delay(333);
 	push	#0x4d
 	push	#0x01
 	clrw	x
 	pushw	x
 	call	_delay
-;	main.c: 25: print_UART("Hello world!");
+;	main.c: 28: print_UART("Hello world!");
 	ldw	x, #(___str_0+0)
 	call	_print_UART
-;	main.c: 26: line_UART();
+;	main.c: 29: line_UART();
 	call	_line_UART
-;	main.c: 27: delay(333);
+;	main.c: 30: delay(333);
 	push	#0x4d
 	push	#0x01
 	clrw	x
 	pushw	x
 	call	_delay
-;	main.c: 29: printInt_UART(0);
+;	main.c: 32: printInt_UART(0);
 	clrw	x
 	call	_printInt_UART
-;	main.c: 30: line_UART();
+;	main.c: 33: line_UART();
 	call	_line_UART
-;	main.c: 31: printInt_UART(12345);
+;	main.c: 34: printInt_UART(12345);
 	ldw	x, #0x3039
 	call	_printInt_UART
-;	main.c: 32: line_UART();
+;	main.c: 35: line_UART();
 	call	_line_UART
-;	main.c: 33: delay(333);
+;	main.c: 36: delay(333);
 	push	#0x4d
 	push	#0x01
 	clrw	x
 	pushw	x
 	call	_delay
-;	main.c: 35: printHex_UART(0xAB);
+;	main.c: 38: printHex_UART(0xAB);
 	ld	a, #0xab
 	call	_printHex_UART
-;	main.c: 36: line_UART();
+;	main.c: 39: line_UART();
 	call	_line_UART
-;	main.c: 38: while(1)
+;	main.c: 41: while(1)
+00111$:
+;	main.c: 43: if (isDataReceived_UART())
+	call	_isDataReceived_UART
+	tnz	a
+	jreq	00111$
+;	main.c: 45: if (getData_UART() == 'n' || getData_UART() == 'N') writePin(PORTC, 3, HIGH);
+	call	_getData_UART
+	cp	a, #0x6e
+	jreq	00102$
+	call	_getData_UART
+	cp	a, #0x4e
+	jrne	00103$
+00102$:
+	push	#0x01
+	ld	a, #0x03
+	ldw	x, #0x500a
+	call	_writePin
 00103$:
-	jra	00103$
-;	main.c: 42: }
+;	main.c: 46: if (getData_UART() == 'f' || getData_UART() == 'F') writePin(PORTC, 3, LOW);
+	call	_getData_UART
+	cp	a, #0x66
+	jreq	00105$
+	call	_getData_UART
+	cp	a, #0x46
+	jrne	00111$
+00105$:
+	push	#0x00
+	ld	a, #0x03
+	ldw	x, #0x500a
+	call	_writePin
+	jra	00111$
+;	main.c: 49: }
 	ret
 	.area CODE
 	.area CONST
