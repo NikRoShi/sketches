@@ -42,8 +42,9 @@ void main(void) {
     {
 		 if (isDataReceived_UART())
 		 {
-			 if (getData_UART() == 'n' || getData_UART() == 'N') writePin(PORTC, 3, HIGH);
-			 if (getData_UART() == 'f' || getData_UART() == 'F') writePin(PORTC, 3, LOW);
+			 char data = getData_UART();
+			 if (data == 'n' || data == 'N') writePin(PORTC, 3, HIGH);
+			 if (data == 'f' || data == 'F') writePin(PORTC, 3, LOW);
 		 }
     }
 }

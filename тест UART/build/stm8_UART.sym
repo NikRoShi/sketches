@@ -8,7 +8,7 @@ Symbol Table
     .__.CPU.                                                    =  000000 L
     .__.H$L.                                                    =  000001 L
     __divulong                                                     ****** GX
-  9 _getData_UART                                                  00010F GR
+  9 _getData_UART                                                  000113 GR
   9 _init_UART                                                     000000 GR
   9 _isDataReceived_UART                                           000109 GR
   9 _line_UART                                                     0000BC GR
@@ -33,6 +33,6 @@ Area Table
    6 GSFINAL                                    size      0   flags    0
    7 CONST                                      size      0   flags    0
    8 INITIALIZER                                size      0   flags    0
-   9 CODE                                       size    113   flags    0
+   9 CODE                                       size    117   flags    0
    A CABS                                       size      0   flags    8
 

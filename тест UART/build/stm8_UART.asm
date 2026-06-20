@@ -304,8 +304,11 @@ _printHex_UART:
 ;	 function isDataReceived_UART
 ;	-----------------------------------------
 _isDataReceived_UART:
-;	../../my_STM8_libraries/stm8_UART.c: 84: if (UART1_SR & UART1_SR_RXNE == 0) return 0;
-	ld	a, 0x5230
+;	../../my_STM8_libraries/stm8_UART.c: 84: if ((UART1_SR & UART1_SR_RXNE) == 0) return 0;
+	btjt	0x5230, #5, 00102$
+	clr	a
+	ret
+00102$:
 ;	../../my_STM8_libraries/stm8_UART.c: 85: return 1;
 	ld	a, #0x01
 ;	../../my_STM8_libraries/stm8_UART.c: 86: }

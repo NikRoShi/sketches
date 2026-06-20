@@ -304,22 +304,25 @@
                                     304 ;	 function isDataReceived_UART
                                     305 ;	-----------------------------------------
       000109                        306 _isDataReceived_UART:
-                                    307 ;	../../my_STM8_libraries/stm8_UART.c: 84: if (UART1_SR & UART1_SR_RXNE == 0) return 0;
-      000109 C6 52 30         [ 1]  308 	ld	a, 0x5230
-                                    309 ;	../../my_STM8_libraries/stm8_UART.c: 85: return 1;
-      00010C A6 01            [ 1]  310 	ld	a, #0x01
-                                    311 ;	../../my_STM8_libraries/stm8_UART.c: 86: }
-      00010E 81               [ 4]  312 	ret
-                                    313 ;	../../my_STM8_libraries/stm8_UART.c: 87: uint8_t getData_UART(void)
-                                    314 ;	-----------------------------------------
-                                    315 ;	 function getData_UART
-                                    316 ;	-----------------------------------------
-      00010F                        317 _getData_UART:
-                                    318 ;	../../my_STM8_libraries/stm8_UART.c: 89: return UART1_DR;
-      00010F C6 52 31         [ 1]  319 	ld	a, 0x5231
-                                    320 ;	../../my_STM8_libraries/stm8_UART.c: 90: }
-      000112 81               [ 4]  321 	ret
-                                    322 	.area CODE
-                                    323 	.area CONST
-                                    324 	.area INITIALIZER
-                                    325 	.area CABS (ABS)
+                                    307 ;	../../my_STM8_libraries/stm8_UART.c: 84: if ((UART1_SR & UART1_SR_RXNE) == 0) return 0;
+      000109 72 0A 52 30 02   [ 2]  308 	btjt	0x5230, #5, 00102$
+      00010E 4F               [ 1]  309 	clr	a
+      00010F 81               [ 4]  310 	ret
+      000110                        311 00102$:
+                                    312 ;	../../my_STM8_libraries/stm8_UART.c: 85: return 1;
+      000110 A6 01            [ 1]  313 	ld	a, #0x01
+                                    314 ;	../../my_STM8_libraries/stm8_UART.c: 86: }
+      000112 81               [ 4]  315 	ret
+                                    316 ;	../../my_STM8_libraries/stm8_UART.c: 87: uint8_t getData_UART(void)
+                                    317 ;	-----------------------------------------
+                                    318 ;	 function getData_UART
+                                    319 ;	-----------------------------------------
+      000113                        320 _getData_UART:
+                                    321 ;	../../my_STM8_libraries/stm8_UART.c: 89: return UART1_DR;
+      000113 C6 52 31         [ 1]  322 	ld	a, 0x5231
+                                    323 ;	../../my_STM8_libraries/stm8_UART.c: 90: }
+      000116 81               [ 4]  324 	ret
+                                    325 	.area CODE
+                                    326 	.area CONST
+                                    327 	.area INITIALIZER
+                                    328 	.area CABS (ABS)

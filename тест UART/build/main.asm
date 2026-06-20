@@ -210,24 +210,24 @@ _main:
 	call	_isDataReceived_UART
 	tnz	a
 	jreq	00111$
-;	main.c: 45: if (getData_UART() == 'n' || getData_UART() == 'N') writePin(PORTC, 3, HIGH);
+;	main.c: 45: char data = getData_UART();
 	call	_getData_UART
+;	main.c: 46: if (data == 'n' || data == 'N') writePin(PORTC, 3, HIGH);
 	cp	a, #0x6e
 	jreq	00102$
-	call	_getData_UART
 	cp	a, #0x4e
 	jrne	00103$
 00102$:
+	push	a
 	push	#0x01
 	ld	a, #0x03
 	ldw	x, #0x500a
 	call	_writePin
+	pop	a
 00103$:
-;	main.c: 46: if (getData_UART() == 'f' || getData_UART() == 'F') writePin(PORTC, 3, LOW);
-	call	_getData_UART
+;	main.c: 47: if (data == 'f' || data == 'F') writePin(PORTC, 3, LOW);
 	cp	a, #0x66
 	jreq	00105$
-	call	_getData_UART
 	cp	a, #0x46
 	jrne	00111$
 00105$:
@@ -236,7 +236,7 @@ _main:
 	ldw	x, #0x500a
 	call	_writePin
 	jra	00111$
-;	main.c: 49: }
+;	main.c: 50: }
 	ret
 	.area CODE
 	.area CONST
