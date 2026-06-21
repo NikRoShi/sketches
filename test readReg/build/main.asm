@@ -9,6 +9,7 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
+	.globl _BCDtoDEC
 	.globl _readReg_I2C
 	.globl _init_I2C
 	.globl _line_UART
@@ -88,27 +89,47 @@ __sdcc_program_startup:
 ; code
 ;--------------------------------------------------------
 	.area CODE
-;	main.c: 6: int main(void)
+;	main.c: 6: uint8_t BCDtoDEC(uint8_t bcd) 
+;	-----------------------------------------
+;	 function BCDtoDEC
+;	-----------------------------------------
+_BCDtoDEC:
+;	main.c: 8: return (((bcd >> 4) * 10) + (bcd & 0x0F));
+	ld	xl, a
+	swap	a
+	and	a, #0x0f
+	exg	a, xl
+	push	a
+	ld	a, #0x0a
+	mul	x, a
+	pop	a
+	and	a, #0x0f
+	pushw	x
+	add	a, (2, sp)
+	popw	x
+;	main.c: 9: }
+	ret
+;	main.c: 11: int main(void)
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
 	push	a
-;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+;	main.c: 13: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 10: init_I2C();
+;	main.c: 15: init_I2C();
 	call	_init_I2C
-;	main.c: 11: init_UART(9600);
+;	main.c: 16: init_UART(9600);
 	ldw	x, #0x2580
 	call	_init_UART
-;	main.c: 13: print_UART("start reading");
+;	main.c: 18: print_UART("start reading");
 	ldw	x, #(___str_0+0)
 	call	_print_UART
-;	main.c: 14: line_UART();
+;	main.c: 19: line_UART();
 	call	_line_UART
-;	main.c: 18: while (1)
+;	main.c: 23: while (1)
 00104$:
-;	main.c: 20: if (readReg_I2C(0x68, 0x00, &data) == 0)
+;	main.c: 25: if (readReg_I2C(0x68, 0x00, &data) == 0)
 	ldw	x, sp
 	incw	x
 	pushw	x
@@ -117,24 +138,25 @@ _main:
 	call	_readReg_I2C
 	tnz	a
 	jrne	00102$
-;	main.c: 22: print_UART("fail");
+;	main.c: 27: print_UART("fail");
 	ldw	x, #(___str_1+0)
 	call	_print_UART
-;	main.c: 23: line_UART();
+;	main.c: 28: line_UART();
 	call	_line_UART
 00102$:
-;	main.c: 25: print_UART("second is ");
+;	main.c: 30: print_UART("second is ");
 	ldw	x, #(___str_2+0)
 	call	_print_UART
-;	main.c: 26: printInt_UART(data);
+;	main.c: 31: printInt_UART(BCDtoDEC(data));
 	ld	a, (0x01, sp)
+	call	_BCDtoDEC
 	clrw	x
 	ld	xl, a
 	call	_printInt_UART
-;	main.c: 27: line_UART();
+;	main.c: 32: line_UART();
 	call	_line_UART
 	jra	00104$
-;	main.c: 29: }
+;	main.c: 34: }
 	pop	a
 	ret
 	.area CODE

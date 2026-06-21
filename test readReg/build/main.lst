@@ -9,152 +9,174 @@
                                       9 ; Public variables in this module
                                      10 ;--------------------------------------------------------
                                      11 	.globl _main
-                                     12 	.globl _readReg_I2C
-                                     13 	.globl _init_I2C
-                                     14 	.globl _line_UART
-                                     15 	.globl _printInt_UART
-                                     16 	.globl _print_UART
-                                     17 	.globl _init_UART
-                                     18 ;--------------------------------------------------------
-                                     19 ; ram data
-                                     20 ;--------------------------------------------------------
-                                     21 	.area DATA
-                                     22 ;--------------------------------------------------------
-                                     23 ; ram data
-                                     24 ;--------------------------------------------------------
-                                     25 	.area INITIALIZED
-                                     26 ;--------------------------------------------------------
-                                     27 ; Stack segment in internal ram
-                                     28 ;--------------------------------------------------------
-                                     29 	.area	SSEG
-      000000                         30 __start__stack:
-      000000                         31 	.ds	1
-                                     32 
-                                     33 ;--------------------------------------------------------
-                                     34 ; absolute external ram data
-                                     35 ;--------------------------------------------------------
-                                     36 	.area DABS (ABS)
-                                     37 
-                                     38 ; default segment ordering for linker
-                                     39 	.area HOME
-                                     40 	.area GSINIT
-                                     41 	.area GSFINAL
-                                     42 	.area CONST
-                                     43 	.area INITIALIZER
-                                     44 	.area CODE
-                                     45 
-                                     46 ;--------------------------------------------------------
-                                     47 ; interrupt vector
-                                     48 ;--------------------------------------------------------
-                                     49 	.area HOME
-      000000                         50 __interrupt_vect:
-      000000 82v00u00u00             51 	int s_GSINIT ; reset
-                                     52 ;--------------------------------------------------------
-                                     53 ; global & static initialisations
-                                     54 ;--------------------------------------------------------
-                                     55 	.area HOME
-                                     56 	.area GSINIT
-                                     57 	.area GSFINAL
-                                     58 	.area GSINIT
-      000000                         59 __sdcc_init_data:
-                                     60 ; stm8_genXINIT() start
-      000000 AEr00r00         [ 2]   61 	ldw x, #l_DATA
-      000003 27 07            [ 1]   62 	jreq	00002$
-      000005                         63 00001$:
-      000005 72 4FuFFuFF      [ 1]   64 	clr (s_DATA - 1, x)
-      000009 5A               [ 2]   65 	decw x
-      00000A 26 F9            [ 1]   66 	jrne	00001$
-      00000C                         67 00002$:
-      00000C AEr00r00         [ 2]   68 	ldw	x, #l_INITIALIZER
-      00000F 27 09            [ 1]   69 	jreq	00004$
-      000011                         70 00003$:
-      000011 D6uFFuFF         [ 1]   71 	ld	a, (s_INITIALIZER - 1, x)
-      000014 D7uFFuFF         [ 1]   72 	ld	(s_INITIALIZED - 1, x), a
-      000017 5A               [ 2]   73 	decw	x
-      000018 26 F7            [ 1]   74 	jrne	00003$
-      00001A                         75 00004$:
-                                     76 ; stm8_genXINIT() end
-                                     77 	.area GSFINAL
-      000000 CCr00r04         [ 2]   78 	jp	__sdcc_program_startup
-                                     79 ;--------------------------------------------------------
-                                     80 ; Home
-                                     81 ;--------------------------------------------------------
-                                     82 	.area HOME
+                                     12 	.globl _BCDtoDEC
+                                     13 	.globl _readReg_I2C
+                                     14 	.globl _init_I2C
+                                     15 	.globl _line_UART
+                                     16 	.globl _printInt_UART
+                                     17 	.globl _print_UART
+                                     18 	.globl _init_UART
+                                     19 ;--------------------------------------------------------
+                                     20 ; ram data
+                                     21 ;--------------------------------------------------------
+                                     22 	.area DATA
+                                     23 ;--------------------------------------------------------
+                                     24 ; ram data
+                                     25 ;--------------------------------------------------------
+                                     26 	.area INITIALIZED
+                                     27 ;--------------------------------------------------------
+                                     28 ; Stack segment in internal ram
+                                     29 ;--------------------------------------------------------
+                                     30 	.area	SSEG
+      000000                         31 __start__stack:
+      000000                         32 	.ds	1
+                                     33 
+                                     34 ;--------------------------------------------------------
+                                     35 ; absolute external ram data
+                                     36 ;--------------------------------------------------------
+                                     37 	.area DABS (ABS)
+                                     38 
+                                     39 ; default segment ordering for linker
+                                     40 	.area HOME
+                                     41 	.area GSINIT
+                                     42 	.area GSFINAL
+                                     43 	.area CONST
+                                     44 	.area INITIALIZER
+                                     45 	.area CODE
+                                     46 
+                                     47 ;--------------------------------------------------------
+                                     48 ; interrupt vector
+                                     49 ;--------------------------------------------------------
+                                     50 	.area HOME
+      000000                         51 __interrupt_vect:
+      000000 82v00u00u00             52 	int s_GSINIT ; reset
+                                     53 ;--------------------------------------------------------
+                                     54 ; global & static initialisations
+                                     55 ;--------------------------------------------------------
+                                     56 	.area HOME
+                                     57 	.area GSINIT
+                                     58 	.area GSFINAL
+                                     59 	.area GSINIT
+      000000                         60 __sdcc_init_data:
+                                     61 ; stm8_genXINIT() start
+      000000 AEr00r00         [ 2]   62 	ldw x, #l_DATA
+      000003 27 07            [ 1]   63 	jreq	00002$
+      000005                         64 00001$:
+      000005 72 4FuFFuFF      [ 1]   65 	clr (s_DATA - 1, x)
+      000009 5A               [ 2]   66 	decw x
+      00000A 26 F9            [ 1]   67 	jrne	00001$
+      00000C                         68 00002$:
+      00000C AEr00r00         [ 2]   69 	ldw	x, #l_INITIALIZER
+      00000F 27 09            [ 1]   70 	jreq	00004$
+      000011                         71 00003$:
+      000011 D6uFFuFF         [ 1]   72 	ld	a, (s_INITIALIZER - 1, x)
+      000014 D7uFFuFF         [ 1]   73 	ld	(s_INITIALIZED - 1, x), a
+      000017 5A               [ 2]   74 	decw	x
+      000018 26 F7            [ 1]   75 	jrne	00003$
+      00001A                         76 00004$:
+                                     77 ; stm8_genXINIT() end
+                                     78 	.area GSFINAL
+      000000 CCr00r04         [ 2]   79 	jp	__sdcc_program_startup
+                                     80 ;--------------------------------------------------------
+                                     81 ; Home
+                                     82 ;--------------------------------------------------------
                                      83 	.area HOME
-      000004                         84 __sdcc_program_startup:
-      000004 CCr00r00         [ 2]   85 	jp	_main
-                                     86 ;	return from main will return to caller
-                                     87 ;--------------------------------------------------------
-                                     88 ; code
-                                     89 ;--------------------------------------------------------
-                                     90 	.area CODE
-                                     91 ;	main.c: 6: int main(void)
-                                     92 ;	-----------------------------------------
-                                     93 ;	 function main
-                                     94 ;	-----------------------------------------
-      000000                         95 _main:
-      000000 88               [ 1]   96 	push	a
-                                     97 ;	main.c: 8: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
-      000001 35 00 50 C6      [ 1]   98 	mov	0x50c6+0, #0x00
-                                     99 ;	main.c: 10: init_I2C();
-      000005 CDr00r00         [ 4]  100 	call	_init_I2C
-                                    101 ;	main.c: 11: init_UART(9600);
-      000008 AE 25 80         [ 2]  102 	ldw	x, #0x2580
-      00000B CDr00r00         [ 4]  103 	call	_init_UART
-                                    104 ;	main.c: 13: print_UART("start reading");
-      00000E AEr00r00         [ 2]  105 	ldw	x, #(___str_0+0)
-      000011 CDr00r00         [ 4]  106 	call	_print_UART
-                                    107 ;	main.c: 14: line_UART();
-      000014 CDr00r00         [ 4]  108 	call	_line_UART
-                                    109 ;	main.c: 18: while (1)
-      000017                        110 00104$:
-                                    111 ;	main.c: 20: if (readReg_I2C(0x68, 0x00, &data) == 0)
-      000017 96               [ 1]  112 	ldw	x, sp
-      000018 5C               [ 1]  113 	incw	x
-      000019 89               [ 2]  114 	pushw	x
-      00001A 4B 00            [ 1]  115 	push	#0x00
-      00001C A6 68            [ 1]  116 	ld	a, #0x68
-      00001E CDr00r00         [ 4]  117 	call	_readReg_I2C
-      000021 4D               [ 1]  118 	tnz	a
-      000022 26 09            [ 1]  119 	jrne	00102$
-                                    120 ;	main.c: 22: print_UART("fail");
-      000024 AEr00r0E         [ 2]  121 	ldw	x, #(___str_1+0)
-      000027 CDr00r00         [ 4]  122 	call	_print_UART
-                                    123 ;	main.c: 23: line_UART();
-      00002A CDr00r00         [ 4]  124 	call	_line_UART
-      00002D                        125 00102$:
-                                    126 ;	main.c: 25: print_UART("second is ");
-      00002D AEr00r13         [ 2]  127 	ldw	x, #(___str_2+0)
-      000030 CDr00r00         [ 4]  128 	call	_print_UART
-                                    129 ;	main.c: 26: printInt_UART(data);
-      000033 7B 01            [ 1]  130 	ld	a, (0x01, sp)
-      000035 5F               [ 1]  131 	clrw	x
-      000036 97               [ 1]  132 	ld	xl, a
-      000037 CDr00r00         [ 4]  133 	call	_printInt_UART
-                                    134 ;	main.c: 27: line_UART();
-      00003A CDr00r00         [ 4]  135 	call	_line_UART
-      00003D 20 D8            [ 2]  136 	jra	00104$
-                                    137 ;	main.c: 29: }
-      00003F 84               [ 1]  138 	pop	a
-      000040 81               [ 4]  139 	ret
-                                    140 	.area CODE
-                                    141 	.area CONST
-                                    142 	.area CONST
-      000000                        143 ___str_0:
-      000000 73 74 61 72 74 20 72   144 	.ascii "start reading"
+                                     84 	.area HOME
+      000004                         85 __sdcc_program_startup:
+      000004 CCr00r11         [ 2]   86 	jp	_main
+                                     87 ;	return from main will return to caller
+                                     88 ;--------------------------------------------------------
+                                     89 ; code
+                                     90 ;--------------------------------------------------------
+                                     91 	.area CODE
+                                     92 ;	main.c: 6: uint8_t BCDtoDEC(uint8_t bcd) 
+                                     93 ;	-----------------------------------------
+                                     94 ;	 function BCDtoDEC
+                                     95 ;	-----------------------------------------
+      000000                         96 _BCDtoDEC:
+                                     97 ;	main.c: 8: return (((bcd >> 4) * 10) + (bcd & 0x0F));
+      000000 97               [ 1]   98 	ld	xl, a
+      000001 4E               [ 1]   99 	swap	a
+      000002 A4 0F            [ 1]  100 	and	a, #0x0f
+      000004 41               [ 1]  101 	exg	a, xl
+      000005 88               [ 1]  102 	push	a
+      000006 A6 0A            [ 1]  103 	ld	a, #0x0a
+      000008 42               [ 4]  104 	mul	x, a
+      000009 84               [ 1]  105 	pop	a
+      00000A A4 0F            [ 1]  106 	and	a, #0x0f
+      00000C 89               [ 2]  107 	pushw	x
+      00000D 1B 02            [ 1]  108 	add	a, (2, sp)
+      00000F 85               [ 2]  109 	popw	x
+                                    110 ;	main.c: 9: }
+      000010 81               [ 4]  111 	ret
+                                    112 ;	main.c: 11: int main(void)
+                                    113 ;	-----------------------------------------
+                                    114 ;	 function main
+                                    115 ;	-----------------------------------------
+      000011                        116 _main:
+      000011 88               [ 1]  117 	push	a
+                                    118 ;	main.c: 13: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+      000012 35 00 50 C6      [ 1]  119 	mov	0x50c6+0, #0x00
+                                    120 ;	main.c: 15: init_I2C();
+      000016 CDr00r00         [ 4]  121 	call	_init_I2C
+                                    122 ;	main.c: 16: init_UART(9600);
+      000019 AE 25 80         [ 2]  123 	ldw	x, #0x2580
+      00001C CDr00r00         [ 4]  124 	call	_init_UART
+                                    125 ;	main.c: 18: print_UART("start reading");
+      00001F AEr00r00         [ 2]  126 	ldw	x, #(___str_0+0)
+      000022 CDr00r00         [ 4]  127 	call	_print_UART
+                                    128 ;	main.c: 19: line_UART();
+      000025 CDr00r00         [ 4]  129 	call	_line_UART
+                                    130 ;	main.c: 23: while (1)
+      000028                        131 00104$:
+                                    132 ;	main.c: 25: if (readReg_I2C(0x68, 0x00, &data) == 0)
+      000028 96               [ 1]  133 	ldw	x, sp
+      000029 5C               [ 1]  134 	incw	x
+      00002A 89               [ 2]  135 	pushw	x
+      00002B 4B 00            [ 1]  136 	push	#0x00
+      00002D A6 68            [ 1]  137 	ld	a, #0x68
+      00002F CDr00r00         [ 4]  138 	call	_readReg_I2C
+      000032 4D               [ 1]  139 	tnz	a
+      000033 26 09            [ 1]  140 	jrne	00102$
+                                    141 ;	main.c: 27: print_UART("fail");
+      000035 AEr00r0E         [ 2]  142 	ldw	x, #(___str_1+0)
+      000038 CDr00r00         [ 4]  143 	call	_print_UART
+                                    144 ;	main.c: 28: line_UART();
+      00003B CDr00r00         [ 4]  145 	call	_line_UART
+      00003E                        146 00102$:
+                                    147 ;	main.c: 30: print_UART("second is ");
+      00003E AEr00r13         [ 2]  148 	ldw	x, #(___str_2+0)
+      000041 CDr00r00         [ 4]  149 	call	_print_UART
+                                    150 ;	main.c: 31: printInt_UART(BCDtoDEC(data));
+      000044 7B 01            [ 1]  151 	ld	a, (0x01, sp)
+      000046 CDr00r00         [ 4]  152 	call	_BCDtoDEC
+      000049 5F               [ 1]  153 	clrw	x
+      00004A 97               [ 1]  154 	ld	xl, a
+      00004B CDr00r00         [ 4]  155 	call	_printInt_UART
+                                    156 ;	main.c: 32: line_UART();
+      00004E CDr00r00         [ 4]  157 	call	_line_UART
+      000051 20 D5            [ 2]  158 	jra	00104$
+                                    159 ;	main.c: 34: }
+      000053 84               [ 1]  160 	pop	a
+      000054 81               [ 4]  161 	ret
+                                    162 	.area CODE
+                                    163 	.area CONST
+                                    164 	.area CONST
+      000000                        165 ___str_0:
+      000000 73 74 61 72 74 20 72   166 	.ascii "start reading"
              65 61 64 69 6E 67
-      00000D 00                     145 	.db 0x00
-                                    146 	.area CODE
-                                    147 	.area CONST
-      00000E                        148 ___str_1:
-      00000E 66 61 69 6C            149 	.ascii "fail"
-      000012 00                     150 	.db 0x00
-                                    151 	.area CODE
-                                    152 	.area CONST
-      000013                        153 ___str_2:
-      000013 73 65 63 6F 6E 64 20   154 	.ascii "second is "
+      00000D 00                     167 	.db 0x00
+                                    168 	.area CODE
+                                    169 	.area CONST
+      00000E                        170 ___str_1:
+      00000E 66 61 69 6C            171 	.ascii "fail"
+      000012 00                     172 	.db 0x00
+                                    173 	.area CODE
+                                    174 	.area CONST
+      000013                        175 ___str_2:
+      000013 73 65 63 6F 6E 64 20   176 	.ascii "second is "
              69 73 20
-      00001D 00                     155 	.db 0x00
-                                    156 	.area CODE
-                                    157 	.area INITIALIZER
-                                    158 	.area CABS (ABS)
+      00001D 00                     177 	.db 0x00
+                                    178 	.area CODE
+                                    179 	.area INITIALIZER
+                                    180 	.area CABS (ABS)

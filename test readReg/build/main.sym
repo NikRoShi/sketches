@@ -7,6 +7,7 @@ Symbol Table
     .__.ABS.                                                    =  000000 G
     .__.CPU.                                                    =  000000 L
     .__.H$L.                                                    =  000001 L
+  A _BCDtoDEC                                                      000000 GR
   8 ___str_0                                                       000000 R
   8 ___str_1                                                       00000E R
   8 ___str_2                                                       000013 R
@@ -17,7 +18,7 @@ Symbol Table
     _init_I2C                                                      ****** GX
     _init_UART                                                     ****** GX
     _line_UART                                                     ****** GX
-  A _main                                                          000000 GR
+  A _main                                                          000011 GR
     _printInt_UART                                                 ****** GX
     _print_UART                                                    ****** GX
     _readReg_I2C                                                   ****** GX
@@ -27,6 +28,7 @@ Symbol Table
     s_GSINIT                                                       ****** GX
     s_INITIALIZED                                                  ****** GX
     s_INITIALIZER                                                  ****** GX
+
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8), page 2.
 Hexadecimal [24-Bits]
@@ -43,6 +45,6 @@ Area Table
    7 GSFINAL                                    size      3   flags    0
    8 CONST                                      size     1E   flags    0
    9 INITIALIZER                                size      0   flags    0
-   A CODE                                       size     41   flags    0
+   A CODE                                       size     55   flags    0
    B CABS                                       size      0   flags    8
 

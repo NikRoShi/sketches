@@ -3,6 +3,11 @@
 #include "stm8_UART.h"
 #include "stm8_I2C.h"
 
+uint8_t BCDtoDEC(uint8_t bcd) 
+{
+	return (((bcd >> 4) * 10) + (bcd & 0x0F));
+}
+
 int main(void)
 {
 	CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
@@ -23,7 +28,7 @@ int main(void)
 		line_UART();
 		}
 		print_UART("second is ");
-		printInt_UART(data);
+		printInt_UART(BCDtoDEC(data));
 		line_UART();
     }
 }
