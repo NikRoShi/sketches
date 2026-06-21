@@ -9,12 +9,13 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _init_UART
-	.globl _sendByte_UART
-	.globl _sendString_UART
-	.globl _sendLine_UART
-	.globl _sendInt_UART
-	.globl _available_UART
-	.globl _read_UART
+	.globl _write_UART
+	.globl _print_UART
+	.globl _printInt_UART
+	.globl _line_UART
+	.globl _printHex_UART
+	.globl _isDataReceived_UART
+	.globl _getData_UART
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -52,208 +53,274 @@
 ; code
 ;--------------------------------------------------------
 	.area CODE
-;	../../my_STM8_libraries/stm8_UART.c: 3: void init_UART(uint32_t baudRate) {
+;	../../my_STM8_libraries/stm8_UART.c: 3: void init_UART(uint16_t baudrate)
 ;	-----------------------------------------
 ;	 function init_UART
 ;	-----------------------------------------
 _init_UART:
 	push	a
-;	../../my_STM8_libraries/stm8_UART.c: 5: CLK_PCKENR1 |= (1 << 3); 
-	bset	0x50c7, #3
-;	../../my_STM8_libraries/stm8_UART.c: 8: PD_DDR |= (1 << TX_PIN);
-	bset	0x5011, #5
-;	../../my_STM8_libraries/stm8_UART.c: 9: PD_CR1 |= (1 << TX_PIN);
-	bset	0x5012, #5
-;	../../my_STM8_libraries/stm8_UART.c: 10: PD_CR2 |= (1 << TX_PIN);
-	bset	0x5013, #5
-;	../../my_STM8_libraries/stm8_UART.c: 12: PD_DDR &= ~(1 << RX_PIN);
-	bres	0x5011, #6
-;	../../my_STM8_libraries/stm8_UART.c: 13: PD_CR1 &= ~(1 << RX_PIN);
-	bres	0x5012, #6
-;	../../my_STM8_libraries/stm8_UART.c: 15: uint16_t uart_div = (uint32_t)(16000000 / baudRate);
-	ldw	x, (0x06, sp)
+;	../../my_STM8_libraries/stm8_UART.c: 7: uartdiv = F_CPU / baudrate;
+	clrw	y
 	pushw	x
-	ldw	x, (0x06, sp)
-	pushw	x
+	pushw	y
 	push	#0x00
 	push	#0x24
 	push	#0xf4
 	push	#0x00
 	call	__divulong
 	addw	sp, #8
-;	../../my_STM8_libraries/stm8_UART.c: 16: UART1_BRR2 = ((uart_div >> 12) << 4) | (uart_div & 0x000F);
-	ld	a, xh
-	clrw	y
-	and	a, #240
-	ld	yl, a
+;	../../my_STM8_libraries/stm8_UART.c: 9: UART1_BRR2 = (uartdiv & 0x000F) | ((uartdiv >> 8) & 0x00F0);
 	ld	a, xl
 	and	a, #0x0f
 	ld	(0x01, sp), a
-	ld	a, yl
+	ld	a, xh
+	and	a, #0xf0
 	or	a, (0x01, sp)
 	ld	0x5233, a
-;	../../my_STM8_libraries/stm8_UART.c: 17: UART1_BRR1 = (uart_div >> 4) & 0x00FF;
+;	../../my_STM8_libraries/stm8_UART.c: 10: UART1_BRR1 = (uartdiv >> 4) & 0x00FF;
 	ld	a, #0x10
 	div	x, a
 	ld	a, xl
 	ld	0x5232, a
-;	../../my_STM8_libraries/stm8_UART.c: 19: UART1_CR2 |= (1 << 3) | (1 << 2);
-	ld	a, 0x5235
-	or	a, #0x0c
-	ld	0x5235, a
-;	../../my_STM8_libraries/stm8_UART.c: 20: }
-	ldw	x, (2, sp)
-	addw	sp, #7
-	jp	(x)
-;	../../my_STM8_libraries/stm8_UART.c: 22: void sendByte_UART(uint8_t byte) {
-;	-----------------------------------------
-;	 function sendByte_UART
-;	-----------------------------------------
-_sendByte_UART:
-	push	a
-	ld	(0x01, sp), a
-;	../../my_STM8_libraries/stm8_UART.c: 23: while(!(UART1_SR & (1 << 7))) {}
-00101$:
-	ld	a, 0x5230
-	jrpl	00101$
-;	../../my_STM8_libraries/stm8_UART.c: 24: UART1_DR = byte;
-	ldw	x, #0x5231
-	ld	a, (0x01, sp)
-	ld	(x), a
-;	../../my_STM8_libraries/stm8_UART.c: 25: }	
+;	../../my_STM8_libraries/stm8_UART.c: 12: UART1_CR2 |= UART1_CR2_TEN;
+	bset	0x5235, #3
+;	../../my_STM8_libraries/stm8_UART.c: 13: UART1_CR2 |= UART1_CR2_REN;
+	bset	0x5235, #2
+;	../../my_STM8_libraries/stm8_UART.c: 14: }
 	pop	a
 	ret
-;	../../my_STM8_libraries/stm8_UART.c: 27: void sendString_UART(const char *str) {
+;	../../my_STM8_libraries/stm8_UART.c: 15: uint8_t write_UART(uint8_t data)
 ;	-----------------------------------------
-;	 function sendString_UART
+;	 function write_UART
 ;	-----------------------------------------
-_sendString_UART:
-;	../../my_STM8_libraries/stm8_UART.c: 28: while (*str) {               // Пока текущий символ не '\0' (не ноль)
-00101$:
-	ld	a, (x)
-	jrne	00117$
-	ret
-00117$:
-;	../../my_STM8_libraries/stm8_UART.c: 29: sendByte_UART(*str);     // Отправляем текущий символ
-	pushw	x
-	call	_sendByte_UART
-	popw	x
-;	../../my_STM8_libraries/stm8_UART.c: 30: str++;                   // Переходим к следующему адресу в памяти
-	incw	x
-	jra	00101$
-;	../../my_STM8_libraries/stm8_UART.c: 32: }
-	ret
-;	../../my_STM8_libraries/stm8_UART.c: 34: void sendLine_UART(void) {
-;	-----------------------------------------
-;	 function sendLine_UART
-;	-----------------------------------------
-_sendLine_UART:
-;	../../my_STM8_libraries/stm8_UART.c: 35: sendByte_UART('\r');
-	ld	a, #0x0d
-	call	_sendByte_UART
-;	../../my_STM8_libraries/stm8_UART.c: 36: sendByte_UART('\n');
-	ld	a, #0x0a
-;	../../my_STM8_libraries/stm8_UART.c: 37: }
-	jp	_sendByte_UART
-;	../../my_STM8_libraries/stm8_UART.c: 39: void sendInt_UART(uint16_t num) {
-;	-----------------------------------------
-;	 function sendInt_UART
-;	-----------------------------------------
-_sendInt_UART:
-	sub	sp, #15
-;	../../my_STM8_libraries/stm8_UART.c: 40: if (num == 0) {
-	ldw	(0x0d, sp), x
-	jrne	00113$
-;	../../my_STM8_libraries/stm8_UART.c: 41: sendByte_UART('0');
-	ld	a, #0x30
-	addw	sp, #15
-;	../../my_STM8_libraries/stm8_UART.c: 42: return;
-	jp	_sendByte_UART
-;	../../my_STM8_libraries/stm8_UART.c: 49: while (num > 0) {
-00113$:
-	clr	a
+_write_UART:
+	ld	yl, a
+;	../../my_STM8_libraries/stm8_UART.c: 19: while (!(UART1_SR & UART1_SR_TXE))
+	ldw	x, #0xc350
 00103$:
-	ldw	x, (0x0d, sp)
-	jreq	00115$
-;	../../my_STM8_libraries/stm8_UART.c: 50: digits[i++] = (num % 10) + '0'; // Берем остаток и превращаем в символ
-	ld	xl, a
-	push	a
-	ld	a, xl
-	rlc	a
+	ld	a, 0x5230
+	jrmi	00105$
+;	../../my_STM8_libraries/stm8_UART.c: 21: if (--timeout == 0) return 0;
+	decw	x
+	tnzw	x
+	jrne	00103$
 	clr	a
-	sbc	a, #0x00
-	ld	xh, a
-	pop	a
-	inc	a
-	sllw	x
-	ldw	(0x0b, sp), x
-	ldw	x, sp
-	incw	x
-	addw	x, (0x0b, sp)
-	ldw	y, (0x0d, sp)
-	ldw	(0x0b, sp), y
+	ret
+00105$:
+;	../../my_STM8_libraries/stm8_UART.c: 24: UART1_DR = data;
+	ldw	x, #0x5231
+	ld	a, yl
+	ld	(x), a
+;	../../my_STM8_libraries/stm8_UART.c: 25: return 1;
+	ld	a, #0x01
+;	../../my_STM8_libraries/stm8_UART.c: 26: }
+	ret
+;	../../my_STM8_libraries/stm8_UART.c: 27: uint8_t print_UART(char *str)
+;	-----------------------------------------
+;	 function print_UART
+;	-----------------------------------------
+_print_UART:
+;	../../my_STM8_libraries/stm8_UART.c: 29: while (*str != 0)
+00104$:
+	ld	a, (x)
+	jreq	00106$
+;	../../my_STM8_libraries/stm8_UART.c: 31: if (write_UART(*str) == 1)
 	pushw	x
-	ldw	x, (0x0d, sp)
+	call	_write_UART
+	popw	x
+	dec	a
+	jrne	00102$
+;	../../my_STM8_libraries/stm8_UART.c: 33: str++;
+	incw	x
+	jra	00104$
+00102$:
+;	../../my_STM8_libraries/stm8_UART.c: 35: else return 0;
+	clr	a
+	ret
+00106$:
+;	../../my_STM8_libraries/stm8_UART.c: 37: return 1;
+	ld	a, #0x01
+;	../../my_STM8_libraries/stm8_UART.c: 38: }
+	ret
+;	../../my_STM8_libraries/stm8_UART.c: 39: uint8_t printInt_UART(uint16_t data)
+;	-----------------------------------------
+;	 function printInt_UART
+;	-----------------------------------------
+_printInt_UART:
+	sub	sp, #8
+;	../../my_STM8_libraries/stm8_UART.c: 44: if (data == 0)
+	tnzw	x
+	jrne	00115$
+;	../../my_STM8_libraries/stm8_UART.c: 46: write_UART('0');
+	ld	a, #0x30
+	call	_write_UART
+;	../../my_STM8_libraries/stm8_UART.c: 47: return 1;
+	ld	a, #0x01
+	jra	00111$
+;	../../my_STM8_libraries/stm8_UART.c: 49: while (data != 0)
+00115$:
+	clr	(0x08, sp)
+00103$:
+	tnzw	x
+	jreq	00117$
+;	../../my_STM8_libraries/stm8_UART.c: 51: buf[i] = (data % 10) + '0';
+	pushw	x
+	clrw	x
+	ld	a, (0x0a, sp)
+	ld	xl, a
+	pushw	x
+	ldw	x, sp
+	addw	x, #7
+	addw	x, (1, sp)
+	ldw	(0x05, sp), x
+	addw	sp, #2
+	popw	x
+	pushw	x
 	ldw	y, #0x000a
 	divw	x, y
 	popw	x
-	addw	y, #0x0030
-	ldw	(x), y
-;	../../my_STM8_libraries/stm8_UART.c: 51: num /= 10;
-	ldw	x, (0x0b, sp)
+	ld	a, yl
+	add	a, #0x30
+	ldw	y, (0x01, sp)
+	ld	(y), a
+;	../../my_STM8_libraries/stm8_UART.c: 52: data /= 10;
 	ldw	y, #0x000a
 	divw	x, y
-	ldw	(0x0d, sp), x
+;	../../my_STM8_libraries/stm8_UART.c: 53: i++;
+	inc	(0x08, sp)
 	jra	00103$
-;	../../my_STM8_libraries/stm8_UART.c: 55: while (i > 0) {
-00115$:
-	ld	(0x0f, sp), a
-00106$:
-	ld	a, (0x0f, sp)
-	cp	a, #0x00
-	jrsle	00109$
-;	../../my_STM8_libraries/stm8_UART.c: 56: sendByte_UART(digits[--i]);
-	dec	(0x0f, sp)
-	ld	a, (0x0f, sp)
+;	../../my_STM8_libraries/stm8_UART.c: 55: while (i > 0)
+00117$:
+00108$:
+	tnz	(0x08, sp)
+	jreq	00110$
+;	../../my_STM8_libraries/stm8_UART.c: 57: i--;
+	dec	(0x08, sp)
+;	../../my_STM8_libraries/stm8_UART.c: 58: if (write_UART(buf[i]) == 0) return 0;
+	clrw	x
+	ld	a, (0x08, sp)
 	ld	xl, a
-	rlc	a
-	clr	a
-	sbc	a, #0x00
-	ld	xh, a
-	sllw	x
-	ldw	(0x0b, sp), x
+	pushw	x
 	ldw	x, sp
-	incw	x
-	addw	x, (0x0b, sp)
-	ld	a, (0x1, x)
-	call	_sendByte_UART
-	jra	00106$
-00109$:
-;	../../my_STM8_libraries/stm8_UART.c: 58: }
-	addw	sp, #15
-	ret
-;	../../my_STM8_libraries/stm8_UART.c: 61: uint8_t available_UART(void) {
-;	-----------------------------------------
-;	 function available_UART
-;	-----------------------------------------
-_available_UART:
-;	../../my_STM8_libraries/stm8_UART.c: 62: if (UART1_SR & (1 << 5)) return 1;
-	btjf	0x5230, #5, 00102$
+	addw	x, #5
+	addw	x, (1, sp)
+	addw	sp, #2
+	ld	a, (x)
+	call	_write_UART
+	tnz	a
+	jrne	00108$
+	clr	a
+;	../../my_STM8_libraries/stm8_UART.c: 60: return 1;
+	.byte 0xc5
+00110$:
 	ld	a, #0x01
+00111$:
+;	../../my_STM8_libraries/stm8_UART.c: 61: }
+	addw	sp, #8
+	ret
+;	../../my_STM8_libraries/stm8_UART.c: 62: uint8_t line_UART(void)
+;	-----------------------------------------
+;	 function line_UART
+;	-----------------------------------------
+_line_UART:
+;	../../my_STM8_libraries/stm8_UART.c: 64: if (write_UART('\r') == 0) return 0;
+	ld	a, #0x0d
+	call	_write_UART
+	tnz	a
+	jrne	00102$
+	clr	a
 	ret
 00102$:
-;	../../my_STM8_libraries/stm8_UART.c: 63: return 0;
+;	../../my_STM8_libraries/stm8_UART.c: 65: if (write_UART('\n') == 0) return 0;
+	ld	a, #0x0a
+	call	_write_UART
+	tnz	a
+	jrne	00104$
 	clr	a
-;	../../my_STM8_libraries/stm8_UART.c: 64: }
 	ret
-;	../../my_STM8_libraries/stm8_UART.c: 67: uint8_t read_UART(void) {
+00104$:
+;	../../my_STM8_libraries/stm8_UART.c: 66: return 1;
+	ld	a, #0x01
+;	../../my_STM8_libraries/stm8_UART.c: 67: }
+	ret
+;	../../my_STM8_libraries/stm8_UART.c: 68: static char nibbleToHex(uint8_t nibble)
 ;	-----------------------------------------
-;	 function read_UART
+;	 function nibbleToHex
 ;	-----------------------------------------
-_read_UART:
-;	../../my_STM8_libraries/stm8_UART.c: 68: return UART1_DR;           // Чтение DR автоматически сбрасывает флаг RXNE
+_nibbleToHex:
+;	../../my_STM8_libraries/stm8_UART.c: 70: if (nibble < 10) return nibble + '0';
+	ld	xl, a
+	cp	a, #0x0a
+	jrnc	00102$
+	ld	a, xl
+	add	a, #0x30
+	ret
+00102$:
+;	../../my_STM8_libraries/stm8_UART.c: 71: else return nibble - 10 + 'A';
+	ld	a, xl
+	add	a, #0x37
+;	../../my_STM8_libraries/stm8_UART.c: 72: }
+	ret
+;	../../my_STM8_libraries/stm8_UART.c: 73: uint8_t printHex_UART(uint8_t data)
+;	-----------------------------------------
+;	 function printHex_UART
+;	-----------------------------------------
+_printHex_UART:
+	push	a
+;	../../my_STM8_libraries/stm8_UART.c: 75: uint8_t high = data >> 4;
+	ld	xl, a
+	swap	a
+	and	a, #0x0f
+	exg	a, xl
+;	../../my_STM8_libraries/stm8_UART.c: 76: uint8_t low = data & 0x0F;
+	and	a, #0x0f
+	ld	(0x01, sp), a
+;	../../my_STM8_libraries/stm8_UART.c: 78: if (write_UART(nibbleToHex(high)) == 0) return 0;
+	ld	a, xl
+	call	_nibbleToHex
+	call	_write_UART
+	tnz	a
+	jrne	00102$
+	clr	a
+	jra	00105$
+00102$:
+;	../../my_STM8_libraries/stm8_UART.c: 79: if (write_UART(nibbleToHex(low)) == 0) return 0;
+	ld	a, (0x01, sp)
+	call	_nibbleToHex
+	call	_write_UART
+	tnz	a
+	jrne	00104$
+	clr	a
+;	../../my_STM8_libraries/stm8_UART.c: 80: return 1;
+	.byte 0xc5
+00104$:
+	ld	a, #0x01
+00105$:
+;	../../my_STM8_libraries/stm8_UART.c: 81: }
+	addw	sp, #1
+	ret
+;	../../my_STM8_libraries/stm8_UART.c: 82: uint8_t isDataReceived_UART(void)
+;	-----------------------------------------
+;	 function isDataReceived_UART
+;	-----------------------------------------
+_isDataReceived_UART:
+;	../../my_STM8_libraries/stm8_UART.c: 84: if ((UART1_SR & UART1_SR_RXNE) == 0) return 0;
+	btjt	0x5230, #5, 00102$
+	clr	a
+	ret
+00102$:
+;	../../my_STM8_libraries/stm8_UART.c: 85: return 1;
+	ld	a, #0x01
+;	../../my_STM8_libraries/stm8_UART.c: 86: }
+	ret
+;	../../my_STM8_libraries/stm8_UART.c: 87: uint8_t getData_UART(void)
+;	-----------------------------------------
+;	 function getData_UART
+;	-----------------------------------------
+_getData_UART:
+;	../../my_STM8_libraries/stm8_UART.c: 89: return UART1_DR;
 	ld	a, 0x5231
-;	../../my_STM8_libraries/stm8_UART.c: 69: }
+;	../../my_STM8_libraries/stm8_UART.c: 90: }
 	ret
 	.area CODE
 	.area CONST

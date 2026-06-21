@@ -9,13 +9,15 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
+	.globl _BCDtoDEC
 	.globl _TIM4_UPD_OVF_IRQHandler
-	.globl _delay
 	.globl _init_TIME
 	.globl _tick_TIME
-	.globl _writeByte_I2C
-	.globl _writeAddr_I2C
-	.globl _start_I2C
+	.globl _line_UART
+	.globl _printInt_UART
+	.globl _print_UART
+	.globl _init_UART
+	.globl _readBuffer2_I2C
 	.globl _init_I2C
 ;--------------------------------------------------------
 ; ram data
@@ -115,59 +117,116 @@ __sdcc_program_startup:
 ; code
 ;--------------------------------------------------------
 	.area CODE
-;	main.c: 6: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23) {
+;	main.c: 7: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23) {
 ;	-----------------------------------------
 ;	 function TIM4_UPD_OVF_IRQHandler
 ;	-----------------------------------------
 _TIM4_UPD_OVF_IRQHandler:
 	clr	a
 	div	x, a
-;	main.c: 7: TIM4_SR &= ~(1 << 0);
+;	main.c: 8: TIM4_SR &= ~(1 << 0);
 	bres	0x5344, #0
-;	main.c: 8: tick_TIME();
+;	main.c: 9: tick_TIME();
 	call	_tick_TIME
-;	main.c: 9: }
+;	main.c: 10: }
 	iret
-;	main.c: 11: int main(void)
+;	main.c: 12: uint8_t BCDtoDEC(uint8_t bcd) 
+;	-----------------------------------------
+;	 function BCDtoDEC
+;	-----------------------------------------
+_BCDtoDEC:
+;	main.c: 14: return (((bcd >> 4) * 10) + (bcd & 0x0F));
+	ld	xl, a
+	swap	a
+	and	a, #0x0f
+	exg	a, xl
+	push	a
+	ld	a, #0x0a
+	mul	x, a
+	pop	a
+	and	a, #0x0f
+	pushw	x
+	add	a, (2, sp)
+	popw	x
+;	main.c: 15: }
+	ret
+;	main.c: 17: int main(void)
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-;	main.c: 13: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+	sub	sp, #2
+;	main.c: 21: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 15: init_I2C();
+;	main.c: 23: init_I2C();
 	call	_init_I2C
-;	main.c: 16: init_TIME();
+;	main.c: 24: init_TIME();
 	call	_init_TIME
-;	main.c: 18: start_I2C();
-	call	_start_I2C
-;	main.c: 19: writeAddr_I2C(0x3F);
-	ld	a, #0x3f
-	call	_writeAddr_I2C
-;	main.c: 21: while (1)
+;	main.c: 25: init_UART(9600);
+	ldw	x, #0x2580
+	call	_init_UART
+;	main.c: 27: while (1)
+00105$:
+;	main.c: 29: if (readBuffer2_I2C(0x68, 0x00, buf) == 0)
+	ldw	x, sp
+	incw	x
+	pushw	x
+	push	#0x00
+	ld	a, #0x68
+	call	_readBuffer2_I2C
+	tnz	a
+	jrne	00102$
+;	main.c: 31: print_UART("fail");
+	ldw	x, #(___str_0+0)
+	call	_print_UART
+;	main.c: 32: line_UART();
+	call	_line_UART
+	jra	00105$
 00102$:
-;	main.c: 23: writeByte_I2C(0x08);
-	ld	a, #0x08
-	call	_writeByte_I2C
-;	main.c: 24: delay(1000);
-	push	#0xe8
-	push	#0x03
+;	main.c: 36: print_UART("second is ");
+	ldw	x, #(___str_1+0)
+	call	_print_UART
+;	main.c: 37: printInt_UART(BCDtoDEC(buf[0]));
+	ld	a, (0x01, sp)
+	call	_BCDtoDEC
 	clrw	x
-	pushw	x
-	call	_delay
-;	main.c: 25: writeByte_I2C(0x00);
-	clr	a
-	call	_writeByte_I2C
-;	main.c: 26: delay(1000);
-	push	#0xe8
-	push	#0x03
+	ld	xl, a
+	call	_printInt_UART
+;	main.c: 38: line_UART();
+	call	_line_UART
+;	main.c: 39: print_UART("minutes is ");
+	ldw	x, #(___str_2+0)
+	call	_print_UART
+;	main.c: 40: printInt_UART(BCDtoDEC(buf[1]));
+	ld	a, (0x02, sp)
+	call	_BCDtoDEC
 	clrw	x
-	pushw	x
-	call	_delay
-	jra	00102$
-;	main.c: 28: }
+	ld	xl, a
+	call	_printInt_UART
+;	main.c: 41: line_UART();
+	call	_line_UART
+;	main.c: 42: line_UART();
+	call	_line_UART
+	jra	00105$
+;	main.c: 45: }
+	addw	sp, #2
 	ret
 	.area CODE
 	.area CONST
+	.area CONST
+___str_0:
+	.ascii "fail"
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_1:
+	.ascii "second is "
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_2:
+	.ascii "minutes is "
+	.db 0x00
+	.area CODE
 	.area INITIALIZER
 	.area CABS (ABS)

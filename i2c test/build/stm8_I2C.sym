@@ -7,13 +7,19 @@ Symbol Table
     .__.ABS.                                                    =  000000 G
     .__.CPU.                                                    =  000000 L
     .__.H$L.                                                    =  000001 L
+  9 _clearADDR_I2C                                                 000036 GR
   9 _init_I2C                                                      000000 GR
-  9 _ping_I2C                                                      00008C GR
+  9 _ping_I2C                                                      0000BA GR
+  9 _readBuffer2_I2C                                               0001CD GR
+  9 _readBuffer_I2C                                                000238 GR
+  9 _readByte_I2C                                                  00011A GR
+  9 _readReg_I2C                                                   000162 GR
+  9 _setACK_I2C                                                    00003D GR
   9 _start_I2C                                                     00001E GR
   9 _stop_I2C                                                      000019 GR
-  9 _writeAddr_I2C                                                 000036 GR
-  9 _writeByte_I2C                                                 000067 GR
-  9 _writeReg                                                      0000AB GR
+  9 _writeAddr_I2C                                                 000055 GR
+  9 _writeByte_I2C                                                 000095 GR
+  9 _writeReg_I2C                                                  0000DE GR
 
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8), page 2.
@@ -30,6 +36,6 @@ Area Table
    6 GSFINAL                                    size      0   flags    0
    7 CONST                                      size      0   flags    0
    8 INITIALIZER                                size      0   flags    0
-   9 CODE                                       size     E2   flags    0
+   9 CODE                                       size    23D   flags    0
    A CABS                                       size      0   flags    8
 

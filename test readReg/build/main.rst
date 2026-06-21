@@ -121,12 +121,12 @@
       00805E CD 82 37         [ 4]  121 	call	_init_I2C
                                     122 ;	main.c: 16: init_UART(9600);
       008061 AE 25 80         [ 2]  123 	ldw	x, #0x2580
-      008064 CD 85 BC         [ 4]  124 	call	_init_UART
+      008064 CD 85 CF         [ 4]  124 	call	_init_UART
                                     125 ;	main.c: 18: print_UART("start reading");
       008067 AE 80 24         [ 2]  126 	ldw	x, #(___str_0+0)
-      00806A CD 86 06         [ 4]  127 	call	_print_UART
+      00806A CD 86 19         [ 4]  127 	call	_print_UART
                                     128 ;	main.c: 19: line_UART();
-      00806D CD 86 78         [ 4]  129 	call	_line_UART
+      00806D CD 86 8B         [ 4]  129 	call	_line_UART
                                     130 ;	main.c: 23: while (1)
       008070                        131 00104$:
                                     132 ;	main.c: 25: if (readReg_I2C(0x68, 0x00, &data) == 0)
@@ -135,26 +135,26 @@
       008072 89               [ 2]  135 	pushw	x
       008073 4B 00            [ 1]  136 	push	#0x00
       008075 A6 68            [ 1]  137 	ld	a, #0x68
-      008077 CD 83 73         [ 4]  138 	call	_readReg_I2C
+      008077 CD 83 80         [ 4]  138 	call	_readReg_I2C
       00807A 4D               [ 1]  139 	tnz	a
       00807B 26 09            [ 1]  140 	jrne	00102$
                                     141 ;	main.c: 27: print_UART("fail");
       00807D AE 80 32         [ 2]  142 	ldw	x, #(___str_1+0)
-      008080 CD 86 06         [ 4]  143 	call	_print_UART
+      008080 CD 86 19         [ 4]  143 	call	_print_UART
                                     144 ;	main.c: 28: line_UART();
-      008083 CD 86 78         [ 4]  145 	call	_line_UART
+      008083 CD 86 8B         [ 4]  145 	call	_line_UART
       008086                        146 00102$:
                                     147 ;	main.c: 30: print_UART("second is ");
       008086 AE 80 37         [ 2]  148 	ldw	x, #(___str_2+0)
-      008089 CD 86 06         [ 4]  149 	call	_print_UART
+      008089 CD 86 19         [ 4]  149 	call	_print_UART
                                     150 ;	main.c: 31: printInt_UART(BCDtoDEC(data));
       00808C 7B 01            [ 1]  151 	ld	a, (0x01, sp)
       00808E CD 80 48         [ 4]  152 	call	_BCDtoDEC
       008091 5F               [ 1]  153 	clrw	x
       008092 97               [ 1]  154 	ld	xl, a
-      008093 CD 86 19         [ 4]  155 	call	_printInt_UART
+      008093 CD 86 2C         [ 4]  155 	call	_printInt_UART
                                     156 ;	main.c: 32: line_UART();
-      008096 CD 86 78         [ 4]  157 	call	_line_UART
+      008096 CD 86 8B         [ 4]  157 	call	_line_UART
       008099 20 D5            [ 2]  158 	jra	00104$
                                     159 ;	main.c: 34: }
       00809B 84               [ 1]  160 	pop	a
