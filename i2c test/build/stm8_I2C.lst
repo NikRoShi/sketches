@@ -127,431 +127,453 @@
                                     127 ;	 function setACK_I2C
                                     128 ;	-----------------------------------------
       00003D                        129 _setACK_I2C:
-      00003D 88               [ 1]  130 	push	a
-      00003E 6B 01            [ 1]  131 	ld	(0x01, sp), a
-                                    132 ;	../../my_STM8_libraries/stm8_I2C.c: 47: if (state == LOW) I2C_CR2 &= ~I2C_CR2_ACK;
-      000040 C6 52 11         [ 1]  133 	ld	a, 0x5211
-      000043 0D 01            [ 1]  134 	tnz	(0x01, sp)
-      000045 26 07            [ 1]  135 	jrne	00102$
-      000047 A4 FB            [ 1]  136 	and	a, #0xfb
-      000049 C7 52 11         [ 1]  137 	ld	0x5211, a
-      00004C 20 05            [ 2]  138 	jra	00104$
-      00004E                        139 00102$:
-                                    140 ;	../../my_STM8_libraries/stm8_I2C.c: 48: else I2C_CR2 |= I2C_CR2_ACK;
-      00004E AA 04            [ 1]  141 	or	a, #0x04
-      000050 C7 52 11         [ 1]  142 	ld	0x5211, a
-      000053                        143 00104$:
-                                    144 ;	../../my_STM8_libraries/stm8_I2C.c: 49: }
-      000053 84               [ 1]  145 	pop	a
-      000054 81               [ 4]  146 	ret
-                                    147 ;	../../my_STM8_libraries/stm8_I2C.c: 50: uint8_t writeAddr_I2C(uint8_t address, uint8_t mode)
+                                    130 ;	../../my_STM8_libraries/stm8_I2C.c: 47: if (state == LOW) I2C_CR2 &= ~I2C_CR2_ACK;
+      00003D 97               [ 1]  131 	ld	xl, a
+      00003E 4D               [ 1]  132 	tnz	a
+      00003F 26 04            [ 1]  133 	jrne	00102$
+      000041 72 15 52 11      [ 1]  134 	bres	0x5211, #2
+      000045                        135 00102$:
+                                    136 ;	../../my_STM8_libraries/stm8_I2C.c: 48: if (state == HIGH) I2C_CR2 |= I2C_CR2_ACK;
+      000045 9F               [ 1]  137 	ld	a, xl
+      000046 4A               [ 1]  138 	dec	a
+      000047 27 01            [ 1]  139 	jreq	00120$
+      000049 81               [ 4]  140 	ret
+      00004A                        141 00120$:
+      00004A 72 14 52 11      [ 1]  142 	bset	0x5211, #2
+                                    143 ;	../../my_STM8_libraries/stm8_I2C.c: 49: }
+      00004E 81               [ 4]  144 	ret
+                                    145 ;	../../my_STM8_libraries/stm8_I2C.c: 50: uint8_t writeAddr_I2C(uint8_t address, uint8_t mode)
+                                    146 ;	-----------------------------------------
+                                    147 ;	 function writeAddr_I2C
                                     148 ;	-----------------------------------------
-                                    149 ;	 function writeAddr_I2C
-                                    150 ;	-----------------------------------------
-      000055                        151 _writeAddr_I2C:
-                                    152 ;	../../my_STM8_libraries/stm8_I2C.c: 54: if (mode == WRITE) I2C_DR = (address << 1);
-      000055 48               [ 1]  153 	sll	a
-      000056 0D 03            [ 1]  154 	tnz	(0x03, sp)
-      000058 26 03            [ 1]  155 	jrne	00102$
-      00005A C7 52 16         [ 1]  156 	ld	0x5216, a
-      00005D                        157 00102$:
-                                    158 ;	../../my_STM8_libraries/stm8_I2C.c: 55: if (mode == READ) I2C_DR = (address << 1) | 0x01;
-      00005D 88               [ 1]  159 	push	a
-      00005E 7B 04            [ 1]  160 	ld	a, (0x04, sp)
-      000060 4A               [ 1]  161 	dec	a
-      000061 84               [ 1]  162 	pop	a
-      000062 26 05            [ 1]  163 	jrne	00119$
-      000064 AA 01            [ 1]  164 	or	a, #0x01
-      000066 C7 52 16         [ 1]  165 	ld	0x5216, a
-                                    166 ;	../../my_STM8_libraries/stm8_I2C.c: 57: while (!(I2C_SR1 & I2C_SR1_ADDR) && !(I2C_SR2 & I2C_SR2_AF))
-      000069                        167 00119$:
-      000069 AE C3 50         [ 2]  168 	ldw	x, #0xc350
-      00006C                        169 00108$:
-      00006C 72 02 52 17 0F   [ 2]  170 	btjt	0x5217, #1, 00110$
-      000071 72 04 52 18 0A   [ 2]  171 	btjt	0x5218, #2, 00110$
-                                    172 ;	../../my_STM8_libraries/stm8_I2C.c: 59: if (--timeout == 0) 
-      000076 5A               [ 2]  173 	decw	x
-      000077 5D               [ 2]  174 	tnzw	x
-      000078 26 F2            [ 1]  175 	jrne	00108$
-                                    176 ;	../../my_STM8_libraries/stm8_I2C.c: 61: stop_I2C();
-      00007A CDr00r19         [ 4]  177 	call	_stop_I2C
-                                    178 ;	../../my_STM8_libraries/stm8_I2C.c: 62: return 0;
-      00007D 4F               [ 1]  179 	clr	a
-      00007E 20 11            [ 2]  180 	jra	00113$
-      000080                        181 00110$:
-                                    182 ;	../../my_STM8_libraries/stm8_I2C.c: 65: if (I2C_SR1 & I2C_SR1_ADDR)	//если адрес ответил 
-      000080 72 03 52 17 04   [ 2]  183 	btjf	0x5217, #1, 00112$
-                                    184 ;	../../my_STM8_libraries/stm8_I2C.c: 67: return 1;
-      000085 A6 01            [ 1]  185 	ld	a, #0x01
-      000087 20 08            [ 2]  186 	jra	00113$
-      000089                        187 00112$:
-                                    188 ;	../../my_STM8_libraries/stm8_I2C.c: 69: I2C_SR2 &= ~I2C_SR2_AF;	//иначе, сбрасываем ошибку подтверждения
-      000089 72 15 52 18      [ 1]  189 	bres	0x5218, #2
-                                    190 ;	../../my_STM8_libraries/stm8_I2C.c: 70: stop_I2C();
-      00008D CDr00r19         [ 4]  191 	call	_stop_I2C
-                                    192 ;	../../my_STM8_libraries/stm8_I2C.c: 71: return 0;
-      000090 4F               [ 1]  193 	clr	a
-      000091                        194 00113$:
-                                    195 ;	../../my_STM8_libraries/stm8_I2C.c: 72: }
-      000091 85               [ 2]  196 	popw	x
-      000092 5B 01            [ 2]  197 	addw	sp, #1
-      000094 FC               [ 2]  198 	jp	(x)
-                                    199 ;	../../my_STM8_libraries/stm8_I2C.c: 74: uint8_t writeByte_I2C(uint8_t data)
+      00004F                        149 _writeAddr_I2C:
+                                    150 ;	../../my_STM8_libraries/stm8_I2C.c: 54: if (mode == WRITE) I2C_DR = (address << 1);
+      00004F 48               [ 1]  151 	sll	a
+      000050 0D 03            [ 1]  152 	tnz	(0x03, sp)
+      000052 26 03            [ 1]  153 	jrne	00102$
+      000054 C7 52 16         [ 1]  154 	ld	0x5216, a
+      000057                        155 00102$:
+                                    156 ;	../../my_STM8_libraries/stm8_I2C.c: 55: if (mode == READ) I2C_DR = (address << 1) | 0x01;
+      000057 88               [ 1]  157 	push	a
+      000058 7B 04            [ 1]  158 	ld	a, (0x04, sp)
+      00005A 4A               [ 1]  159 	dec	a
+      00005B 84               [ 1]  160 	pop	a
+      00005C 26 05            [ 1]  161 	jrne	00119$
+      00005E AA 01            [ 1]  162 	or	a, #0x01
+      000060 C7 52 16         [ 1]  163 	ld	0x5216, a
+                                    164 ;	../../my_STM8_libraries/stm8_I2C.c: 57: while (!(I2C_SR1 & I2C_SR1_ADDR) && !(I2C_SR2 & I2C_SR2_AF))
+      000063                        165 00119$:
+      000063 AE C3 50         [ 2]  166 	ldw	x, #0xc350
+      000066                        167 00108$:
+      000066 72 02 52 17 0F   [ 2]  168 	btjt	0x5217, #1, 00110$
+      00006B 72 04 52 18 0A   [ 2]  169 	btjt	0x5218, #2, 00110$
+                                    170 ;	../../my_STM8_libraries/stm8_I2C.c: 59: if (--timeout == 0) 
+      000070 5A               [ 2]  171 	decw	x
+      000071 5D               [ 2]  172 	tnzw	x
+      000072 26 F2            [ 1]  173 	jrne	00108$
+                                    174 ;	../../my_STM8_libraries/stm8_I2C.c: 61: stop_I2C();
+      000074 CDr00r19         [ 4]  175 	call	_stop_I2C
+                                    176 ;	../../my_STM8_libraries/stm8_I2C.c: 62: return 0;
+      000077 4F               [ 1]  177 	clr	a
+      000078 20 11            [ 2]  178 	jra	00113$
+      00007A                        179 00110$:
+                                    180 ;	../../my_STM8_libraries/stm8_I2C.c: 65: if (I2C_SR1 & I2C_SR1_ADDR)	//если адрес ответил 
+      00007A 72 03 52 17 04   [ 2]  181 	btjf	0x5217, #1, 00112$
+                                    182 ;	../../my_STM8_libraries/stm8_I2C.c: 67: return 1;
+      00007F A6 01            [ 1]  183 	ld	a, #0x01
+      000081 20 08            [ 2]  184 	jra	00113$
+      000083                        185 00112$:
+                                    186 ;	../../my_STM8_libraries/stm8_I2C.c: 69: I2C_SR2 &= ~I2C_SR2_AF;	//иначе, сбрасываем ошибку подтверждения
+      000083 72 15 52 18      [ 1]  187 	bres	0x5218, #2
+                                    188 ;	../../my_STM8_libraries/stm8_I2C.c: 70: stop_I2C();
+      000087 CDr00r19         [ 4]  189 	call	_stop_I2C
+                                    190 ;	../../my_STM8_libraries/stm8_I2C.c: 71: return 0;
+      00008A 4F               [ 1]  191 	clr	a
+      00008B                        192 00113$:
+                                    193 ;	../../my_STM8_libraries/stm8_I2C.c: 72: }
+      00008B 85               [ 2]  194 	popw	x
+      00008C 5B 01            [ 2]  195 	addw	sp, #1
+      00008E FC               [ 2]  196 	jp	(x)
+                                    197 ;	../../my_STM8_libraries/stm8_I2C.c: 74: uint8_t writeByte_I2C(uint8_t data)
+                                    198 ;	-----------------------------------------
+                                    199 ;	 function writeByte_I2C
                                     200 ;	-----------------------------------------
-                                    201 ;	 function writeByte_I2C
-                                    202 ;	-----------------------------------------
-      000095                        203 _writeByte_I2C:
-                                    204 ;	../../my_STM8_libraries/stm8_I2C.c: 78: I2C_DR = data;	//записываем байт в реистр данных
-      000095 C7 52 16         [ 1]  205 	ld	0x5216, a
-                                    206 ;	../../my_STM8_libraries/stm8_I2C.c: 80: while(!(I2C_SR1 & I2C_SR1_TXE))	//ждём флага о том, что регистр данных опустел
-      000098 AE C3 50         [ 2]  207 	ldw	x, #0xc350
-      00009B                        208 00105$:
-      00009B C6 52 17         [ 1]  209 	ld	a, 0x5217
-      00009E 2B 17            [ 1]  210 	jrmi	00107$
-                                    211 ;	../../my_STM8_libraries/stm8_I2C.c: 82: if (I2C_SR2 & I2C_SR2_AF)	//если пришёл NACK
-      0000A0 72 05 52 18 09   [ 2]  212 	btjf	0x5218, #2, 00102$
-                                    213 ;	../../my_STM8_libraries/stm8_I2C.c: 84: I2C_SR2 &= ~I2C_SR2_AF;	//очищаем регистр ошибки
-      0000A5 72 15 52 18      [ 1]  214 	bres	0x5218, #2
-                                    215 ;	../../my_STM8_libraries/stm8_I2C.c: 85: stop_I2C();
-      0000A9 CDr00r19         [ 4]  216 	call	_stop_I2C
-                                    217 ;	../../my_STM8_libraries/stm8_I2C.c: 86: return 0;
-      0000AC 4F               [ 1]  218 	clr	a
-      0000AD 81               [ 4]  219 	ret
-      0000AE                        220 00102$:
-                                    221 ;	../../my_STM8_libraries/stm8_I2C.c: 88: if (--timeout == 0)	//проверка таймаута
-      0000AE 5A               [ 2]  222 	decw	x
-      0000AF 5D               [ 2]  223 	tnzw	x
-      0000B0 26 E9            [ 1]  224 	jrne	00105$
-                                    225 ;	../../my_STM8_libraries/stm8_I2C.c: 90: stop_I2C();
-      0000B2 CDr00r19         [ 4]  226 	call	_stop_I2C
-                                    227 ;	../../my_STM8_libraries/stm8_I2C.c: 91: return 0;
-      0000B5 4F               [ 1]  228 	clr	a
-      0000B6 81               [ 4]  229 	ret
-      0000B7                        230 00107$:
-                                    231 ;	../../my_STM8_libraries/stm8_I2C.c: 94: return 1;
-      0000B7 A6 01            [ 1]  232 	ld	a, #0x01
-                                    233 ;	../../my_STM8_libraries/stm8_I2C.c: 95: }
-      0000B9 81               [ 4]  234 	ret
-                                    235 ;	../../my_STM8_libraries/stm8_I2C.c: 97: uint8_t ping_I2C(uint8_t address)
+      00008F                        201 _writeByte_I2C:
+                                    202 ;	../../my_STM8_libraries/stm8_I2C.c: 78: I2C_DR = data;	//записываем байт в реистр данных
+      00008F C7 52 16         [ 1]  203 	ld	0x5216, a
+                                    204 ;	../../my_STM8_libraries/stm8_I2C.c: 80: while(!(I2C_SR1 & I2C_SR1_TXE))	//ждём флага о том, что регистр данных опустел
+      000092 AE C3 50         [ 2]  205 	ldw	x, #0xc350
+      000095                        206 00105$:
+      000095 C6 52 17         [ 1]  207 	ld	a, 0x5217
+      000098 2B 17            [ 1]  208 	jrmi	00107$
+                                    209 ;	../../my_STM8_libraries/stm8_I2C.c: 82: if (I2C_SR2 & I2C_SR2_AF)	//если пришёл NACK
+      00009A 72 05 52 18 09   [ 2]  210 	btjf	0x5218, #2, 00102$
+                                    211 ;	../../my_STM8_libraries/stm8_I2C.c: 84: I2C_SR2 &= ~I2C_SR2_AF;	//очищаем регистр ошибки
+      00009F 72 15 52 18      [ 1]  212 	bres	0x5218, #2
+                                    213 ;	../../my_STM8_libraries/stm8_I2C.c: 85: stop_I2C();
+      0000A3 CDr00r19         [ 4]  214 	call	_stop_I2C
+                                    215 ;	../../my_STM8_libraries/stm8_I2C.c: 86: return 0;
+      0000A6 4F               [ 1]  216 	clr	a
+      0000A7 81               [ 4]  217 	ret
+      0000A8                        218 00102$:
+                                    219 ;	../../my_STM8_libraries/stm8_I2C.c: 88: if (--timeout == 0)	//проверка таймаута
+      0000A8 5A               [ 2]  220 	decw	x
+      0000A9 5D               [ 2]  221 	tnzw	x
+      0000AA 26 E9            [ 1]  222 	jrne	00105$
+                                    223 ;	../../my_STM8_libraries/stm8_I2C.c: 90: stop_I2C();
+      0000AC CDr00r19         [ 4]  224 	call	_stop_I2C
+                                    225 ;	../../my_STM8_libraries/stm8_I2C.c: 91: return 0;
+      0000AF 4F               [ 1]  226 	clr	a
+      0000B0 81               [ 4]  227 	ret
+      0000B1                        228 00107$:
+                                    229 ;	../../my_STM8_libraries/stm8_I2C.c: 94: return 1;
+      0000B1 A6 01            [ 1]  230 	ld	a, #0x01
+                                    231 ;	../../my_STM8_libraries/stm8_I2C.c: 95: }
+      0000B3 81               [ 4]  232 	ret
+                                    233 ;	../../my_STM8_libraries/stm8_I2C.c: 97: uint8_t ping_I2C(uint8_t address)
+                                    234 ;	-----------------------------------------
+                                    235 ;	 function ping_I2C
                                     236 ;	-----------------------------------------
-                                    237 ;	 function ping_I2C
-                                    238 ;	-----------------------------------------
-      0000BA                        239 _ping_I2C:
-      0000BA 88               [ 1]  240 	push	a
-      0000BB 6B 01            [ 1]  241 	ld	(0x01, sp), a
-                                    242 ;	../../my_STM8_libraries/stm8_I2C.c: 99: if (start_I2C() == 0) return 0;
-      0000BD CDr00r1E         [ 4]  243 	call	_start_I2C
-      0000C0 4D               [ 1]  244 	tnz	a
-      0000C1 26 03            [ 1]  245 	jrne	00102$
-      0000C3 4F               [ 1]  246 	clr	a
-      0000C4 20 15            [ 2]  247 	jra	00105$
-      0000C6                        248 00102$:
-                                    249 ;	../../my_STM8_libraries/stm8_I2C.c: 100: if (writeAddr_I2C(address, WRITE) == 0) return 0;
-      0000C6 4B 00            [ 1]  250 	push	#0x00
-      0000C8 7B 02            [ 1]  251 	ld	a, (0x02, sp)
-      0000CA CDr00r55         [ 4]  252 	call	_writeAddr_I2C
-      0000CD 4D               [ 1]  253 	tnz	a
-      0000CE 26 03            [ 1]  254 	jrne	00104$
-      0000D0 4F               [ 1]  255 	clr	a
-      0000D1 20 08            [ 2]  256 	jra	00105$
-      0000D3                        257 00104$:
-                                    258 ;	../../my_STM8_libraries/stm8_I2C.c: 101: clearADDR_I2C(); 
-      0000D3 CDr00r36         [ 4]  259 	call	_clearADDR_I2C
-                                    260 ;	../../my_STM8_libraries/stm8_I2C.c: 102: stop_I2C();
-      0000D6 CDr00r19         [ 4]  261 	call	_stop_I2C
-                                    262 ;	../../my_STM8_libraries/stm8_I2C.c: 103: return 1;
-      0000D9 A6 01            [ 1]  263 	ld	a, #0x01
-      0000DB                        264 00105$:
-                                    265 ;	../../my_STM8_libraries/stm8_I2C.c: 104: }
-      0000DB 5B 01            [ 2]  266 	addw	sp, #1
-      0000DD 81               [ 4]  267 	ret
-                                    268 ;	../../my_STM8_libraries/stm8_I2C.c: 106: uint8_t writeReg_I2C(uint8_t address, uint8_t reg, uint8_t data)
+      0000B4                        237 _ping_I2C:
+      0000B4 88               [ 1]  238 	push	a
+      0000B5 6B 01            [ 1]  239 	ld	(0x01, sp), a
+                                    240 ;	../../my_STM8_libraries/stm8_I2C.c: 99: if (start_I2C() == 0) return 0;
+      0000B7 CDr00r1E         [ 4]  241 	call	_start_I2C
+      0000BA 4D               [ 1]  242 	tnz	a
+      0000BB 26 03            [ 1]  243 	jrne	00102$
+      0000BD 4F               [ 1]  244 	clr	a
+      0000BE 20 15            [ 2]  245 	jra	00105$
+      0000C0                        246 00102$:
+                                    247 ;	../../my_STM8_libraries/stm8_I2C.c: 100: if (writeAddr_I2C(address, WRITE) == 0) return 0;
+      0000C0 4B 00            [ 1]  248 	push	#0x00
+      0000C2 7B 02            [ 1]  249 	ld	a, (0x02, sp)
+      0000C4 CDr00r4F         [ 4]  250 	call	_writeAddr_I2C
+      0000C7 4D               [ 1]  251 	tnz	a
+      0000C8 26 03            [ 1]  252 	jrne	00104$
+      0000CA 4F               [ 1]  253 	clr	a
+      0000CB 20 08            [ 2]  254 	jra	00105$
+      0000CD                        255 00104$:
+                                    256 ;	../../my_STM8_libraries/stm8_I2C.c: 101: clearADDR_I2C(); 
+      0000CD CDr00r36         [ 4]  257 	call	_clearADDR_I2C
+                                    258 ;	../../my_STM8_libraries/stm8_I2C.c: 102: stop_I2C();
+      0000D0 CDr00r19         [ 4]  259 	call	_stop_I2C
+                                    260 ;	../../my_STM8_libraries/stm8_I2C.c: 103: return 1;
+      0000D3 A6 01            [ 1]  261 	ld	a, #0x01
+      0000D5                        262 00105$:
+                                    263 ;	../../my_STM8_libraries/stm8_I2C.c: 104: }
+      0000D5 5B 01            [ 2]  264 	addw	sp, #1
+      0000D7 81               [ 4]  265 	ret
+                                    266 ;	../../my_STM8_libraries/stm8_I2C.c: 106: uint8_t writeReg_I2C(uint8_t address, uint8_t reg, uint8_t data)
+                                    267 ;	-----------------------------------------
+                                    268 ;	 function writeReg_I2C
                                     269 ;	-----------------------------------------
-                                    270 ;	 function writeReg_I2C
-                                    271 ;	-----------------------------------------
-      0000DE                        272 _writeReg_I2C:
-      0000DE 88               [ 1]  273 	push	a
-      0000DF 6B 01            [ 1]  274 	ld	(0x01, sp), a
-                                    275 ;	../../my_STM8_libraries/stm8_I2C.c: 108: if (start_I2C() == 0) return 0;
-      0000E1 CDr00r1E         [ 4]  276 	call	_start_I2C
-      0000E4 4D               [ 1]  277 	tnz	a
-      0000E5 26 03            [ 1]  278 	jrne	00102$
-      0000E7 4F               [ 1]  279 	clr	a
-      0000E8 20 2B            [ 2]  280 	jra	00109$
-      0000EA                        281 00102$:
-                                    282 ;	../../my_STM8_libraries/stm8_I2C.c: 110: if (writeAddr_I2C(address, WRITE) == 0) return 0;
-      0000EA 4B 00            [ 1]  283 	push	#0x00
-      0000EC 7B 02            [ 1]  284 	ld	a, (0x02, sp)
-      0000EE CDr00r55         [ 4]  285 	call	_writeAddr_I2C
-      0000F1 4D               [ 1]  286 	tnz	a
-      0000F2 26 03            [ 1]  287 	jrne	00104$
-      0000F4 4F               [ 1]  288 	clr	a
-      0000F5 20 1E            [ 2]  289 	jra	00109$
-      0000F7                        290 00104$:
-                                    291 ;	../../my_STM8_libraries/stm8_I2C.c: 111: clearADDR_I2C();
-      0000F7 CDr00r36         [ 4]  292 	call	_clearADDR_I2C
-                                    293 ;	../../my_STM8_libraries/stm8_I2C.c: 113: if (writeByte_I2C(reg) == 0) return 0;
-      0000FA 7B 04            [ 1]  294 	ld	a, (0x04, sp)
-      0000FC CDr00r95         [ 4]  295 	call	_writeByte_I2C
-      0000FF 4D               [ 1]  296 	tnz	a
-      000100 26 03            [ 1]  297 	jrne	00106$
-      000102 4F               [ 1]  298 	clr	a
-      000103 20 10            [ 2]  299 	jra	00109$
-      000105                        300 00106$:
-                                    301 ;	../../my_STM8_libraries/stm8_I2C.c: 115: if (writeByte_I2C(data) == 0) return 0;
-      000105 7B 05            [ 1]  302 	ld	a, (0x05, sp)
-      000107 CDr00r95         [ 4]  303 	call	_writeByte_I2C
-      00010A 4D               [ 1]  304 	tnz	a
-      00010B 26 03            [ 1]  305 	jrne	00108$
-      00010D 4F               [ 1]  306 	clr	a
-      00010E 20 05            [ 2]  307 	jra	00109$
-      000110                        308 00108$:
-                                    309 ;	../../my_STM8_libraries/stm8_I2C.c: 117: stop_I2C();
-      000110 CDr00r19         [ 4]  310 	call	_stop_I2C
-                                    311 ;	../../my_STM8_libraries/stm8_I2C.c: 118: return 1;
-      000113 A6 01            [ 1]  312 	ld	a, #0x01
-      000115                        313 00109$:
-                                    314 ;	../../my_STM8_libraries/stm8_I2C.c: 119: }
-      000115 1E 02            [ 2]  315 	ldw	x, (2, sp)
-      000117 5B 05            [ 2]  316 	addw	sp, #5
-      000119 FC               [ 2]  317 	jp	(x)
-                                    318 ;	../../my_STM8_libraries/stm8_I2C.c: 121: uint8_t readByte_I2C(uint8_t address, uint8_t *data)
+      0000D8                        270 _writeReg_I2C:
+      0000D8 88               [ 1]  271 	push	a
+      0000D9 6B 01            [ 1]  272 	ld	(0x01, sp), a
+                                    273 ;	../../my_STM8_libraries/stm8_I2C.c: 108: if (start_I2C() == 0) return 0;
+      0000DB CDr00r1E         [ 4]  274 	call	_start_I2C
+      0000DE 4D               [ 1]  275 	tnz	a
+      0000DF 26 03            [ 1]  276 	jrne	00102$
+      0000E1 4F               [ 1]  277 	clr	a
+      0000E2 20 2B            [ 2]  278 	jra	00109$
+      0000E4                        279 00102$:
+                                    280 ;	../../my_STM8_libraries/stm8_I2C.c: 110: if (writeAddr_I2C(address, WRITE) == 0) return 0;
+      0000E4 4B 00            [ 1]  281 	push	#0x00
+      0000E6 7B 02            [ 1]  282 	ld	a, (0x02, sp)
+      0000E8 CDr00r4F         [ 4]  283 	call	_writeAddr_I2C
+      0000EB 4D               [ 1]  284 	tnz	a
+      0000EC 26 03            [ 1]  285 	jrne	00104$
+      0000EE 4F               [ 1]  286 	clr	a
+      0000EF 20 1E            [ 2]  287 	jra	00109$
+      0000F1                        288 00104$:
+                                    289 ;	../../my_STM8_libraries/stm8_I2C.c: 111: clearADDR_I2C();
+      0000F1 CDr00r36         [ 4]  290 	call	_clearADDR_I2C
+                                    291 ;	../../my_STM8_libraries/stm8_I2C.c: 113: if (writeByte_I2C(reg) == 0) return 0;
+      0000F4 7B 04            [ 1]  292 	ld	a, (0x04, sp)
+      0000F6 CDr00r8F         [ 4]  293 	call	_writeByte_I2C
+      0000F9 4D               [ 1]  294 	tnz	a
+      0000FA 26 03            [ 1]  295 	jrne	00106$
+      0000FC 4F               [ 1]  296 	clr	a
+      0000FD 20 10            [ 2]  297 	jra	00109$
+      0000FF                        298 00106$:
+                                    299 ;	../../my_STM8_libraries/stm8_I2C.c: 115: if (writeByte_I2C(data) == 0) return 0;
+      0000FF 7B 05            [ 1]  300 	ld	a, (0x05, sp)
+      000101 CDr00r8F         [ 4]  301 	call	_writeByte_I2C
+      000104 4D               [ 1]  302 	tnz	a
+      000105 26 03            [ 1]  303 	jrne	00108$
+      000107 4F               [ 1]  304 	clr	a
+      000108 20 05            [ 2]  305 	jra	00109$
+      00010A                        306 00108$:
+                                    307 ;	../../my_STM8_libraries/stm8_I2C.c: 117: stop_I2C();
+      00010A CDr00r19         [ 4]  308 	call	_stop_I2C
+                                    309 ;	../../my_STM8_libraries/stm8_I2C.c: 118: return 1;
+      00010D A6 01            [ 1]  310 	ld	a, #0x01
+      00010F                        311 00109$:
+                                    312 ;	../../my_STM8_libraries/stm8_I2C.c: 119: }
+      00010F 1E 02            [ 2]  313 	ldw	x, (2, sp)
+      000111 5B 05            [ 2]  314 	addw	sp, #5
+      000113 FC               [ 2]  315 	jp	(x)
+                                    316 ;	../../my_STM8_libraries/stm8_I2C.c: 121: uint8_t readByte_I2C(uint8_t address, uint8_t *data)
+                                    317 ;	-----------------------------------------
+                                    318 ;	 function readByte_I2C
                                     319 ;	-----------------------------------------
-                                    320 ;	 function readByte_I2C
-                                    321 ;	-----------------------------------------
-      00011A                        322 _readByte_I2C:
-      00011A 52 03            [ 2]  323 	sub	sp, #3
-      00011C 6B 03            [ 1]  324 	ld	(0x03, sp), a
-      00011E 1F 01            [ 2]  325 	ldw	(0x01, sp), x
-                                    326 ;	../../my_STM8_libraries/stm8_I2C.c: 125: if (start_I2C() == 0) return 0;
-      000120 CDr00r1E         [ 4]  327 	call	_start_I2C
-      000123 4D               [ 1]  328 	tnz	a
-      000124 26 03            [ 1]  329 	jrne	00102$
-      000126 4F               [ 1]  330 	clr	a
-      000127 20 36            [ 2]  331 	jra	00110$
-      000129                        332 00102$:
-                                    333 ;	../../my_STM8_libraries/stm8_I2C.c: 127: if (writeAddr_I2C(address, READ) == 0) return 0;
-      000129 4B 01            [ 1]  334 	push	#0x01
-      00012B 7B 04            [ 1]  335 	ld	a, (0x04, sp)
-      00012D CDr00r55         [ 4]  336 	call	_writeAddr_I2C
-      000130 4D               [ 1]  337 	tnz	a
-      000131 26 03            [ 1]  338 	jrne	00104$
-      000133 4F               [ 1]  339 	clr	a
-      000134 20 29            [ 2]  340 	jra	00110$
-      000136                        341 00104$:
-                                    342 ;	../../my_STM8_libraries/stm8_I2C.c: 129: setACK_I2C(LOW);
-      000136 4F               [ 1]  343 	clr	a
-      000137 CDr00r3D         [ 4]  344 	call	_setACK_I2C
-                                    345 ;	../../my_STM8_libraries/stm8_I2C.c: 131: clearADDR_I2C();
-      00013A CDr00r36         [ 4]  346 	call	_clearADDR_I2C
-                                    347 ;	../../my_STM8_libraries/stm8_I2C.c: 133: stop_I2C();
-      00013D CDr00r19         [ 4]  348 	call	_stop_I2C
-                                    349 ;	../../my_STM8_libraries/stm8_I2C.c: 135: while (!(I2C_SR1 & I2C_SR1_RXNE))
-      000140 AE C3 50         [ 2]  350 	ldw	x, #0xc350
-      000143                        351 00107$:
-      000143 72 0C 52 17 0A   [ 2]  352 	btjt	0x5217, #6, 00109$
-                                    353 ;	../../my_STM8_libraries/stm8_I2C.c: 137: if (--timeout == 0) 
-      000148 5A               [ 2]  354 	decw	x
-      000149 5D               [ 2]  355 	tnzw	x
-      00014A 26 F7            [ 1]  356 	jrne	00107$
-                                    357 ;	../../my_STM8_libraries/stm8_I2C.c: 139: stop_I2C();
-      00014C CDr00r19         [ 4]  358 	call	_stop_I2C
-                                    359 ;	../../my_STM8_libraries/stm8_I2C.c: 140: return 0;
-      00014F 4F               [ 1]  360 	clr	a
-      000150 20 0D            [ 2]  361 	jra	00110$
-      000152                        362 00109$:
-                                    363 ;	../../my_STM8_libraries/stm8_I2C.c: 143: *data = I2C_DR;
-      000152 C6 52 16         [ 1]  364 	ld	a, 0x5216
-      000155 1E 01            [ 2]  365 	ldw	x, (0x01, sp)
-      000157 F7               [ 1]  366 	ld	(x), a
-                                    367 ;	../../my_STM8_libraries/stm8_I2C.c: 145: setACK_I2C(HIGH);
-      000158 A6 01            [ 1]  368 	ld	a, #0x01
-      00015A CDr00r3D         [ 4]  369 	call	_setACK_I2C
-                                    370 ;	../../my_STM8_libraries/stm8_I2C.c: 147: return 1;
-      00015D A6 01            [ 1]  371 	ld	a, #0x01
-      00015F                        372 00110$:
-                                    373 ;	../../my_STM8_libraries/stm8_I2C.c: 148: }
-      00015F 5B 03            [ 2]  374 	addw	sp, #3
-      000161 81               [ 4]  375 	ret
-                                    376 ;	../../my_STM8_libraries/stm8_I2C.c: 149: uint8_t readReg_I2C(uint8_t address, uint8_t reg, uint8_t *data)
+      000114                        320 _readByte_I2C:
+      000114 52 03            [ 2]  321 	sub	sp, #3
+      000116 6B 03            [ 1]  322 	ld	(0x03, sp), a
+      000118 1F 01            [ 2]  323 	ldw	(0x01, sp), x
+                                    324 ;	../../my_STM8_libraries/stm8_I2C.c: 125: if (start_I2C() == 0) return 0;
+      00011A CDr00r1E         [ 4]  325 	call	_start_I2C
+      00011D 4D               [ 1]  326 	tnz	a
+      00011E 26 03            [ 1]  327 	jrne	00102$
+      000120 4F               [ 1]  328 	clr	a
+      000121 20 36            [ 2]  329 	jra	00110$
+      000123                        330 00102$:
+                                    331 ;	../../my_STM8_libraries/stm8_I2C.c: 127: if (writeAddr_I2C(address, READ) == 0) return 0;
+      000123 4B 01            [ 1]  332 	push	#0x01
+      000125 7B 04            [ 1]  333 	ld	a, (0x04, sp)
+      000127 CDr00r4F         [ 4]  334 	call	_writeAddr_I2C
+      00012A 4D               [ 1]  335 	tnz	a
+      00012B 26 03            [ 1]  336 	jrne	00104$
+      00012D 4F               [ 1]  337 	clr	a
+      00012E 20 29            [ 2]  338 	jra	00110$
+      000130                        339 00104$:
+                                    340 ;	../../my_STM8_libraries/stm8_I2C.c: 129: setACK_I2C(LOW);
+      000130 4F               [ 1]  341 	clr	a
+      000131 CDr00r3D         [ 4]  342 	call	_setACK_I2C
+                                    343 ;	../../my_STM8_libraries/stm8_I2C.c: 131: clearADDR_I2C();
+      000134 CDr00r36         [ 4]  344 	call	_clearADDR_I2C
+                                    345 ;	../../my_STM8_libraries/stm8_I2C.c: 133: stop_I2C();
+      000137 CDr00r19         [ 4]  346 	call	_stop_I2C
+                                    347 ;	../../my_STM8_libraries/stm8_I2C.c: 135: while (!(I2C_SR1 & I2C_SR1_RXNE))
+      00013A AE C3 50         [ 2]  348 	ldw	x, #0xc350
+      00013D                        349 00107$:
+      00013D 72 0C 52 17 0A   [ 2]  350 	btjt	0x5217, #6, 00109$
+                                    351 ;	../../my_STM8_libraries/stm8_I2C.c: 137: if (--timeout == 0) 
+      000142 5A               [ 2]  352 	decw	x
+      000143 5D               [ 2]  353 	tnzw	x
+      000144 26 F7            [ 1]  354 	jrne	00107$
+                                    355 ;	../../my_STM8_libraries/stm8_I2C.c: 139: stop_I2C();
+      000146 CDr00r19         [ 4]  356 	call	_stop_I2C
+                                    357 ;	../../my_STM8_libraries/stm8_I2C.c: 140: return 0;
+      000149 4F               [ 1]  358 	clr	a
+      00014A 20 0D            [ 2]  359 	jra	00110$
+      00014C                        360 00109$:
+                                    361 ;	../../my_STM8_libraries/stm8_I2C.c: 143: *data = I2C_DR;
+      00014C C6 52 16         [ 1]  362 	ld	a, 0x5216
+      00014F 1E 01            [ 2]  363 	ldw	x, (0x01, sp)
+      000151 F7               [ 1]  364 	ld	(x), a
+                                    365 ;	../../my_STM8_libraries/stm8_I2C.c: 145: setACK_I2C(HIGH);
+      000152 A6 01            [ 1]  366 	ld	a, #0x01
+      000154 CDr00r3D         [ 4]  367 	call	_setACK_I2C
+                                    368 ;	../../my_STM8_libraries/stm8_I2C.c: 147: return 1;
+      000157 A6 01            [ 1]  369 	ld	a, #0x01
+      000159                        370 00110$:
+                                    371 ;	../../my_STM8_libraries/stm8_I2C.c: 148: }
+      000159 5B 03            [ 2]  372 	addw	sp, #3
+      00015B 81               [ 4]  373 	ret
+                                    374 ;	../../my_STM8_libraries/stm8_I2C.c: 149: uint8_t readReg_I2C(uint8_t address, uint8_t reg, uint8_t *data)
+                                    375 ;	-----------------------------------------
+                                    376 ;	 function readReg_I2C
                                     377 ;	-----------------------------------------
-                                    378 ;	 function readReg_I2C
-                                    379 ;	-----------------------------------------
-      000162                        380 _readReg_I2C:
-      000162 88               [ 1]  381 	push	a
-      000163 6B 01            [ 1]  382 	ld	(0x01, sp), a
-                                    383 ;	../../my_STM8_libraries/stm8_I2C.c: 153: if (start_I2C() == 0) return 0;
-      000165 CDr00r1E         [ 4]  384 	call	_start_I2C
-      000168 4D               [ 1]  385 	tnz	a
-      000169 26 03            [ 1]  386 	jrne	00102$
-      00016B 4F               [ 1]  387 	clr	a
-      00016C 20 5A            [ 2]  388 	jra	00116$
-      00016E                        389 00102$:
-                                    390 ;	../../my_STM8_libraries/stm8_I2C.c: 155: if (writeAddr_I2C(address, WRITE) == 0) return 0;
-      00016E 4B 00            [ 1]  391 	push	#0x00
-      000170 7B 02            [ 1]  392 	ld	a, (0x02, sp)
-      000172 CDr00r55         [ 4]  393 	call	_writeAddr_I2C
-      000175 4D               [ 1]  394 	tnz	a
-      000176 26 03            [ 1]  395 	jrne	00104$
-      000178 4F               [ 1]  396 	clr	a
-      000179 20 4D            [ 2]  397 	jra	00116$
-      00017B                        398 00104$:
-                                    399 ;	../../my_STM8_libraries/stm8_I2C.c: 157: clearADDR_I2C();
-      00017B CDr00r36         [ 4]  400 	call	_clearADDR_I2C
-                                    401 ;	../../my_STM8_libraries/stm8_I2C.c: 159: if (writeByte_I2C(reg) == 0) return 0;
-      00017E 7B 04            [ 1]  402 	ld	a, (0x04, sp)
-      000180 CDr00r95         [ 4]  403 	call	_writeByte_I2C
-      000183 4D               [ 1]  404 	tnz	a
-      000184 26 03            [ 1]  405 	jrne	00106$
-      000186 4F               [ 1]  406 	clr	a
-      000187 20 3F            [ 2]  407 	jra	00116$
-      000189                        408 00106$:
-                                    409 ;	../../my_STM8_libraries/stm8_I2C.c: 161: if (start_I2C() == 0) return 0;
-      000189 CDr00r1E         [ 4]  410 	call	_start_I2C
-      00018C 4D               [ 1]  411 	tnz	a
-      00018D 26 03            [ 1]  412 	jrne	00108$
-      00018F 4F               [ 1]  413 	clr	a
-      000190 20 36            [ 2]  414 	jra	00116$
-      000192                        415 00108$:
-                                    416 ;	../../my_STM8_libraries/stm8_I2C.c: 163: if (writeAddr_I2C(address, READ) == 0) return 0;
-      000192 4B 01            [ 1]  417 	push	#0x01
-      000194 7B 02            [ 1]  418 	ld	a, (0x02, sp)
-      000196 CDr00r55         [ 4]  419 	call	_writeAddr_I2C
-      000199 4D               [ 1]  420 	tnz	a
-      00019A 26 03            [ 1]  421 	jrne	00110$
-      00019C 4F               [ 1]  422 	clr	a
-      00019D 20 29            [ 2]  423 	jra	00116$
-      00019F                        424 00110$:
-                                    425 ;	../../my_STM8_libraries/stm8_I2C.c: 165: setACK_I2C(LOW);
-      00019F 4F               [ 1]  426 	clr	a
-      0001A0 CDr00r3D         [ 4]  427 	call	_setACK_I2C
-                                    428 ;	../../my_STM8_libraries/stm8_I2C.c: 167: clearADDR_I2C();
-      0001A3 CDr00r36         [ 4]  429 	call	_clearADDR_I2C
-                                    430 ;	../../my_STM8_libraries/stm8_I2C.c: 169: stop_I2C();
-      0001A6 CDr00r19         [ 4]  431 	call	_stop_I2C
-                                    432 ;	../../my_STM8_libraries/stm8_I2C.c: 171: while (!(I2C_SR1 & I2C_SR1_RXNE))
-      0001A9 AE C3 50         [ 2]  433 	ldw	x, #0xc350
-      0001AC                        434 00113$:
-      0001AC 72 0C 52 17 0A   [ 2]  435 	btjt	0x5217, #6, 00115$
-                                    436 ;	../../my_STM8_libraries/stm8_I2C.c: 173: if (--timeout == 0)
-      0001B1 5A               [ 2]  437 	decw	x
-      0001B2 5D               [ 2]  438 	tnzw	x
-      0001B3 26 F7            [ 1]  439 	jrne	00113$
-                                    440 ;	../../my_STM8_libraries/stm8_I2C.c: 175: stop_I2C();
-      0001B5 CDr00r19         [ 4]  441 	call	_stop_I2C
-                                    442 ;	../../my_STM8_libraries/stm8_I2C.c: 176: return 0;
-      0001B8 4F               [ 1]  443 	clr	a
-      0001B9 20 0D            [ 2]  444 	jra	00116$
-      0001BB                        445 00115$:
-                                    446 ;	../../my_STM8_libraries/stm8_I2C.c: 179: *data = I2C_DR;
-      0001BB 1E 05            [ 2]  447 	ldw	x, (0x05, sp)
-      0001BD C6 52 16         [ 1]  448 	ld	a, 0x5216
-      0001C0 F7               [ 1]  449 	ld	(x), a
-                                    450 ;	../../my_STM8_libraries/stm8_I2C.c: 181: setACK_I2C(HIGH);
-      0001C1 A6 01            [ 1]  451 	ld	a, #0x01
-      0001C3 CDr00r3D         [ 4]  452 	call	_setACK_I2C
-                                    453 ;	../../my_STM8_libraries/stm8_I2C.c: 183: return 1;
-      0001C6 A6 01            [ 1]  454 	ld	a, #0x01
-      0001C8                        455 00116$:
-                                    456 ;	../../my_STM8_libraries/stm8_I2C.c: 184: }
-      0001C8 1E 02            [ 2]  457 	ldw	x, (2, sp)
-      0001CA 5B 06            [ 2]  458 	addw	sp, #6
-      0001CC FC               [ 2]  459 	jp	(x)
-                                    460 ;	../../my_STM8_libraries/stm8_I2C.c: 185: uint8_t readBuffer2_I2C(uint8_t address, uint8_t reg, uint8_t *buf)
+      00015C                        378 _readReg_I2C:
+      00015C 88               [ 1]  379 	push	a
+      00015D 6B 01            [ 1]  380 	ld	(0x01, sp), a
+                                    381 ;	../../my_STM8_libraries/stm8_I2C.c: 153: if (start_I2C() == 0) return 0;
+      00015F CDr00r1E         [ 4]  382 	call	_start_I2C
+      000162 4D               [ 1]  383 	tnz	a
+      000163 26 03            [ 1]  384 	jrne	00102$
+      000165 4F               [ 1]  385 	clr	a
+      000166 20 5A            [ 2]  386 	jra	00116$
+      000168                        387 00102$:
+                                    388 ;	../../my_STM8_libraries/stm8_I2C.c: 155: if (writeAddr_I2C(address, WRITE) == 0) return 0;
+      000168 4B 00            [ 1]  389 	push	#0x00
+      00016A 7B 02            [ 1]  390 	ld	a, (0x02, sp)
+      00016C CDr00r4F         [ 4]  391 	call	_writeAddr_I2C
+      00016F 4D               [ 1]  392 	tnz	a
+      000170 26 03            [ 1]  393 	jrne	00104$
+      000172 4F               [ 1]  394 	clr	a
+      000173 20 4D            [ 2]  395 	jra	00116$
+      000175                        396 00104$:
+                                    397 ;	../../my_STM8_libraries/stm8_I2C.c: 157: clearADDR_I2C();
+      000175 CDr00r36         [ 4]  398 	call	_clearADDR_I2C
+                                    399 ;	../../my_STM8_libraries/stm8_I2C.c: 159: if (writeByte_I2C(reg) == 0) return 0;
+      000178 7B 04            [ 1]  400 	ld	a, (0x04, sp)
+      00017A CDr00r8F         [ 4]  401 	call	_writeByte_I2C
+      00017D 4D               [ 1]  402 	tnz	a
+      00017E 26 03            [ 1]  403 	jrne	00106$
+      000180 4F               [ 1]  404 	clr	a
+      000181 20 3F            [ 2]  405 	jra	00116$
+      000183                        406 00106$:
+                                    407 ;	../../my_STM8_libraries/stm8_I2C.c: 161: if (start_I2C() == 0) return 0;
+      000183 CDr00r1E         [ 4]  408 	call	_start_I2C
+      000186 4D               [ 1]  409 	tnz	a
+      000187 26 03            [ 1]  410 	jrne	00108$
+      000189 4F               [ 1]  411 	clr	a
+      00018A 20 36            [ 2]  412 	jra	00116$
+      00018C                        413 00108$:
+                                    414 ;	../../my_STM8_libraries/stm8_I2C.c: 163: if (writeAddr_I2C(address, READ) == 0) return 0;
+      00018C 4B 01            [ 1]  415 	push	#0x01
+      00018E 7B 02            [ 1]  416 	ld	a, (0x02, sp)
+      000190 CDr00r4F         [ 4]  417 	call	_writeAddr_I2C
+      000193 4D               [ 1]  418 	tnz	a
+      000194 26 03            [ 1]  419 	jrne	00110$
+      000196 4F               [ 1]  420 	clr	a
+      000197 20 29            [ 2]  421 	jra	00116$
+      000199                        422 00110$:
+                                    423 ;	../../my_STM8_libraries/stm8_I2C.c: 165: setACK_I2C(LOW);
+      000199 4F               [ 1]  424 	clr	a
+      00019A CDr00r3D         [ 4]  425 	call	_setACK_I2C
+                                    426 ;	../../my_STM8_libraries/stm8_I2C.c: 167: clearADDR_I2C();
+      00019D CDr00r36         [ 4]  427 	call	_clearADDR_I2C
+                                    428 ;	../../my_STM8_libraries/stm8_I2C.c: 169: stop_I2C();
+      0001A0 CDr00r19         [ 4]  429 	call	_stop_I2C
+                                    430 ;	../../my_STM8_libraries/stm8_I2C.c: 171: while (!(I2C_SR1 & I2C_SR1_RXNE))
+      0001A3 AE C3 50         [ 2]  431 	ldw	x, #0xc350
+      0001A6                        432 00113$:
+      0001A6 72 0C 52 17 0A   [ 2]  433 	btjt	0x5217, #6, 00115$
+                                    434 ;	../../my_STM8_libraries/stm8_I2C.c: 173: if (--timeout == 0)
+      0001AB 5A               [ 2]  435 	decw	x
+      0001AC 5D               [ 2]  436 	tnzw	x
+      0001AD 26 F7            [ 1]  437 	jrne	00113$
+                                    438 ;	../../my_STM8_libraries/stm8_I2C.c: 175: stop_I2C();
+      0001AF CDr00r19         [ 4]  439 	call	_stop_I2C
+                                    440 ;	../../my_STM8_libraries/stm8_I2C.c: 176: return 0;
+      0001B2 4F               [ 1]  441 	clr	a
+      0001B3 20 0D            [ 2]  442 	jra	00116$
+      0001B5                        443 00115$:
+                                    444 ;	../../my_STM8_libraries/stm8_I2C.c: 179: *data = I2C_DR;
+      0001B5 1E 05            [ 2]  445 	ldw	x, (0x05, sp)
+      0001B7 C6 52 16         [ 1]  446 	ld	a, 0x5216
+      0001BA F7               [ 1]  447 	ld	(x), a
+                                    448 ;	../../my_STM8_libraries/stm8_I2C.c: 181: setACK_I2C(HIGH);
+      0001BB A6 01            [ 1]  449 	ld	a, #0x01
+      0001BD CDr00r3D         [ 4]  450 	call	_setACK_I2C
+                                    451 ;	../../my_STM8_libraries/stm8_I2C.c: 183: return 1;
+      0001C0 A6 01            [ 1]  452 	ld	a, #0x01
+      0001C2                        453 00116$:
+                                    454 ;	../../my_STM8_libraries/stm8_I2C.c: 184: }
+      0001C2 1E 02            [ 2]  455 	ldw	x, (2, sp)
+      0001C4 5B 06            [ 2]  456 	addw	sp, #6
+      0001C6 FC               [ 2]  457 	jp	(x)
+                                    458 ;	../../my_STM8_libraries/stm8_I2C.c: 185: uint8_t readBuffer2_I2C(uint8_t address, uint8_t reg, uint8_t *buf)
+                                    459 ;	-----------------------------------------
+                                    460 ;	 function readBuffer2_I2C
                                     461 ;	-----------------------------------------
-                                    462 ;	 function readBuffer2_I2C
-                                    463 ;	-----------------------------------------
-      0001CD                        464 _readBuffer2_I2C:
-      0001CD 88               [ 1]  465 	push	a
-      0001CE 6B 01            [ 1]  466 	ld	(0x01, sp), a
-                                    467 ;	../../my_STM8_libraries/stm8_I2C.c: 189: if (start_I2C() == 0) return 0;
-      0001D0 CDr00r1E         [ 4]  468 	call	_start_I2C
-      0001D3 4D               [ 1]  469 	tnz	a
-      0001D4 26 03            [ 1]  470 	jrne	00102$
-      0001D6 4F               [ 1]  471 	clr	a
-      0001D7 20 5A            [ 2]  472 	jra	00116$
-      0001D9                        473 00102$:
-                                    474 ;	../../my_STM8_libraries/stm8_I2C.c: 191: if (writeAddr_I2C(address, WRITE) == 0) return 0;
-      0001D9 4B 00            [ 1]  475 	push	#0x00
-      0001DB 7B 02            [ 1]  476 	ld	a, (0x02, sp)
-      0001DD CDr00r55         [ 4]  477 	call	_writeAddr_I2C
-      0001E0 4D               [ 1]  478 	tnz	a
-      0001E1 26 03            [ 1]  479 	jrne	00104$
-      0001E3 4F               [ 1]  480 	clr	a
-      0001E4 20 4D            [ 2]  481 	jra	00116$
-      0001E6                        482 00104$:
-                                    483 ;	../../my_STM8_libraries/stm8_I2C.c: 192: clearADDR_I2C();
-      0001E6 CDr00r36         [ 4]  484 	call	_clearADDR_I2C
-                                    485 ;	../../my_STM8_libraries/stm8_I2C.c: 194: if (writeByte_I2C(reg) == 0) return 0;
-      0001E9 7B 04            [ 1]  486 	ld	a, (0x04, sp)
-      0001EB CDr00r95         [ 4]  487 	call	_writeByte_I2C
-      0001EE 4D               [ 1]  488 	tnz	a
-      0001EF 26 03            [ 1]  489 	jrne	00106$
-      0001F1 4F               [ 1]  490 	clr	a
-      0001F2 20 3F            [ 2]  491 	jra	00116$
-      0001F4                        492 00106$:
-                                    493 ;	../../my_STM8_libraries/stm8_I2C.c: 196: if (start_I2C() == 0) return 0;
-      0001F4 CDr00r1E         [ 4]  494 	call	_start_I2C
-      0001F7 4D               [ 1]  495 	tnz	a
-      0001F8 26 03            [ 1]  496 	jrne	00108$
-      0001FA 4F               [ 1]  497 	clr	a
-      0001FB 20 36            [ 2]  498 	jra	00116$
-      0001FD                        499 00108$:
-                                    500 ;	../../my_STM8_libraries/stm8_I2C.c: 198: if (writeAddr_I2C(address, READ) == 0) return 0;
-      0001FD 4B 01            [ 1]  501 	push	#0x01
-      0001FF 7B 02            [ 1]  502 	ld	a, (0x02, sp)
-      000201 CDr00r55         [ 4]  503 	call	_writeAddr_I2C
-      000204 4D               [ 1]  504 	tnz	a
-      000205 26 03            [ 1]  505 	jrne	00110$
-      000207 4F               [ 1]  506 	clr	a
-      000208 20 29            [ 2]  507 	jra	00116$
-      00020A                        508 00110$:
-                                    509 ;	../../my_STM8_libraries/stm8_I2C.c: 199: clearADDR_I2C();
-      00020A CDr00r36         [ 4]  510 	call	_clearADDR_I2C
-                                    511 ;	../../my_STM8_libraries/stm8_I2C.c: 200: setACK_I2C(LOW);
-      00020D 4F               [ 1]  512 	clr	a
-      00020E CDr00r3D         [ 4]  513 	call	_setACK_I2C
-                                    514 ;	../../my_STM8_libraries/stm8_I2C.c: 202: while (!(I2C_SR1 & I2C_SR1_BTF))
-      000211 AE C3 50         [ 2]  515 	ldw	x, #0xc350
-      000214                        516 00113$:
-      000214 72 04 52 17 0A   [ 2]  517 	btjt	0x5217, #2, 00115$
-                                    518 ;	../../my_STM8_libraries/stm8_I2C.c: 204: if (--timeout == 0)
-      000219 5A               [ 2]  519 	decw	x
-      00021A 5D               [ 2]  520 	tnzw	x
-      00021B 26 F7            [ 1]  521 	jrne	00113$
-                                    522 ;	../../my_STM8_libraries/stm8_I2C.c: 206: stop_I2C();
-      00021D CDr00r19         [ 4]  523 	call	_stop_I2C
-                                    524 ;	../../my_STM8_libraries/stm8_I2C.c: 207: return 0;
-      000220 4F               [ 1]  525 	clr	a
-      000221 20 10            [ 2]  526 	jra	00116$
-      000223                        527 00115$:
-                                    528 ;	../../my_STM8_libraries/stm8_I2C.c: 210: stop_I2C();
-      000223 CDr00r19         [ 4]  529 	call	_stop_I2C
-                                    530 ;	../../my_STM8_libraries/stm8_I2C.c: 212: buf[0] = I2C_DR;
-      000226 1E 05            [ 2]  531 	ldw	x, (0x05, sp)
-      000228 C6 52 16         [ 1]  532 	ld	a, 0x5216
-      00022B F7               [ 1]  533 	ld	(x), a
-                                    534 ;	../../my_STM8_libraries/stm8_I2C.c: 213: buf[1] = I2C_DR;
-      00022C 5C               [ 1]  535 	incw	x
-      00022D C6 52 16         [ 1]  536 	ld	a, 0x5216
-      000230 F7               [ 1]  537 	ld	(x), a
-                                    538 ;	../../my_STM8_libraries/stm8_I2C.c: 215: return 1;
-      000231 A6 01            [ 1]  539 	ld	a, #0x01
-      000233                        540 00116$:
-                                    541 ;	../../my_STM8_libraries/stm8_I2C.c: 216: }
-      000233 1E 02            [ 2]  542 	ldw	x, (2, sp)
-      000235 5B 06            [ 2]  543 	addw	sp, #6
-      000237 FC               [ 2]  544 	jp	(x)
-                                    545 ;	../../my_STM8_libraries/stm8_I2C.c: 217: uint8_t readBuffer_I2C(uint8_t address, uint8_t reg, uint8_t *buf, uint8_t size)
-                                    546 ;	-----------------------------------------
-                                    547 ;	 function readBuffer_I2C
-                                    548 ;	-----------------------------------------
-      000238                        549 _readBuffer_I2C:
-                                    550 ;	../../my_STM8_libraries/stm8_I2C.c: 220: }
-      000238 1E 01            [ 2]  551 	ldw	x, (1, sp)
-      00023A 5B 06            [ 2]  552 	addw	sp, #6
-      00023C FC               [ 2]  553 	jp	(x)
-                                    554 	.area CODE
-                                    555 	.area CONST
-                                    556 	.area INITIALIZER
-                                    557 	.area CABS (ABS)
+      0001C7                        462 _readBuffer2_I2C:
+      0001C7 52 05            [ 2]  463 	sub	sp, #5
+      0001C9 6B 05            [ 1]  464 	ld	(0x05, sp), a
+                                    465 ;	../../my_STM8_libraries/stm8_I2C.c: 187: uint16_t timeout = 50000;
+      0001CB AE C3 50         [ 2]  466 	ldw	x, #0xc350
+      0001CE 1F 01            [ 2]  467 	ldw	(0x01, sp), x
+                                    468 ;	../../my_STM8_libraries/stm8_I2C.c: 189: if (start_I2C() == 0) return 0;
+      0001D0 CDr00r1E         [ 4]  469 	call	_start_I2C
+      0001D3 4D               [ 1]  470 	tnz	a
+      0001D4 26 03            [ 1]  471 	jrne	00102$
+      0001D6 4F               [ 1]  472 	clr	a
+      0001D7 20 78            [ 2]  473 	jra	00121$
+      0001D9                        474 00102$:
+                                    475 ;	../../my_STM8_libraries/stm8_I2C.c: 191: if (writeAddr_I2C(address, WRITE) == 0) return 0;
+      0001D9 4B 00            [ 1]  476 	push	#0x00
+      0001DB 7B 06            [ 1]  477 	ld	a, (0x06, sp)
+      0001DD CDr00r4F         [ 4]  478 	call	_writeAddr_I2C
+      0001E0 4D               [ 1]  479 	tnz	a
+      0001E1 26 03            [ 1]  480 	jrne	00104$
+      0001E3 4F               [ 1]  481 	clr	a
+      0001E4 20 6B            [ 2]  482 	jra	00121$
+      0001E6                        483 00104$:
+                                    484 ;	../../my_STM8_libraries/stm8_I2C.c: 192: clearADDR_I2C();
+      0001E6 CDr00r36         [ 4]  485 	call	_clearADDR_I2C
+                                    486 ;	../../my_STM8_libraries/stm8_I2C.c: 194: if (writeByte_I2C(reg) == 0) return 0;
+      0001E9 7B 08            [ 1]  487 	ld	a, (0x08, sp)
+      0001EB CDr00r8F         [ 4]  488 	call	_writeByte_I2C
+      0001EE 4D               [ 1]  489 	tnz	a
+      0001EF 26 03            [ 1]  490 	jrne	00106$
+      0001F1 4F               [ 1]  491 	clr	a
+      0001F2 20 5D            [ 2]  492 	jra	00121$
+      0001F4                        493 00106$:
+                                    494 ;	../../my_STM8_libraries/stm8_I2C.c: 196: if (start_I2C() == 0) return 0;
+      0001F4 CDr00r1E         [ 4]  495 	call	_start_I2C
+      0001F7 4D               [ 1]  496 	tnz	a
+      0001F8 26 03            [ 1]  497 	jrne	00108$
+      0001FA 4F               [ 1]  498 	clr	a
+      0001FB 20 54            [ 2]  499 	jra	00121$
+      0001FD                        500 00108$:
+                                    501 ;	../../my_STM8_libraries/stm8_I2C.c: 198: if (writeAddr_I2C(address, READ) == 0) return 0;
+      0001FD 4B 01            [ 1]  502 	push	#0x01
+      0001FF 7B 06            [ 1]  503 	ld	a, (0x06, sp)
+      000201 CDr00r4F         [ 4]  504 	call	_writeAddr_I2C
+      000204 4D               [ 1]  505 	tnz	a
+      000205 26 03            [ 1]  506 	jrne	00110$
+      000207 4F               [ 1]  507 	clr	a
+      000208 20 47            [ 2]  508 	jra	00121$
+      00020A                        509 00110$:
+                                    510 ;	../../my_STM8_libraries/stm8_I2C.c: 199: clearADDR_I2C();
+      00020A CDr00r36         [ 4]  511 	call	_clearADDR_I2C
+                                    512 ;	../../my_STM8_libraries/stm8_I2C.c: 201: while (!(I2C_SR1 & I2C_SR1_RXNE))
+      00020D AE C3 50         [ 2]  513 	ldw	x, #0xc350
+      000210                        514 00113$:
+      000210 72 0C 52 17 0C   [ 2]  515 	btjt	0x5217, #6, 00115$
+                                    516 ;	../../my_STM8_libraries/stm8_I2C.c: 203: if (--timeout == 0)
+      000215 5A               [ 2]  517 	decw	x
+      000216 1F 01            [ 2]  518 	ldw	(0x01, sp), x
+      000218 5D               [ 2]  519 	tnzw	x
+      000219 26 F5            [ 1]  520 	jrne	00113$
+                                    521 ;	../../my_STM8_libraries/stm8_I2C.c: 205: stop_I2C();
+      00021B CDr00r19         [ 4]  522 	call	_stop_I2C
+                                    523 ;	../../my_STM8_libraries/stm8_I2C.c: 206: return 0;
+      00021E 4F               [ 1]  524 	clr	a
+      00021F 20 30            [ 2]  525 	jra	00121$
+      000221                        526 00115$:
+                                    527 ;	../../my_STM8_libraries/stm8_I2C.c: 209: buf[0] = I2C_DR;
+      000221 16 09            [ 2]  528 	ldw	y, (0x09, sp)
+      000223 17 03            [ 2]  529 	ldw	(0x03, sp), y
+      000225 C6 52 16         [ 1]  530 	ld	a, 0x5216
+      000228 1E 03            [ 2]  531 	ldw	x, (0x03, sp)
+      00022A F7               [ 1]  532 	ld	(x), a
+                                    533 ;	../../my_STM8_libraries/stm8_I2C.c: 210: setACK_I2C(LOW);
+      00022B 4F               [ 1]  534 	clr	a
+      00022C CDr00r3D         [ 4]  535 	call	_setACK_I2C
+                                    536 ;	../../my_STM8_libraries/stm8_I2C.c: 212: while (!(I2C_SR1 & I2C_SR1_BTF))
+      00022F 1E 01            [ 2]  537 	ldw	x, (0x01, sp)
+      000231                        538 00118$:
+      000231 72 04 52 17 0A   [ 2]  539 	btjt	0x5217, #2, 00120$
+                                    540 ;	../../my_STM8_libraries/stm8_I2C.c: 214: if (--timeout == 0)
+      000236 5A               [ 2]  541 	decw	x
+      000237 5D               [ 2]  542 	tnzw	x
+      000238 26 F7            [ 1]  543 	jrne	00118$
+                                    544 ;	../../my_STM8_libraries/stm8_I2C.c: 216: stop_I2C();
+      00023A CDr00r19         [ 4]  545 	call	_stop_I2C
+                                    546 ;	../../my_STM8_libraries/stm8_I2C.c: 217: return 0;
+      00023D 4F               [ 1]  547 	clr	a
+      00023E 20 11            [ 2]  548 	jra	00121$
+      000240                        549 00120$:
+                                    550 ;	../../my_STM8_libraries/stm8_I2C.c: 220: stop_I2C();
+      000240 CDr00r19         [ 4]  551 	call	_stop_I2C
+                                    552 ;	../../my_STM8_libraries/stm8_I2C.c: 222: buf[1] = I2C_DR;
+      000243 1E 03            [ 2]  553 	ldw	x, (0x03, sp)
+      000245 5C               [ 1]  554 	incw	x
+      000246 C6 52 16         [ 1]  555 	ld	a, 0x5216
+      000249 F7               [ 1]  556 	ld	(x), a
+                                    557 ;	../../my_STM8_libraries/stm8_I2C.c: 224: setACK_I2C(HIGH);
+      00024A A6 01            [ 1]  558 	ld	a, #0x01
+      00024C CDr00r3D         [ 4]  559 	call	_setACK_I2C
+                                    560 ;	../../my_STM8_libraries/stm8_I2C.c: 226: return 1;
+      00024F A6 01            [ 1]  561 	ld	a, #0x01
+      000251                        562 00121$:
+                                    563 ;	../../my_STM8_libraries/stm8_I2C.c: 227: }
+      000251 1E 06            [ 2]  564 	ldw	x, (6, sp)
+      000253 5B 0A            [ 2]  565 	addw	sp, #10
+      000255 FC               [ 2]  566 	jp	(x)
+                                    567 ;	../../my_STM8_libraries/stm8_I2C.c: 228: uint8_t readBuffer_I2C(uint8_t address, uint8_t reg, uint8_t *buf, uint8_t size)
+                                    568 ;	-----------------------------------------
+                                    569 ;	 function readBuffer_I2C
+                                    570 ;	-----------------------------------------
+      000256                        571 _readBuffer_I2C:
+                                    572 ;	../../my_STM8_libraries/stm8_I2C.c: 231: }
+      000256 1E 01            [ 2]  573 	ldw	x, (1, sp)
+      000258 5B 06            [ 2]  574 	addw	sp, #6
+      00025A FC               [ 2]  575 	jp	(x)
+                                    576 	.area CODE
+                                    577 	.area CONST
+                                    578 	.area INITIALIZER
+                                    579 	.area CABS (ABS)

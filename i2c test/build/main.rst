@@ -13,12 +13,12 @@
                                      13 	.globl _TIM4_UPD_OVF_IRQHandler
                                      14 	.globl _init_TIME
                                      15 	.globl _tick_TIME
-                                     16 	.globl _line_UART
-                                     17 	.globl _printInt_UART
-                                     18 	.globl _print_UART
-                                     19 	.globl _init_UART
-                                     20 	.globl _readBuffer2_I2C
-                                     21 	.globl _init_I2C
+                                     16 	.globl _readBuffer2_I2C
+                                     17 	.globl _init_I2C
+                                     18 	.globl _printHex_UART
+                                     19 	.globl _line_UART
+                                     20 	.globl _print_UART
+                                     21 	.globl _init_UART
                                      22 ;--------------------------------------------------------
                                      23 ; ram data
                                      24 ;--------------------------------------------------------
@@ -77,7 +77,7 @@
       008058 82 00 00 00             77 	int 0x000000 ; int20
       00805C 82 00 00 00             78 	int 0x000000 ; int21
       008060 82 00 00 00             79 	int 0x000000 ; int22
-      008064 82 00 80 AA             80 	int _TIM4_UPD_OVF_IRQHandler ; int23
+      008064 82 00 80 AE             80 	int _TIM4_UPD_OVF_IRQHandler ; int23
                                      81 ;--------------------------------------------------------
                                      82 ; global & static initialisations
                                      83 ;--------------------------------------------------------
@@ -97,7 +97,7 @@
       008077 AE 00 06         [ 2]   97 	ldw	x, #l_INITIALIZER
       00807A 27 09            [ 1]   98 	jreq	00004$
       00807C                         99 00003$:
-      00807C D6 80 A3         [ 1]  100 	ld	a, (s_INITIALIZER - 1, x)
+      00807C D6 80 A7         [ 1]  100 	ld	a, (s_INITIALIZER - 1, x)
       00807F D7 00 00         [ 1]  101 	ld	(s_INITIALIZED - 1, x), a
       008082 5A               [ 2]  102 	decw	x
       008083 26 F7            [ 1]  103 	jrne	00003$
@@ -111,7 +111,7 @@
                                     111 	.area HOME
                                     112 	.area HOME
       008068                        113 __sdcc_program_startup:
-      008068 CC 80 C5         [ 2]  114 	jp	_main
+      008068 CC 80 C9         [ 2]  114 	jp	_main
                                     115 ;	return from main will return to caller
                                     116 ;--------------------------------------------------------
                                     117 ; code
@@ -121,114 +121,108 @@
                                     121 ;	-----------------------------------------
                                     122 ;	 function TIM4_UPD_OVF_IRQHandler
                                     123 ;	-----------------------------------------
-      0080AA                        124 _TIM4_UPD_OVF_IRQHandler:
-      0080AA 4F               [ 1]  125 	clr	a
-      0080AB 62               [ 2]  126 	div	x, a
+      0080AE                        124 _TIM4_UPD_OVF_IRQHandler:
+      0080AE 4F               [ 1]  125 	clr	a
+      0080AF 62               [ 2]  126 	div	x, a
                                     127 ;	main.c: 8: TIM4_SR &= ~(1 << 0);
-      0080AC 72 11 53 44      [ 1]  128 	bres	0x5344, #0
+      0080B0 72 11 53 44      [ 1]  128 	bres	0x5344, #0
                                     129 ;	main.c: 9: tick_TIME();
-      0080B0 CD 86 29         [ 4]  130 	call	_tick_TIME
+      0080B4 CD 86 41         [ 4]  130 	call	_tick_TIME
                                     131 ;	main.c: 10: }
-      0080B3 80               [11]  132 	iret
+      0080B7 80               [11]  132 	iret
                                     133 ;	main.c: 12: uint8_t BCDtoDEC(uint8_t bcd) 
                                     134 ;	-----------------------------------------
                                     135 ;	 function BCDtoDEC
                                     136 ;	-----------------------------------------
-      0080B4                        137 _BCDtoDEC:
+      0080B8                        137 _BCDtoDEC:
                                     138 ;	main.c: 14: return (((bcd >> 4) * 10) + (bcd & 0x0F));
-      0080B4 97               [ 1]  139 	ld	xl, a
-      0080B5 4E               [ 1]  140 	swap	a
-      0080B6 A4 0F            [ 1]  141 	and	a, #0x0f
-      0080B8 41               [ 1]  142 	exg	a, xl
-      0080B9 88               [ 1]  143 	push	a
-      0080BA A6 0A            [ 1]  144 	ld	a, #0x0a
-      0080BC 42               [ 4]  145 	mul	x, a
-      0080BD 84               [ 1]  146 	pop	a
-      0080BE A4 0F            [ 1]  147 	and	a, #0x0f
-      0080C0 89               [ 2]  148 	pushw	x
-      0080C1 1B 02            [ 1]  149 	add	a, (2, sp)
-      0080C3 85               [ 2]  150 	popw	x
+      0080B8 97               [ 1]  139 	ld	xl, a
+      0080B9 4E               [ 1]  140 	swap	a
+      0080BA A4 0F            [ 1]  141 	and	a, #0x0f
+      0080BC 41               [ 1]  142 	exg	a, xl
+      0080BD 88               [ 1]  143 	push	a
+      0080BE A6 0A            [ 1]  144 	ld	a, #0x0a
+      0080C0 42               [ 4]  145 	mul	x, a
+      0080C1 84               [ 1]  146 	pop	a
+      0080C2 A4 0F            [ 1]  147 	and	a, #0x0f
+      0080C4 89               [ 2]  148 	pushw	x
+      0080C5 1B 02            [ 1]  149 	add	a, (2, sp)
+      0080C7 85               [ 2]  150 	popw	x
                                     151 ;	main.c: 15: }
-      0080C4 81               [ 4]  152 	ret
+      0080C8 81               [ 4]  152 	ret
                                     153 ;	main.c: 17: int main(void)
                                     154 ;	-----------------------------------------
                                     155 ;	 function main
                                     156 ;	-----------------------------------------
-      0080C5                        157 _main:
-      0080C5 52 02            [ 2]  158 	sub	sp, #2
+      0080C9                        157 _main:
+      0080C9 52 02            [ 2]  158 	sub	sp, #2
                                     159 ;	main.c: 21: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
-      0080C7 35 00 50 C6      [ 1]  160 	mov	0x50c6+0, #0x00
+      0080CB 35 00 50 C6      [ 1]  160 	mov	0x50c6+0, #0x00
                                     161 ;	main.c: 23: init_I2C();
-      0080CB CD 82 B7         [ 4]  162 	call	_init_I2C
+      0080CF CD 82 B1         [ 4]  162 	call	_init_I2C
                                     163 ;	main.c: 24: init_TIME();
-      0080CE CD 86 3D         [ 4]  164 	call	_init_TIME
+      0080D2 CD 86 55         [ 4]  164 	call	_init_TIME
                                     165 ;	main.c: 25: init_UART(9600);
-      0080D1 AE 25 80         [ 2]  166 	ldw	x, #0x2580
-      0080D4 CD 86 D9         [ 4]  167 	call	_init_UART
+      0080D5 AE 25 80         [ 2]  166 	ldw	x, #0x2580
+      0080D8 CD 86 F1         [ 4]  167 	call	_init_UART
                                     168 ;	main.c: 27: while (1)
-      0080D7                        169 00105$:
+      0080DB                        169 00105$:
                                     170 ;	main.c: 29: if (readBuffer2_I2C(0x68, 0x00, buf) == 0)
-      0080D7 96               [ 1]  171 	ldw	x, sp
-      0080D8 5C               [ 1]  172 	incw	x
-      0080D9 89               [ 2]  173 	pushw	x
-      0080DA 4B 00            [ 1]  174 	push	#0x00
-      0080DC A6 68            [ 1]  175 	ld	a, #0x68
-      0080DE CD 84 84         [ 4]  176 	call	_readBuffer2_I2C
-      0080E1 4D               [ 1]  177 	tnz	a
-      0080E2 26 0B            [ 1]  178 	jrne	00102$
+      0080DB 96               [ 1]  171 	ldw	x, sp
+      0080DC 5C               [ 1]  172 	incw	x
+      0080DD 89               [ 2]  173 	pushw	x
+      0080DE 4B 00            [ 1]  174 	push	#0x00
+      0080E0 A6 68            [ 1]  175 	ld	a, #0x68
+      0080E2 CD 84 78         [ 4]  176 	call	_readBuffer2_I2C
+      0080E5 4D               [ 1]  177 	tnz	a
+      0080E6 26 0B            [ 1]  178 	jrne	00102$
                                     179 ;	main.c: 31: print_UART("fail");
-      0080E4 AE 80 88         [ 2]  180 	ldw	x, #(___str_0+0)
-      0080E7 CD 87 23         [ 4]  181 	call	_print_UART
+      0080E8 AE 80 88         [ 2]  180 	ldw	x, #(___str_0+0)
+      0080EB CD 87 3B         [ 4]  181 	call	_print_UART
                                     182 ;	main.c: 32: line_UART();
-      0080EA CD 87 95         [ 4]  183 	call	_line_UART
-      0080ED 20 E8            [ 2]  184 	jra	00105$
-      0080EF                        185 00102$:
-                                    186 ;	main.c: 36: print_UART("second is ");
-      0080EF AE 80 8D         [ 2]  187 	ldw	x, #(___str_1+0)
-      0080F2 CD 87 23         [ 4]  188 	call	_print_UART
-                                    189 ;	main.c: 37: printInt_UART(BCDtoDEC(buf[0]));
-      0080F5 7B 01            [ 1]  190 	ld	a, (0x01, sp)
-      0080F7 CD 80 B4         [ 4]  191 	call	_BCDtoDEC
-      0080FA 5F               [ 1]  192 	clrw	x
-      0080FB 97               [ 1]  193 	ld	xl, a
-      0080FC CD 87 36         [ 4]  194 	call	_printInt_UART
-                                    195 ;	main.c: 38: line_UART();
-      0080FF CD 87 95         [ 4]  196 	call	_line_UART
-                                    197 ;	main.c: 39: print_UART("minutes is ");
-      008102 AE 80 98         [ 2]  198 	ldw	x, #(___str_2+0)
-      008105 CD 87 23         [ 4]  199 	call	_print_UART
-                                    200 ;	main.c: 40: printInt_UART(BCDtoDEC(buf[1]));
-      008108 7B 02            [ 1]  201 	ld	a, (0x02, sp)
-      00810A CD 80 B4         [ 4]  202 	call	_BCDtoDEC
-      00810D 5F               [ 1]  203 	clrw	x
-      00810E 97               [ 1]  204 	ld	xl, a
-      00810F CD 87 36         [ 4]  205 	call	_printInt_UART
-                                    206 ;	main.c: 41: line_UART();
-      008112 CD 87 95         [ 4]  207 	call	_line_UART
-                                    208 ;	main.c: 42: line_UART();
-      008115 CD 87 95         [ 4]  209 	call	_line_UART
-      008118 20 BD            [ 2]  210 	jra	00105$
-                                    211 ;	main.c: 45: }
-      00811A 5B 02            [ 2]  212 	addw	sp, #2
-      00811C 81               [ 4]  213 	ret
+      0080EE CD 87 AD         [ 4]  183 	call	_line_UART
+      0080F1 20 E8            [ 2]  184 	jra	00105$
+      0080F3                        185 00102$:
+                                    186 ;	main.c: 36: print_UART("second is 0x");
+      0080F3 AE 80 8D         [ 2]  187 	ldw	x, #(___str_1+0)
+      0080F6 CD 87 3B         [ 4]  188 	call	_print_UART
+                                    189 ;	main.c: 37: printHex_UART(buf[0]);
+      0080F9 7B 01            [ 1]  190 	ld	a, (0x01, sp)
+      0080FB CD 87 D1         [ 4]  191 	call	_printHex_UART
+                                    192 ;	main.c: 38: line_UART();
+      0080FE CD 87 AD         [ 4]  193 	call	_line_UART
+                                    194 ;	main.c: 39: print_UART("minutes is 0x");
+      008101 AE 80 9A         [ 2]  195 	ldw	x, #(___str_2+0)
+      008104 CD 87 3B         [ 4]  196 	call	_print_UART
+                                    197 ;	main.c: 40: printHex_UART(buf[1]);
+      008107 7B 02            [ 1]  198 	ld	a, (0x02, sp)
+      008109 CD 87 D1         [ 4]  199 	call	_printHex_UART
+                                    200 ;	main.c: 41: line_UART();
+      00810C CD 87 AD         [ 4]  201 	call	_line_UART
+                                    202 ;	main.c: 42: line_UART();
+      00810F CD 87 AD         [ 4]  203 	call	_line_UART
+      008112 20 C7            [ 2]  204 	jra	00105$
+                                    205 ;	main.c: 45: }
+      008114 5B 02            [ 2]  206 	addw	sp, #2
+      008116 81               [ 4]  207 	ret
+                                    208 	.area CODE
+                                    209 	.area CONST
+                                    210 	.area CONST
+      008088                        211 ___str_0:
+      008088 66 61 69 6C            212 	.ascii "fail"
+      00808C 00                     213 	.db 0x00
                                     214 	.area CODE
                                     215 	.area CONST
-                                    216 	.area CONST
-      008088                        217 ___str_0:
-      008088 66 61 69 6C            218 	.ascii "fail"
-      00808C 00                     219 	.db 0x00
-                                    220 	.area CODE
-                                    221 	.area CONST
-      00808D                        222 ___str_1:
-      00808D 73 65 63 6F 6E 64 20   223 	.ascii "second is "
-             69 73 20
-      008097 00                     224 	.db 0x00
-                                    225 	.area CODE
-                                    226 	.area CONST
-      008098                        227 ___str_2:
-      008098 6D 69 6E 75 74 65 73   228 	.ascii "minutes is "
-             20 69 73 20
-      0080A3 00                     229 	.db 0x00
-                                    230 	.area CODE
-                                    231 	.area INITIALIZER
-                                    232 	.area CABS (ABS)
+      00808D                        216 ___str_1:
+      00808D 73 65 63 6F 6E 64 20   217 	.ascii "second is 0x"
+             69 73 20 30 78
+      008099 00                     218 	.db 0x00
+                                    219 	.area CODE
+                                    220 	.area CONST
+      00809A                        221 ___str_2:
+      00809A 6D 69 6E 75 74 65 73   222 	.ascii "minutes is 0x"
+             20 69 73 20 30 78
+      0080A7 00                     223 	.db 0x00
+                                    224 	.area CODE
+                                    225 	.area INITIALIZER
+                                    226 	.area CABS (ABS)

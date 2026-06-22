@@ -13,12 +13,12 @@
                                      13 	.globl _TIM4_UPD_OVF_IRQHandler
                                      14 	.globl _init_TIME
                                      15 	.globl _tick_TIME
-                                     16 	.globl _line_UART
-                                     17 	.globl _printInt_UART
-                                     18 	.globl _print_UART
-                                     19 	.globl _init_UART
-                                     20 	.globl _readBuffer2_I2C
-                                     21 	.globl _init_I2C
+                                     16 	.globl _readBuffer2_I2C
+                                     17 	.globl _init_I2C
+                                     18 	.globl _printHex_UART
+                                     19 	.globl _line_UART
+                                     20 	.globl _print_UART
+                                     21 	.globl _init_UART
                                      22 ;--------------------------------------------------------
                                      23 ; ram data
                                      24 ;--------------------------------------------------------
@@ -183,52 +183,46 @@
       000040 CDr00r00         [ 4]  183 	call	_line_UART
       000043 20 E8            [ 2]  184 	jra	00105$
       000045                        185 00102$:
-                                    186 ;	main.c: 36: print_UART("second is ");
+                                    186 ;	main.c: 36: print_UART("second is 0x");
       000045 AEr00r05         [ 2]  187 	ldw	x, #(___str_1+0)
       000048 CDr00r00         [ 4]  188 	call	_print_UART
-                                    189 ;	main.c: 37: printInt_UART(BCDtoDEC(buf[0]));
+                                    189 ;	main.c: 37: printHex_UART(buf[0]);
       00004B 7B 01            [ 1]  190 	ld	a, (0x01, sp)
-      00004D CDr00r0A         [ 4]  191 	call	_BCDtoDEC
-      000050 5F               [ 1]  192 	clrw	x
-      000051 97               [ 1]  193 	ld	xl, a
-      000052 CDr00r00         [ 4]  194 	call	_printInt_UART
-                                    195 ;	main.c: 38: line_UART();
-      000055 CDr00r00         [ 4]  196 	call	_line_UART
-                                    197 ;	main.c: 39: print_UART("minutes is ");
-      000058 AEr00r10         [ 2]  198 	ldw	x, #(___str_2+0)
-      00005B CDr00r00         [ 4]  199 	call	_print_UART
-                                    200 ;	main.c: 40: printInt_UART(BCDtoDEC(buf[1]));
-      00005E 7B 02            [ 1]  201 	ld	a, (0x02, sp)
-      000060 CDr00r0A         [ 4]  202 	call	_BCDtoDEC
-      000063 5F               [ 1]  203 	clrw	x
-      000064 97               [ 1]  204 	ld	xl, a
-      000065 CDr00r00         [ 4]  205 	call	_printInt_UART
-                                    206 ;	main.c: 41: line_UART();
-      000068 CDr00r00         [ 4]  207 	call	_line_UART
-                                    208 ;	main.c: 42: line_UART();
-      00006B CDr00r00         [ 4]  209 	call	_line_UART
-      00006E 20 BD            [ 2]  210 	jra	00105$
-                                    211 ;	main.c: 45: }
-      000070 5B 02            [ 2]  212 	addw	sp, #2
-      000072 81               [ 4]  213 	ret
+      00004D CDr00r00         [ 4]  191 	call	_printHex_UART
+                                    192 ;	main.c: 38: line_UART();
+      000050 CDr00r00         [ 4]  193 	call	_line_UART
+                                    194 ;	main.c: 39: print_UART("minutes is 0x");
+      000053 AEr00r12         [ 2]  195 	ldw	x, #(___str_2+0)
+      000056 CDr00r00         [ 4]  196 	call	_print_UART
+                                    197 ;	main.c: 40: printHex_UART(buf[1]);
+      000059 7B 02            [ 1]  198 	ld	a, (0x02, sp)
+      00005B CDr00r00         [ 4]  199 	call	_printHex_UART
+                                    200 ;	main.c: 41: line_UART();
+      00005E CDr00r00         [ 4]  201 	call	_line_UART
+                                    202 ;	main.c: 42: line_UART();
+      000061 CDr00r00         [ 4]  203 	call	_line_UART
+      000064 20 C7            [ 2]  204 	jra	00105$
+                                    205 ;	main.c: 45: }
+      000066 5B 02            [ 2]  206 	addw	sp, #2
+      000068 81               [ 4]  207 	ret
+                                    208 	.area CODE
+                                    209 	.area CONST
+                                    210 	.area CONST
+      000000                        211 ___str_0:
+      000000 66 61 69 6C            212 	.ascii "fail"
+      000004 00                     213 	.db 0x00
                                     214 	.area CODE
                                     215 	.area CONST
-                                    216 	.area CONST
-      000000                        217 ___str_0:
-      000000 66 61 69 6C            218 	.ascii "fail"
-      000004 00                     219 	.db 0x00
-                                    220 	.area CODE
-                                    221 	.area CONST
-      000005                        222 ___str_1:
-      000005 73 65 63 6F 6E 64 20   223 	.ascii "second is "
-             69 73 20
-      00000F 00                     224 	.db 0x00
-                                    225 	.area CODE
-                                    226 	.area CONST
-      000010                        227 ___str_2:
-      000010 6D 69 6E 75 74 65 73   228 	.ascii "minutes is "
-             20 69 73 20
-      00001B 00                     229 	.db 0x00
-                                    230 	.area CODE
-                                    231 	.area INITIALIZER
-                                    232 	.area CABS (ABS)
+      000005                        216 ___str_1:
+      000005 73 65 63 6F 6E 64 20   217 	.ascii "second is 0x"
+             69 73 20 30 78
+      000011 00                     218 	.db 0x00
+                                    219 	.area CODE
+                                    220 	.area CONST
+      000012                        221 ___str_2:
+      000012 6D 69 6E 75 74 65 73   222 	.ascii "minutes is 0x"
+             20 69 73 20 30 78
+      00001F 00                     223 	.db 0x00
+                                    224 	.area CODE
+                                    225 	.area INITIALIZER
+                                    226 	.area CABS (ABS)

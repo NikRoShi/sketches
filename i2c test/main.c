@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "stm8_REG.h"
-#include "stm8_I2C.h"
 #include "stm8_UART.h"
+#include "stm8_I2C.h"
 #include "stm8_TIME.h"
 
 void TIM4_UPD_OVF_IRQHandler(void) __interrupt(23) {
@@ -33,11 +33,11 @@ int main(void)
 		}
 		else
 		{
-			print_UART("second is ");
-			printInt_UART(BCDtoDEC(buf[0]));
+			print_UART("second is 0x");
+			printHex_UART(buf[0]);
 			line_UART();
-			print_UART("minutes is ");
-			printInt_UART(BCDtoDEC(buf[1]));
+			print_UART("minutes is 0x");
+			printHex_UART(buf[1]);
 			line_UART();
 			line_UART();
 		}

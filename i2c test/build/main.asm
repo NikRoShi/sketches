@@ -13,12 +13,12 @@
 	.globl _TIM4_UPD_OVF_IRQHandler
 	.globl _init_TIME
 	.globl _tick_TIME
-	.globl _line_UART
-	.globl _printInt_UART
-	.globl _print_UART
-	.globl _init_UART
 	.globl _readBuffer2_I2C
 	.globl _init_I2C
+	.globl _printHex_UART
+	.globl _line_UART
+	.globl _print_UART
+	.globl _init_UART
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -183,26 +183,20 @@ _main:
 	call	_line_UART
 	jra	00105$
 00102$:
-;	main.c: 36: print_UART("second is ");
+;	main.c: 36: print_UART("second is 0x");
 	ldw	x, #(___str_1+0)
 	call	_print_UART
-;	main.c: 37: printInt_UART(BCDtoDEC(buf[0]));
+;	main.c: 37: printHex_UART(buf[0]);
 	ld	a, (0x01, sp)
-	call	_BCDtoDEC
-	clrw	x
-	ld	xl, a
-	call	_printInt_UART
+	call	_printHex_UART
 ;	main.c: 38: line_UART();
 	call	_line_UART
-;	main.c: 39: print_UART("minutes is ");
+;	main.c: 39: print_UART("minutes is 0x");
 	ldw	x, #(___str_2+0)
 	call	_print_UART
-;	main.c: 40: printInt_UART(BCDtoDEC(buf[1]));
+;	main.c: 40: printHex_UART(buf[1]);
 	ld	a, (0x02, sp)
-	call	_BCDtoDEC
-	clrw	x
-	ld	xl, a
-	call	_printInt_UART
+	call	_printHex_UART
 ;	main.c: 41: line_UART();
 	call	_line_UART
 ;	main.c: 42: line_UART();
@@ -220,12 +214,12 @@ ___str_0:
 	.area CODE
 	.area CONST
 ___str_1:
-	.ascii "second is "
+	.ascii "second is 0x"
 	.db 0x00
 	.area CODE
 	.area CONST
 ___str_2:
-	.ascii "minutes is "
+	.ascii "minutes is 0x"
 	.db 0x00
 	.area CODE
 	.area INITIALIZER

@@ -18,17 +18,36 @@ int main(void)
 	print_UART("start reading");
 	line_UART();
 	
-	uint8_t data;
+	uint8_t data[7];
 	
     while (1)
     {
-		if (readReg_I2C(0x68, 0x00, &data) == 0)
+		if (readBuffer_I2C(0x68, 0x00, data, 7) == 0)
 		{
 		print_UART("fail");
 		line_UART();
 		}
-		print_UART("second is ");
-		printInt_UART(BCDtoDEC(data));
+		print_UART("sec is ");
+		printInt_UART(BCDtoDEC(data[0]));
+		line_UART();
+		print_UART("min is ");
+		printInt_UART(BCDtoDEC(data[1]));
+		line_UART();
+		print_UART("hour is ");
+		printInt_UART(BCDtoDEC(data[2]));
+		line_UART();
+		print_UART("day is ");
+		printInt_UART(BCDtoDEC(data[3]));
+		line_UART();
+		print_UART("date is ");
+		printInt_UART(BCDtoDEC(data[4]));
+		line_UART();
+		print_UART("month is ");
+		printInt_UART(BCDtoDEC(data[5]));
+		line_UART();
+		print_UART("year is ");
+		printInt_UART(BCDtoDEC(data[6]));
+		line_UART();
 		line_UART();
     }
 }

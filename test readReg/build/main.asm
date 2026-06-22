@@ -10,7 +10,7 @@
 ;--------------------------------------------------------
 	.globl _main
 	.globl _BCDtoDEC
-	.globl _readReg_I2C
+	.globl _readBuffer_I2C
 	.globl _init_I2C
 	.globl _line_UART
 	.globl _printInt_UART
@@ -114,7 +114,7 @@ _BCDtoDEC:
 ;	 function main
 ;	-----------------------------------------
 _main:
-	push	a
+	sub	sp, #7
 ;	main.c: 13: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	mov	0x50c6+0, #0x00
 ;	main.c: 15: init_I2C();
@@ -129,13 +129,15 @@ _main:
 	call	_line_UART
 ;	main.c: 23: while (1)
 00104$:
-;	main.c: 25: if (readReg_I2C(0x68, 0x00, &data) == 0)
+;	main.c: 25: if (readBuffer_I2C(0x68, 0x00, data, 7) == 0)
+	push	#0x07
 	ldw	x, sp
+	incw	x
 	incw	x
 	pushw	x
 	push	#0x00
 	ld	a, #0x68
-	call	_readReg_I2C
+	call	_readBuffer_I2C
 	tnz	a
 	jrne	00102$
 ;	main.c: 27: print_UART("fail");
@@ -144,10 +146,10 @@ _main:
 ;	main.c: 28: line_UART();
 	call	_line_UART
 00102$:
-;	main.c: 30: print_UART("second is ");
+;	main.c: 30: print_UART("sec is ");
 	ldw	x, #(___str_2+0)
 	call	_print_UART
-;	main.c: 31: printInt_UART(BCDtoDEC(data));
+;	main.c: 31: printInt_UART(BCDtoDEC(data[0]));
 	ld	a, (0x01, sp)
 	call	_BCDtoDEC
 	clrw	x
@@ -155,10 +157,76 @@ _main:
 	call	_printInt_UART
 ;	main.c: 32: line_UART();
 	call	_line_UART
-	jra	00104$
-;	main.c: 34: }
-	pop	a
-	ret
+;	main.c: 33: print_UART("min is ");
+	ldw	x, #(___str_3+0)
+	call	_print_UART
+;	main.c: 34: printInt_UART(BCDtoDEC(data[1]));
+	ld	a, (0x02, sp)
+	call	_BCDtoDEC
+	clrw	x
+	ld	xl, a
+	call	_printInt_UART
+;	main.c: 35: line_UART();
+	call	_line_UART
+;	main.c: 36: print_UART("hour is ");
+	ldw	x, #(___str_4+0)
+	call	_print_UART
+;	main.c: 37: printInt_UART(BCDtoDEC(data[2]));
+	ld	a, (0x03, sp)
+	call	_BCDtoDEC
+	clrw	x
+	ld	xl, a
+	call	_printInt_UART
+;	main.c: 38: line_UART();
+	call	_line_UART
+;	main.c: 39: print_UART("day is ");
+	ldw	x, #(___str_5+0)
+	call	_print_UART
+;	main.c: 40: printInt_UART(BCDtoDEC(data[3]));
+	ld	a, (0x04, sp)
+	call	_BCDtoDEC
+	clrw	x
+	ld	xl, a
+	call	_printInt_UART
+;	main.c: 41: line_UART();
+	call	_line_UART
+;	main.c: 42: print_UART("date is ");
+	ldw	x, #(___str_6+0)
+	call	_print_UART
+;	main.c: 43: printInt_UART(BCDtoDEC(data[4]));
+	ld	a, (0x05, sp)
+	call	_BCDtoDEC
+	clrw	x
+	ld	xl, a
+	call	_printInt_UART
+;	main.c: 44: line_UART();
+	call	_line_UART
+;	main.c: 45: print_UART("month is ");
+	ldw	x, #(___str_7+0)
+	call	_print_UART
+;	main.c: 46: printInt_UART(BCDtoDEC(data[5]));
+	ld	a, (0x06, sp)
+	call	_BCDtoDEC
+	clrw	x
+	ld	xl, a
+	call	_printInt_UART
+;	main.c: 47: line_UART();
+	call	_line_UART
+;	main.c: 48: print_UART("year is ");
+	ldw	x, #(___str_8+0)
+	call	_print_UART
+;	main.c: 49: printInt_UART(BCDtoDEC(data[6]));
+	ld	a, (0x07, sp)
+	call	_BCDtoDEC
+	clrw	x
+	ld	xl, a
+	call	_printInt_UART
+;	main.c: 50: line_UART();
+	call	_line_UART
+;	main.c: 51: line_UART();
+	call	_line_UART
+;	main.c: 53: }
+	jp	00104$
 	.area CODE
 	.area CONST
 	.area CONST
@@ -173,7 +241,37 @@ ___str_1:
 	.area CODE
 	.area CONST
 ___str_2:
-	.ascii "second is "
+	.ascii "sec is "
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_3:
+	.ascii "min is "
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_4:
+	.ascii "hour is "
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_5:
+	.ascii "day is "
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_6:
+	.ascii "date is "
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_7:
+	.ascii "month is "
+	.db 0x00
+	.area CODE
+	.area CONST
+___str_8:
+	.ascii "year is "
 	.db 0x00
 	.area CODE
 	.area INITIALIZER

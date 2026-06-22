@@ -10,7 +10,7 @@
                                      10 ;--------------------------------------------------------
                                      11 	.globl _main
                                      12 	.globl _BCDtoDEC
-                                     13 	.globl _readReg_I2C
+                                     13 	.globl _readBuffer_I2C
                                      14 	.globl _init_I2C
                                      15 	.globl _line_UART
                                      16 	.globl _printInt_UART
@@ -114,69 +114,170 @@
                                     114 ;	 function main
                                     115 ;	-----------------------------------------
       000011                        116 _main:
-      000011 88               [ 1]  117 	push	a
+      000011 52 07            [ 2]  117 	sub	sp, #7
                                     118 ;	main.c: 13: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
-      000012 35 00 50 C6      [ 1]  119 	mov	0x50c6+0, #0x00
+      000013 35 00 50 C6      [ 1]  119 	mov	0x50c6+0, #0x00
                                     120 ;	main.c: 15: init_I2C();
-      000016 CDr00r00         [ 4]  121 	call	_init_I2C
+      000017 CDr00r00         [ 4]  121 	call	_init_I2C
                                     122 ;	main.c: 16: init_UART(9600);
-      000019 AE 25 80         [ 2]  123 	ldw	x, #0x2580
-      00001C CDr00r00         [ 4]  124 	call	_init_UART
+      00001A AE 25 80         [ 2]  123 	ldw	x, #0x2580
+      00001D CDr00r00         [ 4]  124 	call	_init_UART
                                     125 ;	main.c: 18: print_UART("start reading");
-      00001F AEr00r00         [ 2]  126 	ldw	x, #(___str_0+0)
-      000022 CDr00r00         [ 4]  127 	call	_print_UART
+      000020 AEr00r00         [ 2]  126 	ldw	x, #(___str_0+0)
+      000023 CDr00r00         [ 4]  127 	call	_print_UART
                                     128 ;	main.c: 19: line_UART();
-      000025 CDr00r00         [ 4]  129 	call	_line_UART
+      000026 CDr00r00         [ 4]  129 	call	_line_UART
                                     130 ;	main.c: 23: while (1)
-      000028                        131 00104$:
-                                    132 ;	main.c: 25: if (readReg_I2C(0x68, 0x00, &data) == 0)
-      000028 96               [ 1]  133 	ldw	x, sp
-      000029 5C               [ 1]  134 	incw	x
-      00002A 89               [ 2]  135 	pushw	x
-      00002B 4B 00            [ 1]  136 	push	#0x00
-      00002D A6 68            [ 1]  137 	ld	a, #0x68
-      00002F CDr00r00         [ 4]  138 	call	_readReg_I2C
-      000032 4D               [ 1]  139 	tnz	a
-      000033 26 09            [ 1]  140 	jrne	00102$
-                                    141 ;	main.c: 27: print_UART("fail");
-      000035 AEr00r0E         [ 2]  142 	ldw	x, #(___str_1+0)
-      000038 CDr00r00         [ 4]  143 	call	_print_UART
-                                    144 ;	main.c: 28: line_UART();
-      00003B CDr00r00         [ 4]  145 	call	_line_UART
-      00003E                        146 00102$:
-                                    147 ;	main.c: 30: print_UART("second is ");
-      00003E AEr00r13         [ 2]  148 	ldw	x, #(___str_2+0)
-      000041 CDr00r00         [ 4]  149 	call	_print_UART
-                                    150 ;	main.c: 31: printInt_UART(BCDtoDEC(data));
-      000044 7B 01            [ 1]  151 	ld	a, (0x01, sp)
-      000046 CDr00r00         [ 4]  152 	call	_BCDtoDEC
-      000049 5F               [ 1]  153 	clrw	x
-      00004A 97               [ 1]  154 	ld	xl, a
-      00004B CDr00r00         [ 4]  155 	call	_printInt_UART
-                                    156 ;	main.c: 32: line_UART();
-      00004E CDr00r00         [ 4]  157 	call	_line_UART
-      000051 20 D5            [ 2]  158 	jra	00104$
-                                    159 ;	main.c: 34: }
-      000053 84               [ 1]  160 	pop	a
-      000054 81               [ 4]  161 	ret
-                                    162 	.area CODE
-                                    163 	.area CONST
-                                    164 	.area CONST
-      000000                        165 ___str_0:
-      000000 73 74 61 72 74 20 72   166 	.ascii "start reading"
+      000029                        131 00104$:
+                                    132 ;	main.c: 25: if (readBuffer_I2C(0x68, 0x00, data, 7) == 0)
+      000029 4B 07            [ 1]  133 	push	#0x07
+      00002B 96               [ 1]  134 	ldw	x, sp
+      00002C 5C               [ 1]  135 	incw	x
+      00002D 5C               [ 1]  136 	incw	x
+      00002E 89               [ 2]  137 	pushw	x
+      00002F 4B 00            [ 1]  138 	push	#0x00
+      000031 A6 68            [ 1]  139 	ld	a, #0x68
+      000033 CDr00r00         [ 4]  140 	call	_readBuffer_I2C
+      000036 4D               [ 1]  141 	tnz	a
+      000037 26 09            [ 1]  142 	jrne	00102$
+                                    143 ;	main.c: 27: print_UART("fail");
+      000039 AEr00r0E         [ 2]  144 	ldw	x, #(___str_1+0)
+      00003C CDr00r00         [ 4]  145 	call	_print_UART
+                                    146 ;	main.c: 28: line_UART();
+      00003F CDr00r00         [ 4]  147 	call	_line_UART
+      000042                        148 00102$:
+                                    149 ;	main.c: 30: print_UART("sec is ");
+      000042 AEr00r13         [ 2]  150 	ldw	x, #(___str_2+0)
+      000045 CDr00r00         [ 4]  151 	call	_print_UART
+                                    152 ;	main.c: 31: printInt_UART(BCDtoDEC(data[0]));
+      000048 7B 01            [ 1]  153 	ld	a, (0x01, sp)
+      00004A CDr00r00         [ 4]  154 	call	_BCDtoDEC
+      00004D 5F               [ 1]  155 	clrw	x
+      00004E 97               [ 1]  156 	ld	xl, a
+      00004F CDr00r00         [ 4]  157 	call	_printInt_UART
+                                    158 ;	main.c: 32: line_UART();
+      000052 CDr00r00         [ 4]  159 	call	_line_UART
+                                    160 ;	main.c: 33: print_UART("min is ");
+      000055 AEr00r1B         [ 2]  161 	ldw	x, #(___str_3+0)
+      000058 CDr00r00         [ 4]  162 	call	_print_UART
+                                    163 ;	main.c: 34: printInt_UART(BCDtoDEC(data[1]));
+      00005B 7B 02            [ 1]  164 	ld	a, (0x02, sp)
+      00005D CDr00r00         [ 4]  165 	call	_BCDtoDEC
+      000060 5F               [ 1]  166 	clrw	x
+      000061 97               [ 1]  167 	ld	xl, a
+      000062 CDr00r00         [ 4]  168 	call	_printInt_UART
+                                    169 ;	main.c: 35: line_UART();
+      000065 CDr00r00         [ 4]  170 	call	_line_UART
+                                    171 ;	main.c: 36: print_UART("hour is ");
+      000068 AEr00r23         [ 2]  172 	ldw	x, #(___str_4+0)
+      00006B CDr00r00         [ 4]  173 	call	_print_UART
+                                    174 ;	main.c: 37: printInt_UART(BCDtoDEC(data[2]));
+      00006E 7B 03            [ 1]  175 	ld	a, (0x03, sp)
+      000070 CDr00r00         [ 4]  176 	call	_BCDtoDEC
+      000073 5F               [ 1]  177 	clrw	x
+      000074 97               [ 1]  178 	ld	xl, a
+      000075 CDr00r00         [ 4]  179 	call	_printInt_UART
+                                    180 ;	main.c: 38: line_UART();
+      000078 CDr00r00         [ 4]  181 	call	_line_UART
+                                    182 ;	main.c: 39: print_UART("day is ");
+      00007B AEr00r2C         [ 2]  183 	ldw	x, #(___str_5+0)
+      00007E CDr00r00         [ 4]  184 	call	_print_UART
+                                    185 ;	main.c: 40: printInt_UART(BCDtoDEC(data[3]));
+      000081 7B 04            [ 1]  186 	ld	a, (0x04, sp)
+      000083 CDr00r00         [ 4]  187 	call	_BCDtoDEC
+      000086 5F               [ 1]  188 	clrw	x
+      000087 97               [ 1]  189 	ld	xl, a
+      000088 CDr00r00         [ 4]  190 	call	_printInt_UART
+                                    191 ;	main.c: 41: line_UART();
+      00008B CDr00r00         [ 4]  192 	call	_line_UART
+                                    193 ;	main.c: 42: print_UART("date is ");
+      00008E AEr00r34         [ 2]  194 	ldw	x, #(___str_6+0)
+      000091 CDr00r00         [ 4]  195 	call	_print_UART
+                                    196 ;	main.c: 43: printInt_UART(BCDtoDEC(data[4]));
+      000094 7B 05            [ 1]  197 	ld	a, (0x05, sp)
+      000096 CDr00r00         [ 4]  198 	call	_BCDtoDEC
+      000099 5F               [ 1]  199 	clrw	x
+      00009A 97               [ 1]  200 	ld	xl, a
+      00009B CDr00r00         [ 4]  201 	call	_printInt_UART
+                                    202 ;	main.c: 44: line_UART();
+      00009E CDr00r00         [ 4]  203 	call	_line_UART
+                                    204 ;	main.c: 45: print_UART("month is ");
+      0000A1 AEr00r3D         [ 2]  205 	ldw	x, #(___str_7+0)
+      0000A4 CDr00r00         [ 4]  206 	call	_print_UART
+                                    207 ;	main.c: 46: printInt_UART(BCDtoDEC(data[5]));
+      0000A7 7B 06            [ 1]  208 	ld	a, (0x06, sp)
+      0000A9 CDr00r00         [ 4]  209 	call	_BCDtoDEC
+      0000AC 5F               [ 1]  210 	clrw	x
+      0000AD 97               [ 1]  211 	ld	xl, a
+      0000AE CDr00r00         [ 4]  212 	call	_printInt_UART
+                                    213 ;	main.c: 47: line_UART();
+      0000B1 CDr00r00         [ 4]  214 	call	_line_UART
+                                    215 ;	main.c: 48: print_UART("year is ");
+      0000B4 AEr00r47         [ 2]  216 	ldw	x, #(___str_8+0)
+      0000B7 CDr00r00         [ 4]  217 	call	_print_UART
+                                    218 ;	main.c: 49: printInt_UART(BCDtoDEC(data[6]));
+      0000BA 7B 07            [ 1]  219 	ld	a, (0x07, sp)
+      0000BC CDr00r00         [ 4]  220 	call	_BCDtoDEC
+      0000BF 5F               [ 1]  221 	clrw	x
+      0000C0 97               [ 1]  222 	ld	xl, a
+      0000C1 CDr00r00         [ 4]  223 	call	_printInt_UART
+                                    224 ;	main.c: 50: line_UART();
+      0000C4 CDr00r00         [ 4]  225 	call	_line_UART
+                                    226 ;	main.c: 51: line_UART();
+      0000C7 CDr00r00         [ 4]  227 	call	_line_UART
+                                    228 ;	main.c: 53: }
+      0000CA CCr00r29         [ 2]  229 	jp	00104$
+                                    230 	.area CODE
+                                    231 	.area CONST
+                                    232 	.area CONST
+      000000                        233 ___str_0:
+      000000 73 74 61 72 74 20 72   234 	.ascii "start reading"
              65 61 64 69 6E 67
-      00000D 00                     167 	.db 0x00
-                                    168 	.area CODE
-                                    169 	.area CONST
-      00000E                        170 ___str_1:
-      00000E 66 61 69 6C            171 	.ascii "fail"
-      000012 00                     172 	.db 0x00
-                                    173 	.area CODE
-                                    174 	.area CONST
-      000013                        175 ___str_2:
-      000013 73 65 63 6F 6E 64 20   176 	.ascii "second is "
-             69 73 20
-      00001D 00                     177 	.db 0x00
-                                    178 	.area CODE
-                                    179 	.area INITIALIZER
-                                    180 	.area CABS (ABS)
+      00000D 00                     235 	.db 0x00
+                                    236 	.area CODE
+                                    237 	.area CONST
+      00000E                        238 ___str_1:
+      00000E 66 61 69 6C            239 	.ascii "fail"
+      000012 00                     240 	.db 0x00
+                                    241 	.area CODE
+                                    242 	.area CONST
+      000013                        243 ___str_2:
+      000013 73 65 63 20 69 73 20   244 	.ascii "sec is "
+      00001A 00                     245 	.db 0x00
+                                    246 	.area CODE
+                                    247 	.area CONST
+      00001B                        248 ___str_3:
+      00001B 6D 69 6E 20 69 73 20   249 	.ascii "min is "
+      000022 00                     250 	.db 0x00
+                                    251 	.area CODE
+                                    252 	.area CONST
+      000023                        253 ___str_4:
+      000023 68 6F 75 72 20 69 73   254 	.ascii "hour is "
+             20
+      00002B 00                     255 	.db 0x00
+                                    256 	.area CODE
+                                    257 	.area CONST
+      00002C                        258 ___str_5:
+      00002C 64 61 79 20 69 73 20   259 	.ascii "day is "
+      000033 00                     260 	.db 0x00
+                                    261 	.area CODE
+                                    262 	.area CONST
+      000034                        263 ___str_6:
+      000034 64 61 74 65 20 69 73   264 	.ascii "date is "
+             20
+      00003C 00                     265 	.db 0x00
+                                    266 	.area CODE
+                                    267 	.area CONST
+      00003D                        268 ___str_7:
+      00003D 6D 6F 6E 74 68 20 69   269 	.ascii "month is "
+             73 20
+      000046 00                     270 	.db 0x00
+                                    271 	.area CODE
+                                    272 	.area CONST
+      000047                        273 ___str_8:
+      000047 79 65 61 72 20 69 73   274 	.ascii "year is "
+             20
+      00004F 00                     275 	.db 0x00
+                                    276 	.area CODE
+                                    277 	.area INITIALIZER
+                                    278 	.area CABS (ABS)
