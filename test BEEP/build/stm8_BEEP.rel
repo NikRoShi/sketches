@@ -1,0 +1,46 @@
+XH3
+H B areas 3 global symbols
+M stm8_BEEP
+O -mstm8
+S .__.ABS. Def000000
+A _CODE size 0 flags 0 addr 0
+A DATA size 0 flags 0 addr 0
+A INITIALIZED size 0 flags 0 addr 0
+A DABS size 0 flags 8 addr 0
+A HOME size 0 flags 0 addr 0
+A GSINIT size 0 flags 0 addr 0
+A GSFINAL size 0 flags 0 addr 0
+A CONST size 0 flags 0 addr 0
+A INITIALIZER size 0 flags 0 addr 0
+A CODE size 4B flags 0 addr 0
+S _init_BEEP Def000000
+S _beep Def000039
+A CABS size 0 flags 8 addr 0
+T 00 00 00
+R 00 00 00 09
+T 00 00 00 88 97 4D 27 0A 9F 4A 27 06 9F A1 02 27
+R 00 00 00 09
+T 00 00 0D 01 5F
+R 00 00 00 09
+T 00 00 0F
+R 00 00 00 09
+T 00 00 0F 72 1B 50 F3 C6 50 F3 A4 E0 C7 50 F3 72
+R 00 00 00 09
+T 00 00 1C 18 50 F3 C6 50 F3 A4 3F C7 50 F3 C6
+R 00 00 00 09
+T 00 00 28 50 F3 6B 01 9F 4E A4 F0 48 48 1A 01 C7
+R 00 00 00 09
+T 00 00 35 50 F3 84 81
+R 00 00 00 09
+T 00 00 39
+R 00 00 00 09
+T 00 00 39 97 4A 26 04 72 1A 50 F3
+R 00 00 00 09
+T 00 00 41
+R 00 00 00 09
+T 00 00 41 9F 4D 27 01 81
+R 00 00 00 09
+T 00 00 46
+R 00 00 00 09
+T 00 00 46 72 1B 50 F3 81
+R 00 00 00 09
