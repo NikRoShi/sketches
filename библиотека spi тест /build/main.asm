@@ -1,0 +1,183 @@
+;--------------------------------------------------------
+; File Created by SDCC : free open source ANSI-C Compiler
+; Version 4.2.0 #13081 (Linux)
+;--------------------------------------------------------
+	.module main
+	.optsdcc -mstm8
+	
+;--------------------------------------------------------
+; Public variables in this module
+;--------------------------------------------------------
+	.globl _main
+	.globl _TIM4_UPD_OVF_IRQHandler
+	.globl _delay
+	.globl _init_TIME
+	.globl _tick_TIME
+	.globl _write_SPI
+	.globl _init_SPI
+	.globl _writePin
+	.globl _pinMode
+;--------------------------------------------------------
+; ram data
+;--------------------------------------------------------
+	.area DATA
+;--------------------------------------------------------
+; ram data
+;--------------------------------------------------------
+	.area INITIALIZED
+;--------------------------------------------------------
+; Stack segment in internal ram
+;--------------------------------------------------------
+	.area	SSEG
+__start__stack:
+	.ds	1
+
+;--------------------------------------------------------
+; absolute external ram data
+;--------------------------------------------------------
+	.area DABS (ABS)
+
+; default segment ordering for linker
+	.area HOME
+	.area GSINIT
+	.area GSFINAL
+	.area CONST
+	.area INITIALIZER
+	.area CODE
+
+;--------------------------------------------------------
+; interrupt vector
+;--------------------------------------------------------
+	.area HOME
+__interrupt_vect:
+	int s_GSINIT ; reset
+	int 0x000000 ; trap
+	int 0x000000 ; int0
+	int 0x000000 ; int1
+	int 0x000000 ; int2
+	int 0x000000 ; int3
+	int 0x000000 ; int4
+	int 0x000000 ; int5
+	int 0x000000 ; int6
+	int 0x000000 ; int7
+	int 0x000000 ; int8
+	int 0x000000 ; int9
+	int 0x000000 ; int10
+	int 0x000000 ; int11
+	int 0x000000 ; int12
+	int 0x000000 ; int13
+	int 0x000000 ; int14
+	int 0x000000 ; int15
+	int 0x000000 ; int16
+	int 0x000000 ; int17
+	int 0x000000 ; int18
+	int 0x000000 ; int19
+	int 0x000000 ; int20
+	int 0x000000 ; int21
+	int 0x000000 ; int22
+	int _TIM4_UPD_OVF_IRQHandler ; int23
+;--------------------------------------------------------
+; global & static initialisations
+;--------------------------------------------------------
+	.area HOME
+	.area GSINIT
+	.area GSFINAL
+	.area GSINIT
+__sdcc_init_data:
+; stm8_genXINIT() start
+	ldw x, #l_DATA
+	jreq	00002$
+00001$:
+	clr (s_DATA - 1, x)
+	decw x
+	jrne	00001$
+00002$:
+	ldw	x, #l_INITIALIZER
+	jreq	00004$
+00003$:
+	ld	a, (s_INITIALIZER - 1, x)
+	ld	(s_INITIALIZED - 1, x), a
+	decw	x
+	jrne	00003$
+00004$:
+; stm8_genXINIT() end
+	.area GSFINAL
+	jp	__sdcc_program_startup
+;--------------------------------------------------------
+; Home
+;--------------------------------------------------------
+	.area HOME
+	.area HOME
+__sdcc_program_startup:
+	jp	_main
+;	return from main will return to caller
+;--------------------------------------------------------
+; code
+;--------------------------------------------------------
+	.area CODE
+;	main.c: 7: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(IRQ_TIM4) {
+;	-----------------------------------------
+;	 function TIM4_UPD_OVF_IRQHandler
+;	-----------------------------------------
+_TIM4_UPD_OVF_IRQHandler:
+	clr	a
+	div	x, a
+;	main.c: 8: TIM4_SR &= ~(1 << 0);
+	bres	0x5344, #0
+;	main.c: 9: tick_TIME();
+	call	_tick_TIME
+;	main.c: 10: }
+	iret
+;	main.c: 12: int main(void)
+;	-----------------------------------------
+;	 function main
+;	-----------------------------------------
+_main:
+	push	a
+;	main.c: 14: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+	mov	0x50c6+0, #0x00
+;	main.c: 16: init_TIME();
+	call	_init_TIME
+;	main.c: 17: init_SPI(SPI_MODE0, SPI_DIV16, SPI_MSB, SPI_MST);
+	push	#0x04
+	push	#0x00
+	push	#0x18
+	clr	a
+	call	_init_SPI
+;	main.c: 18: pinMode(PD, 2, OUTPUT);
+	push	#0x00
+	ld	a, #0x02
+	ldw	x, #0x500f
+	call	_pinMode
+;	main.c: 20: while (1)
+	clr	(0x01, sp)
+00105$:
+;	main.c: 24: write_SPI(i);
+	ld	a, (0x01, sp)
+	call	_write_SPI
+;	main.c: 25: writePin(PD, 2, HIGH);
+	push	#0x01
+	ld	a, #0x02
+	ldw	x, #0x500f
+	call	_writePin
+;	main.c: 26: writePin(PD, 2, LOW);
+	push	#0x00
+	ld	a, #0x02
+	ldw	x, #0x500f
+	call	_writePin
+;	main.c: 27: delay(50);
+	push	#0x32
+	clrw	x
+	pushw	x
+	push	#0x00
+	call	_delay
+;	main.c: 22: for (uint8_t i; i <= 255; i++)
+	inc	(0x01, sp)
+	jra	00105$
+;	main.c: 30: }
+	pop	a
+	ret
+	.area CODE
+	.area CONST
+	.area INITIALIZER
+	.area CABS (ABS)
