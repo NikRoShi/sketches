@@ -1,0 +1,163 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ANSI-C Compiler
+                                      3 ; Version 4.2.0 #13081 (Linux)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module stm8_SPI
+                                      6 	.optsdcc -mstm8
+                                      7 	
+                                      8 ;--------------------------------------------------------
+                                      9 ; Public variables in this module
+                                     10 ;--------------------------------------------------------
+                                     11 	.globl _init_SPI
+                                     12 	.globl _exchange_SPI
+                                     13 	.globl _write_SPI
+                                     14 	.globl _read_SPI
+                                     15 ;--------------------------------------------------------
+                                     16 ; ram data
+                                     17 ;--------------------------------------------------------
+                                     18 	.area DATA
+                                     19 ;--------------------------------------------------------
+                                     20 ; ram data
+                                     21 ;--------------------------------------------------------
+                                     22 	.area INITIALIZED
+                                     23 ;--------------------------------------------------------
+                                     24 ; absolute external ram data
+                                     25 ;--------------------------------------------------------
+                                     26 	.area DABS (ABS)
+                                     27 
+                                     28 ; default segment ordering for linker
+                                     29 	.area HOME
+                                     30 	.area GSINIT
+                                     31 	.area GSFINAL
+                                     32 	.area CONST
+                                     33 	.area INITIALIZER
+                                     34 	.area CODE
+                                     35 
+                                     36 ;--------------------------------------------------------
+                                     37 ; global & static initialisations
+                                     38 ;--------------------------------------------------------
+                                     39 	.area HOME
+                                     40 	.area GSINIT
+                                     41 	.area GSFINAL
+                                     42 	.area GSINIT
+                                     43 ;--------------------------------------------------------
+                                     44 ; Home
+                                     45 ;--------------------------------------------------------
+                                     46 	.area HOME
+                                     47 	.area HOME
+                                     48 ;--------------------------------------------------------
+                                     49 ; code
+                                     50 ;--------------------------------------------------------
+                                     51 	.area CODE
+                                     52 ;	../../my_STM8_libraries/stm8_SPI.c: 3: void init_SPI(uint8_t mode, uint8_t div, uint8_t firstBit, uint8_t masterSlave)
+                                     53 ;	-----------------------------------------
+                                     54 ;	 function init_SPI
+                                     55 ;	-----------------------------------------
+      000000                         56 _init_SPI:
+      000000 88               [ 1]   57 	push	a
+      000001 6B 01            [ 1]   58 	ld	(0x01, sp), a
+                                     59 ;	../../my_STM8_libraries/stm8_SPI.c: 5: SPI_CR1 &= ~(1 << 6);
+      000003 72 1D 52 00      [ 1]   60 	bres	0x5200, #6
+                                     61 ;	../../my_STM8_libraries/stm8_SPI.c: 6: SPI_CR1 = 0;
+      000007 35 00 52 00      [ 1]   62 	mov	0x5200+0, #0x00
+                                     63 ;	../../my_STM8_libraries/stm8_SPI.c: 7: SPI_CR1 |= mode;
+      00000B C6 52 00         [ 1]   64 	ld	a, 0x5200
+      00000E 1A 01            [ 1]   65 	or	a, (0x01, sp)
+      000010 C7 52 00         [ 1]   66 	ld	0x5200, a
+                                     67 ;	../../my_STM8_libraries/stm8_SPI.c: 8: SPI_CR1 |= div;
+      000013 C6 52 00         [ 1]   68 	ld	a, 0x5200
+      000016 1A 04            [ 1]   69 	or	a, (0x04, sp)
+      000018 C7 52 00         [ 1]   70 	ld	0x5200, a
+                                     71 ;	../../my_STM8_libraries/stm8_SPI.c: 9: SPI_CR1 |= firstBit;
+      00001B C6 52 00         [ 1]   72 	ld	a, 0x5200
+      00001E 1A 05            [ 1]   73 	or	a, (0x05, sp)
+      000020 C7 52 00         [ 1]   74 	ld	0x5200, a
+                                     75 ;	../../my_STM8_libraries/stm8_SPI.c: 10: SPI_CR1 |= masterSlave;
+      000023 C6 52 00         [ 1]   76 	ld	a, 0x5200
+      000026 1A 06            [ 1]   77 	or	a, (0x06, sp)
+      000028 C7 52 00         [ 1]   78 	ld	0x5200, a
+                                     79 ;	../../my_STM8_libraries/stm8_SPI.c: 11: SPI_CR1 |= (1 << 6);
+      00002B C6 52 00         [ 1]   80 	ld	a, 0x5200
+      00002E AA 40            [ 1]   81 	or	a, #0x40
+      000030 C7 52 00         [ 1]   82 	ld	0x5200, a
+                                     83 ;	../../my_STM8_libraries/stm8_SPI.c: 12: }
+      000033 1E 02            [ 2]   84 	ldw	x, (2, sp)
+      000035 5B 06            [ 2]   85 	addw	sp, #6
+      000037 FC               [ 2]   86 	jp	(x)
+                                     87 ;	../../my_STM8_libraries/stm8_SPI.c: 13: uint8_t exchange_SPI(uint8_t data)
+                                     88 ;	-----------------------------------------
+                                     89 ;	 function exchange_SPI
+                                     90 ;	-----------------------------------------
+      000038                         91 _exchange_SPI:
+      000038 52 03            [ 2]   92 	sub	sp, #3
+      00003A 6B 01            [ 1]   93 	ld	(0x01, sp), a
+                                     94 ;	../../my_STM8_libraries/stm8_SPI.c: 17: while (!(SPI_SR & SPI_SR_TXE))
+      00003C AE C3 50         [ 2]   95 	ldw	x, #0xc350
+      00003F 1F 02            [ 2]   96 	ldw	(0x02, sp), x
+      000041                         97 00103$:
+      000041 72 02 52 03 0A   [ 2]   98 	btjt	0x5203, #1, 00105$
+                                     99 ;	../../my_STM8_libraries/stm8_SPI.c: 19: if (--timeout == 0) return 0;
+      000046 1E 02            [ 2]  100 	ldw	x, (0x02, sp)
+      000048 5A               [ 2]  101 	decw	x
+      000049 1F 02            [ 2]  102 	ldw	(0x02, sp), x
+      00004B 26 F4            [ 1]  103 	jrne	00103$
+      00004D 4F               [ 1]  104 	clr	a
+      00004E 20 2B            [ 2]  105 	jra	00116$
+      000050                        106 00105$:
+                                    107 ;	../../my_STM8_libraries/stm8_SPI.c: 23: SPI_DR = data;
+      000050 AE 52 04         [ 2]  108 	ldw	x, #0x5204
+      000053 7B 01            [ 1]  109 	ld	a, (0x01, sp)
+      000055 F7               [ 1]  110 	ld	(x), a
+                                    111 ;	../../my_STM8_libraries/stm8_SPI.c: 25: while (!(SPI_SR & SPI_SR_RXNE))
+      000056 AE C3 50         [ 2]  112 	ldw	x, #0xc350
+      000059                        113 00108$:
+      000059 72 00 52 03 07   [ 2]  114 	btjt	0x5203, #0, 00110$
+                                    115 ;	../../my_STM8_libraries/stm8_SPI.c: 27: if (--timeout == 0) return 0;
+      00005E 5A               [ 2]  116 	decw	x
+      00005F 5D               [ 2]  117 	tnzw	x
+      000060 26 F7            [ 1]  118 	jrne	00108$
+      000062 4F               [ 1]  119 	clr	a
+      000063 20 16            [ 2]  120 	jra	00116$
+      000065                        121 00110$:
+                                    122 ;	../../my_STM8_libraries/stm8_SPI.c: 31: uint8_t result = SPI_DR;
+      000065 C6 52 04         [ 1]  123 	ld	a, 0x5204
+      000068 6B 03            [ 1]  124 	ld	(0x03, sp), a
+                                    125 ;	../../my_STM8_libraries/stm8_SPI.c: 33: while (SPI_SR & SPI_SR_BSY)
+      00006A AE C3 50         [ 2]  126 	ldw	x, #0xc350
+      00006D                        127 00113$:
+      00006D C6 52 03         [ 1]  128 	ld	a, 0x5203
+      000070 2A 07            [ 1]  129 	jrpl	00115$
+                                    130 ;	../../my_STM8_libraries/stm8_SPI.c: 35: if (--timeout == 0) return 0;
+      000072 5A               [ 2]  131 	decw	x
+      000073 5D               [ 2]  132 	tnzw	x
+      000074 26 F7            [ 1]  133 	jrne	00113$
+      000076 4F               [ 1]  134 	clr	a
+      000077 20 02            [ 2]  135 	jra	00116$
+      000079                        136 00115$:
+                                    137 ;	../../my_STM8_libraries/stm8_SPI.c: 37: return result;
+      000079 7B 03            [ 1]  138 	ld	a, (0x03, sp)
+      00007B                        139 00116$:
+                                    140 ;	../../my_STM8_libraries/stm8_SPI.c: 38: }
+      00007B 5B 03            [ 2]  141 	addw	sp, #3
+      00007D 81               [ 4]  142 	ret
+                                    143 ;	../../my_STM8_libraries/stm8_SPI.c: 39: void write_SPI(uint8_t data)
+                                    144 ;	-----------------------------------------
+                                    145 ;	 function write_SPI
+                                    146 ;	-----------------------------------------
+      00007E                        147 _write_SPI:
+                                    148 ;	../../my_STM8_libraries/stm8_SPI.c: 41: (void)exchange_SPI(data);
+                                    149 ;	../../my_STM8_libraries/stm8_SPI.c: 42: }
+      00007E CCr00r38         [ 2]  150 	jp	_exchange_SPI
+                                    151 ;	../../my_STM8_libraries/stm8_SPI.c: 43: uint8_t read_SPI(void)
+                                    152 ;	-----------------------------------------
+                                    153 ;	 function read_SPI
+                                    154 ;	-----------------------------------------
+      000081                        155 _read_SPI:
+                                    156 ;	../../my_STM8_libraries/stm8_SPI.c: 45: return exchange_SPI(0xFF);
+      000081 A6 FF            [ 1]  157 	ld	a, #0xff
+                                    158 ;	../../my_STM8_libraries/stm8_SPI.c: 46: }
+      000083 CCr00r38         [ 2]  159 	jp	_exchange_SPI
+                                    160 	.area CODE
+                                    161 	.area CONST
+                                    162 	.area INITIALIZER
+                                    163 	.area CABS (ABS)
