@@ -1,0 +1,190 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ANSI-C Compiler
+                                      3 ; Version 4.2.0 #13081 (Linux)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module main
+                                      6 	.optsdcc -mstm8
+                                      7 	
+                                      8 ;--------------------------------------------------------
+                                      9 ; Public variables in this module
+                                     10 ;--------------------------------------------------------
+                                     11 	.globl _main
+                                     12 	.globl _TIM4_UPD_OVF_IRQHandler
+                                     13 	.globl _refresh_display
+                                     14 	.globl _setDigit
+                                     15 	.globl _init_display
+                                     16 	.globl _clear_display
+                                     17 	.globl _delay
+                                     18 	.globl _init_TIME
+                                     19 	.globl _tick_TIME
+                                     20 ;--------------------------------------------------------
+                                     21 ; ram data
+                                     22 ;--------------------------------------------------------
+                                     23 	.area DATA
+                                     24 ;--------------------------------------------------------
+                                     25 ; ram data
+                                     26 ;--------------------------------------------------------
+                                     27 	.area INITIALIZED
+                                     28 ;--------------------------------------------------------
+                                     29 ; Stack segment in internal ram
+                                     30 ;--------------------------------------------------------
+                                     31 	.area	SSEG
+      000000                         32 __start__stack:
+      000000                         33 	.ds	1
+                                     34 
+                                     35 ;--------------------------------------------------------
+                                     36 ; absolute external ram data
+                                     37 ;--------------------------------------------------------
+                                     38 	.area DABS (ABS)
+                                     39 
+                                     40 ; default segment ordering for linker
+                                     41 	.area HOME
+                                     42 	.area GSINIT
+                                     43 	.area GSFINAL
+                                     44 	.area CONST
+                                     45 	.area INITIALIZER
+                                     46 	.area CODE
+                                     47 
+                                     48 ;--------------------------------------------------------
+                                     49 ; interrupt vector
+                                     50 ;--------------------------------------------------------
+                                     51 	.area HOME
+      000000                         52 __interrupt_vect:
+      000000 82v00u00u00             53 	int s_GSINIT ; reset
+      000004 82 00 00 00             54 	int 0x000000 ; trap
+      000008 82 00 00 00             55 	int 0x000000 ; int0
+      00000C 82 00 00 00             56 	int 0x000000 ; int1
+      000010 82 00 00 00             57 	int 0x000000 ; int2
+      000014 82 00 00 00             58 	int 0x000000 ; int3
+      000018 82 00 00 00             59 	int 0x000000 ; int4
+      00001C 82 00 00 00             60 	int 0x000000 ; int5
+      000020 82 00 00 00             61 	int 0x000000 ; int6
+      000024 82 00 00 00             62 	int 0x000000 ; int7
+      000028 82 00 00 00             63 	int 0x000000 ; int8
+      00002C 82 00 00 00             64 	int 0x000000 ; int9
+      000030 82 00 00 00             65 	int 0x000000 ; int10
+      000034 82 00 00 00             66 	int 0x000000 ; int11
+      000038 82 00 00 00             67 	int 0x000000 ; int12
+      00003C 82 00 00 00             68 	int 0x000000 ; int13
+      000040 82 00 00 00             69 	int 0x000000 ; int14
+      000044 82 00 00 00             70 	int 0x000000 ; int15
+      000048 82 00 00 00             71 	int 0x000000 ; int16
+      00004C 82 00 00 00             72 	int 0x000000 ; int17
+      000050 82 00 00 00             73 	int 0x000000 ; int18
+      000054 82 00 00 00             74 	int 0x000000 ; int19
+      000058 82 00 00 00             75 	int 0x000000 ; int20
+      00005C 82 00 00 00             76 	int 0x000000 ; int21
+      000060 82 00 00 00             77 	int 0x000000 ; int22
+      000064 82v00u00u00             78 	int _TIM4_UPD_OVF_IRQHandler ; int23
+                                     79 ;--------------------------------------------------------
+                                     80 ; global & static initialisations
+                                     81 ;--------------------------------------------------------
+                                     82 	.area HOME
+                                     83 	.area GSINIT
+                                     84 	.area GSFINAL
+                                     85 	.area GSINIT
+      000000                         86 __sdcc_init_data:
+                                     87 ; stm8_genXINIT() start
+      000000 AEr00r00         [ 2]   88 	ldw x, #l_DATA
+      000003 27 07            [ 1]   89 	jreq	00002$
+      000005                         90 00001$:
+      000005 72 4FuFFuFF      [ 1]   91 	clr (s_DATA - 1, x)
+      000009 5A               [ 2]   92 	decw x
+      00000A 26 F9            [ 1]   93 	jrne	00001$
+      00000C                         94 00002$:
+      00000C AEr00r00         [ 2]   95 	ldw	x, #l_INITIALIZER
+      00000F 27 09            [ 1]   96 	jreq	00004$
+      000011                         97 00003$:
+      000011 D6uFFuFF         [ 1]   98 	ld	a, (s_INITIALIZER - 1, x)
+      000014 D7uFFuFF         [ 1]   99 	ld	(s_INITIALIZED - 1, x), a
+      000017 5A               [ 2]  100 	decw	x
+      000018 26 F7            [ 1]  101 	jrne	00003$
+      00001A                        102 00004$:
+                                    103 ; stm8_genXINIT() end
+                                    104 	.area GSFINAL
+      000000 CCr00r68         [ 2]  105 	jp	__sdcc_program_startup
+                                    106 ;--------------------------------------------------------
+                                    107 ; Home
+                                    108 ;--------------------------------------------------------
+                                    109 	.area HOME
+                                    110 	.area HOME
+      000068                        111 __sdcc_program_startup:
+      000068 CCr00r0D         [ 2]  112 	jp	_main
+                                    113 ;	return from main will return to caller
+                                    114 ;--------------------------------------------------------
+                                    115 ; code
+                                    116 ;--------------------------------------------------------
+                                    117 	.area CODE
+                                    118 ;	main.c: 6: void TIM4_UPD_OVF_IRQHandler(void) __interrupt(IRQ_TIM4) {
+                                    119 ;	-----------------------------------------
+                                    120 ;	 function TIM4_UPD_OVF_IRQHandler
+                                    121 ;	-----------------------------------------
+      000000                        122 _TIM4_UPD_OVF_IRQHandler:
+      000000 4F               [ 1]  123 	clr	a
+      000001 62               [ 2]  124 	div	x, a
+                                    125 ;	main.c: 7: TIM4_SR &= ~(1 << 0);
+      000002 72 11 53 44      [ 1]  126 	bres	0x5344, #0
+                                    127 ;	main.c: 8: tick_TIME();
+      000006 CDr00r00         [ 4]  128 	call	_tick_TIME
+                                    129 ;	main.c: 9: refresh_display();
+      000009 CDr00r00         [ 4]  130 	call	_refresh_display
+                                    131 ;	main.c: 10: }
+      00000C 80               [11]  132 	iret
+                                    133 ;	main.c: 12: void main(void)
+                                    134 ;	-----------------------------------------
+                                    135 ;	 function main
+                                    136 ;	-----------------------------------------
+      00000D                        137 _main:
+      00000D 52 02            [ 2]  138 	sub	sp, #2
+                                    139 ;	main.c: 14: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+      00000F 35 00 50 C6      [ 1]  140 	mov	0x50c6+0, #0x00
+                                    141 ;	main.c: 16: init_display(PD, 3);
+      000013 A6 03            [ 1]  142 	ld	a, #0x03
+      000015 AE 50 0F         [ 2]  143 	ldw	x, #0x500f
+      000018 CDr00r00         [ 4]  144 	call	_init_display
+                                    145 ;	main.c: 17: init_TIME();
+      00001B CDr00r00         [ 4]  146 	call	_init_TIME
+                                    147 ;	main.c: 18: enableInterrupts();
+      00001E 9A               [ 1]  148 	rim
+                                    149 ;	main.c: 22: for (uint8_t position = 0; position < 8; position++)
+      00001F                        150 00117$:
+      00001F 0F 01            [ 1]  151 	clr	(0x01, sp)
+      000021                        152 00110$:
+      000021 7B 01            [ 1]  153 	ld	a, (0x01, sp)
+      000023 A1 08            [ 1]  154 	cp	a, #0x08
+      000025 24 21            [ 1]  155 	jrnc	00102$
+                                    156 ;	main.c: 24: for (uint8_t digit = 0; digit < 10; digit++)
+      000027 0F 02            [ 1]  157 	clr	(0x02, sp)
+      000029                        158 00107$:
+      000029 7B 02            [ 1]  159 	ld	a, (0x02, sp)
+      00002B A1 0A            [ 1]  160 	cp	a, #0x0a
+      00002D 24 15            [ 1]  161 	jrnc	00111$
+                                    162 ;	main.c: 26: setDigit(position, digit);
+      00002F 7B 02            [ 1]  163 	ld	a, (0x02, sp)
+      000031 88               [ 1]  164 	push	a
+      000032 7B 02            [ 1]  165 	ld	a, (0x02, sp)
+      000034 CDr00r00         [ 4]  166 	call	_setDigit
+                                    167 ;	main.c: 27: delay(200);
+      000037 4B C8            [ 1]  168 	push	#0xc8
+      000039 5F               [ 1]  169 	clrw	x
+      00003A 89               [ 2]  170 	pushw	x
+      00003B 4B 00            [ 1]  171 	push	#0x00
+      00003D CDr00r00         [ 4]  172 	call	_delay
+                                    173 ;	main.c: 24: for (uint8_t digit = 0; digit < 10; digit++)
+      000040 0C 02            [ 1]  174 	inc	(0x02, sp)
+      000042 20 E5            [ 2]  175 	jra	00107$
+      000044                        176 00111$:
+                                    177 ;	main.c: 22: for (uint8_t position = 0; position < 8; position++)
+      000044 0C 01            [ 1]  178 	inc	(0x01, sp)
+      000046 20 D9            [ 2]  179 	jra	00110$
+      000048                        180 00102$:
+                                    181 ;	main.c: 30: clear_display();
+      000048 CDr00r00         [ 4]  182 	call	_clear_display
+      00004B 20 D2            [ 2]  183 	jra	00117$
+                                    184 ;	main.c: 32: }
+      00004D 5B 02            [ 2]  185 	addw	sp, #2
+      00004F 81               [ 4]  186 	ret
+                                    187 	.area CODE
+                                    188 	.area CONST
+                                    189 	.area INITIALIZER
+                                    190 	.area CABS (ABS)

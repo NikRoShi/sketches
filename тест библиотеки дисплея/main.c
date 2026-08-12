@@ -6,27 +6,27 @@
 void TIM4_UPD_OVF_IRQHandler(void) __interrupt(IRQ_TIM4) {
     TIM4_SR &= ~(1 << 0);
     tick_TIME();
-	refresh_display();
+    refresh_display();
 }
 
 void main(void)
 {
 	CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	
-	init_TIME();
 	init_display(PD, 3);
-	
-	setDigit(0, 1);
-	setDigit(1, 2);
-	setDigit(2, 3);
-	setDigit(3, 4);
-	setDigit(4, 5);
-	setDigit(5, 6);
-	setDigit(6, 7);
-	setDigit(7, 8);
+	init_TIME();
+	enableInterrupts();
 
 	while(1)
 	{
-
+		for (uint8_t position = 0; position < 8; position++)
+		{
+			for (uint8_t digit = 0; digit < 10; digit++)
+			{
+				setDigit(position, digit);
+				delay(200);
+			}
+		}
+		clear_display();
 	}
 }
