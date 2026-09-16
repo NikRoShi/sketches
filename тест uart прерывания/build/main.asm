@@ -113,7 +113,7 @@ __sdcc_program_startup:
 ; code
 ;--------------------------------------------------------
 	.area CODE
-;	main.c: 9: void UART1_RX_IRQHandler(void) __interrupt(18) {
+;	main.c: 9: void UART1_RX_IRQHandler(void) __interrupt(IRQ_UART1_RX) {
 ;	-----------------------------------------
 ;	 function UART1_RX_IRQHandler
 ;	-----------------------------------------
@@ -122,7 +122,7 @@ _UART1_RX_IRQHandler:
 	div	x, a
 ;	main.c: 11: key = getData_UART();
 	call	_getData_UART
-;	main.c: 13: if (key == 's' || key == 'S') ledFlag = 1;
+;	main.c: 13: if (key == 's' || key == 'S') ledFlag = 0;
 	ld	_key+0, a
 	cp	a, #0x73
 	jreq	00101$
@@ -130,9 +130,9 @@ _UART1_RX_IRQHandler:
 	cp	a, #0x53
 	jrne	00102$
 00101$:
-	mov	_ledFlag+0, #0x01
+	clr	_ledFlag+0
 00102$:
-;	main.c: 14: if (key == 'r' || key == 'R') ledFlag = 0;
+;	main.c: 14: if (key == 'r' || key == 'R') ledFlag = 1;
 	ld	a, _key+0
 	cp	a, #0x72
 	jreq	00104$
@@ -140,7 +140,7 @@ _UART1_RX_IRQHandler:
 	cp	a, #0x52
 	jrne	00107$
 00104$:
-	clr	_ledFlag+0
+	mov	_ledFlag+0, #0x01
 00107$:
 ;	main.c: 15: }
 	iret
@@ -185,7 +185,7 @@ _main:
 	.area CONST
 	.area INITIALIZER
 __xinit__ledFlag:
-	.db #0x00	; 0
+	.db #0x01	; 1
 __xinit__key:
 	.db #0x72	; 114	'r'
 	.area CABS (ABS)

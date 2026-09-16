@@ -113,7 +113,7 @@
                                     113 ; code
                                     114 ;--------------------------------------------------------
                                     115 	.area CODE
-                                    116 ;	main.c: 9: void UART1_RX_IRQHandler(void) __interrupt(18) {
+                                    116 ;	main.c: 9: void UART1_RX_IRQHandler(void) __interrupt(IRQ_UART1_RX) {
                                     117 ;	-----------------------------------------
                                     118 ;	 function UART1_RX_IRQHandler
                                     119 ;	-----------------------------------------
@@ -122,7 +122,7 @@
       000001 62               [ 2]  122 	div	x, a
                                     123 ;	main.c: 11: key = getData_UART();
       000002 CDr00r00         [ 4]  124 	call	_getData_UART
-                                    125 ;	main.c: 13: if (key == 's' || key == 'S') ledFlag = 1;
+                                    125 ;	main.c: 13: if (key == 's' || key == 'S') ledFlag = 0;
       000005 C7u00u01         [ 1]  126 	ld	_key+0, a
       000008 A1 73            [ 1]  127 	cp	a, #0x73
       00000A 27 07            [ 1]  128 	jreq	00101$
@@ -130,9 +130,9 @@
       00000F A1 53            [ 1]  130 	cp	a, #0x53
       000011 26 04            [ 1]  131 	jrne	00102$
       000013                        132 00101$:
-      000013 35 01u00u00      [ 1]  133 	mov	_ledFlag+0, #0x01
+      000013 72 5Fu00u00      [ 1]  133 	clr	_ledFlag+0
       000017                        134 00102$:
-                                    135 ;	main.c: 14: if (key == 'r' || key == 'R') ledFlag = 0;
+                                    135 ;	main.c: 14: if (key == 'r' || key == 'R') ledFlag = 1;
       000017 C6u00u01         [ 1]  136 	ld	a, _key+0
       00001A A1 72            [ 1]  137 	cp	a, #0x72
       00001C 27 07            [ 1]  138 	jreq	00104$
@@ -140,7 +140,7 @@
       000021 A1 52            [ 1]  140 	cp	a, #0x52
       000023 26 04            [ 1]  141 	jrne	00107$
       000025                        142 00104$:
-      000025 72 5Fu00u00      [ 1]  143 	clr	_ledFlag+0
+      000025 35 01u00u00      [ 1]  143 	mov	_ledFlag+0, #0x01
       000029                        144 00107$:
                                     145 ;	main.c: 15: }
       000029 80               [11]  146 	iret
@@ -185,7 +185,7 @@
                                     185 	.area CONST
                                     186 	.area INITIALIZER
       000000                        187 __xinit__ledFlag:
-      000000 00                     188 	.db #0x00	; 0
+      000000 01                     188 	.db #0x01	; 1
       000001                        189 __xinit__key:
       000001 72                     190 	.db #0x72	; 114	'r'
                                     191 	.area CABS (ABS)
