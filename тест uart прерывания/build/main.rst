@@ -121,7 +121,7 @@
       008090 4F               [ 1]  121 	clr	a
       008091 62               [ 2]  122 	div	x, a
                                     123 ;	main.c: 11: key = getData_UART();
-      008092 CD 8A B4         [ 4]  124 	call	_getData_UART
+      008092 CD 8A CA         [ 4]  124 	call	_getData_UART
                                     125 ;	main.c: 13: if (key == 's' || key == 'S') ledFlag = 0;
       008095 C7 00 0D         [ 1]  126 	ld	_key+0, a
       008098 A1 73            [ 1]  127 	cp	a, #0x73

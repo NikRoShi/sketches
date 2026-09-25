@@ -3,7 +3,7 @@
 #include "stm8_UART.h"
 #include "stm8_GPIO.h"
 
-uint8_t ledFlag = 1;
+volatile uint8_t ledFlag = 1;
 uint8_t key = 'r';
 
 void UART1_RX_IRQHandler(void) __interrupt(IRQ_UART1_RX) {

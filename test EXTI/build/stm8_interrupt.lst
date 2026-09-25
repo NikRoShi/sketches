@@ -1,0 +1,407 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ANSI-C Compiler
+                                      3 ; Version 4.2.0 #13081 (Linux)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module stm8_interrupt
+                                      6 	.optsdcc -mstm8
+                                      7 	
+                                      8 ;--------------------------------------------------------
+                                      9 ; Public variables in this module
+                                     10 ;--------------------------------------------------------
+                                     11 	.globl _EXTI_FlagD
+                                     12 	.globl _EXTIPinMaskD
+                                     13 	.globl _previousStateD
+                                     14 	.globl _EXTI_FlagC
+                                     15 	.globl _EXTIPinMaskC
+                                     16 	.globl _previousStateC
+                                     17 	.globl _EXTI_FlagB
+                                     18 	.globl _EXTIPinMaskB
+                                     19 	.globl _previousStateB
+                                     20 	.globl _EXTI_FlagA
+                                     21 	.globl _EXTIPinMaskA
+                                     22 	.globl _previousStateA
+                                     23 	.globl _set_EXTI
+                                     24 	.globl _set_EXTI_pin
+                                     25 	.globl _clear_EXTI_pin
+                                     26 	.globl _setInterruptPriority
+                                     27 ;--------------------------------------------------------
+                                     28 ; ram data
+                                     29 ;--------------------------------------------------------
+                                     30 	.area DATA
+                                     31 ;--------------------------------------------------------
+                                     32 ; ram data
+                                     33 ;--------------------------------------------------------
+                                     34 	.area INITIALIZED
+      000000                         35 _previousStateA::
+      000000                         36 	.ds 1
+      000001                         37 _EXTIPinMaskA::
+      000001                         38 	.ds 1
+      000002                         39 _EXTI_FlagA::
+      000002                         40 	.ds 1
+      000003                         41 _previousStateB::
+      000003                         42 	.ds 1
+      000004                         43 _EXTIPinMaskB::
+      000004                         44 	.ds 1
+      000005                         45 _EXTI_FlagB::
+      000005                         46 	.ds 1
+      000006                         47 _previousStateC::
+      000006                         48 	.ds 1
+      000007                         49 _EXTIPinMaskC::
+      000007                         50 	.ds 1
+      000008                         51 _EXTI_FlagC::
+      000008                         52 	.ds 1
+      000009                         53 _previousStateD::
+      000009                         54 	.ds 1
+      00000A                         55 _EXTIPinMaskD::
+      00000A                         56 	.ds 1
+      00000B                         57 _EXTI_FlagD::
+      00000B                         58 	.ds 1
+                                     59 ;--------------------------------------------------------
+                                     60 ; absolute external ram data
+                                     61 ;--------------------------------------------------------
+                                     62 	.area DABS (ABS)
+                                     63 
+                                     64 ; default segment ordering for linker
+                                     65 	.area HOME
+                                     66 	.area GSINIT
+                                     67 	.area GSFINAL
+                                     68 	.area CONST
+                                     69 	.area INITIALIZER
+                                     70 	.area CODE
+                                     71 
+                                     72 ;--------------------------------------------------------
+                                     73 ; global & static initialisations
+                                     74 ;--------------------------------------------------------
+                                     75 	.area HOME
+                                     76 	.area GSINIT
+                                     77 	.area GSFINAL
+                                     78 	.area GSINIT
+                                     79 ;--------------------------------------------------------
+                                     80 ; Home
+                                     81 ;--------------------------------------------------------
+                                     82 	.area HOME
+                                     83 	.area HOME
+                                     84 ;--------------------------------------------------------
+                                     85 ; code
+                                     86 ;--------------------------------------------------------
+                                     87 	.area CODE
+                                     88 ;	../../my_STM8_libraries/stm8_interrupt.c: 19: void set_EXTI(uint8_t port, uint8_t mode)
+                                     89 ;	-----------------------------------------
+                                     90 ;	 function set_EXTI
+                                     91 ;	-----------------------------------------
+      000000                         92 _set_EXTI:
+      000000 88               [ 1]   93 	push	a
+      000001 97               [ 1]   94 	ld	xl, a
+                                     95 ;	../../my_STM8_libraries/stm8_interrupt.c: 21: EXTI_CR1 &= ~(0b11 << port);
+      000002 C6 50 A0         [ 1]   96 	ld	a, 0x50a0
+      000005 6B 01            [ 1]   97 	ld	(0x01, sp), a
+      000007 9F               [ 1]   98 	ld	a, xl
+      000008 02               [ 1]   99 	rlwa	x
+      000009 A6 03            [ 1]  100 	ld	a, #0x03
+      00000B 01               [ 1]  101 	rrwa	x
+      00000C 4D               [ 1]  102 	tnz	a
+      00000D 27 06            [ 1]  103 	jreq	00104$
+      00000F                        104 00103$:
+      00000F 02               [ 1]  105 	rlwa	x
+      000010 48               [ 1]  106 	sll	a
+      000011 01               [ 1]  107 	rrwa	x
+      000012 4A               [ 1]  108 	dec	a
+      000013 26 FA            [ 1]  109 	jrne	00103$
+      000015                        110 00104$:
+      000015 9E               [ 1]  111 	ld	a, xh
+      000016 43               [ 1]  112 	cpl	a
+      000017 14 01            [ 1]  113 	and	a, (0x01, sp)
+      000019 C7 50 A0         [ 1]  114 	ld	0x50a0, a
+                                    115 ;	../../my_STM8_libraries/stm8_interrupt.c: 22: EXTI_CR1 |= mode << port;
+      00001C C6 50 A0         [ 1]  116 	ld	a, 0x50a0
+      00001F 88               [ 1]  117 	push	a
+      000020 7B 05            [ 1]  118 	ld	a, (0x05, sp)
+      000022 6B 02            [ 1]  119 	ld	(0x02, sp), a
+      000024 9F               [ 1]  120 	ld	a, xl
+      000025 4D               [ 1]  121 	tnz	a
+      000026 27 05            [ 1]  122 	jreq	00106$
+      000028                        123 00105$:
+      000028 08 02            [ 1]  124 	sll	(0x02, sp)
+      00002A 4A               [ 1]  125 	dec	a
+      00002B 26 FB            [ 1]  126 	jrne	00105$
+      00002D                        127 00106$:
+      00002D 84               [ 1]  128 	pop	a
+      00002E 1A 01            [ 1]  129 	or	a, (0x01, sp)
+      000030 C7 50 A0         [ 1]  130 	ld	0x50a0, a
+                                    131 ;	../../my_STM8_libraries/stm8_interrupt.c: 23: }
+      000033 84               [ 1]  132 	pop	a
+      000034 85               [ 2]  133 	popw	x
+      000035 84               [ 1]  134 	pop	a
+      000036 FC               [ 2]  135 	jp	(x)
+                                    136 ;	../../my_STM8_libraries/stm8_interrupt.c: 24: void set_EXTI_pin(uint8_t port, uint8_t pin)
+                                    137 ;	-----------------------------------------
+                                    138 ;	 function set_EXTI_pin
+                                    139 ;	-----------------------------------------
+      000037                        140 _set_EXTI_pin:
+                                    141 ;	../../my_STM8_libraries/stm8_interrupt.c: 26: switch (port)
+      000037 A1 00            [ 1]  142 	cp	a, #0x00
+      000039 27 0F            [ 1]  143 	jreq	00101$
+      00003B A1 02            [ 1]  144 	cp	a, #0x02
+      00003D 27 2D            [ 1]  145 	jreq	00104$
+      00003F A1 04            [ 1]  146 	cp	a, #0x04
+      000041 27 4B            [ 1]  147 	jreq	00107$
+      000043 A1 06            [ 1]  148 	cp	a, #0x06
+      000045 27 69            [ 1]  149 	jreq	00110$
+      000047 CCr00rD0         [ 2]  150 	jp	00114$
+                                    151 ;	../../my_STM8_libraries/stm8_interrupt.c: 28: case EXTI_PORTA:
+      00004A                        152 00101$:
+                                    153 ;	../../my_STM8_libraries/stm8_interrupt.c: 29: if (EXTIPinMaskA == 0) previousStateA = PA_IDR;
+      00004A C6u00u01         [ 1]  154 	ld	a, _EXTIPinMaskA+0
+      00004D 26 05            [ 1]  155 	jrne	00103$
+      00004F 55 50 01u00u00   [ 1]  156 	mov	_previousStateA+0, 0x5001
+      000054                        157 00103$:
+                                    158 ;	../../my_STM8_libraries/stm8_interrupt.c: 30: EXTIPinMaskA |= (1 << pin);
+      000054 7B 03            [ 1]  159 	ld	a, (0x03, sp)
+      000056 97               [ 1]  160 	ld	xl, a
+      000057 A6 01            [ 1]  161 	ld	a, #0x01
+      000059 88               [ 1]  162 	push	a
+      00005A 9F               [ 1]  163 	ld	a, xl
+      00005B 4D               [ 1]  164 	tnz	a
+      00005C 27 05            [ 1]  165 	jreq	00170$
+      00005E                        166 00169$:
+      00005E 08 01            [ 1]  167 	sll	(1, sp)
+      000060 4A               [ 1]  168 	dec	a
+      000061 26 FB            [ 1]  169 	jrne	00169$
+      000063                        170 00170$:
+      000063 84               [ 1]  171 	pop	a
+      000064 CAu00u01         [ 1]  172 	or	a, _EXTIPinMaskA+0
+      000067 C7u00u01         [ 1]  173 	ld	_EXTIPinMaskA+0, a
+                                    174 ;	../../my_STM8_libraries/stm8_interrupt.c: 31: break;
+      00006A 20 64            [ 2]  175 	jra	00114$
+                                    176 ;	../../my_STM8_libraries/stm8_interrupt.c: 32: case EXTI_PORTB:
+      00006C                        177 00104$:
+                                    178 ;	../../my_STM8_libraries/stm8_interrupt.c: 33: if (EXTIPinMaskB == 0) previousStateB = PB_IDR;
+      00006C C6u00u04         [ 1]  179 	ld	a, _EXTIPinMaskB+0
+      00006F 26 05            [ 1]  180 	jrne	00106$
+      000071 55 50 06u00u03   [ 1]  181 	mov	_previousStateB+0, 0x5006
+      000076                        182 00106$:
+                                    183 ;	../../my_STM8_libraries/stm8_interrupt.c: 34: EXTIPinMaskB |= (1 << pin);
+      000076 7B 03            [ 1]  184 	ld	a, (0x03, sp)
+      000078 97               [ 1]  185 	ld	xl, a
+      000079 A6 01            [ 1]  186 	ld	a, #0x01
+      00007B 88               [ 1]  187 	push	a
+      00007C 9F               [ 1]  188 	ld	a, xl
+      00007D 4D               [ 1]  189 	tnz	a
+      00007E 27 05            [ 1]  190 	jreq	00173$
+      000080                        191 00172$:
+      000080 08 01            [ 1]  192 	sll	(1, sp)
+      000082 4A               [ 1]  193 	dec	a
+      000083 26 FB            [ 1]  194 	jrne	00172$
+      000085                        195 00173$:
+      000085 84               [ 1]  196 	pop	a
+      000086 CAu00u04         [ 1]  197 	or	a, _EXTIPinMaskB+0
+      000089 C7u00u04         [ 1]  198 	ld	_EXTIPinMaskB+0, a
+                                    199 ;	../../my_STM8_libraries/stm8_interrupt.c: 35: break;
+      00008C 20 42            [ 2]  200 	jra	00114$
+                                    201 ;	../../my_STM8_libraries/stm8_interrupt.c: 36: case EXTI_PORTC:
+      00008E                        202 00107$:
+                                    203 ;	../../my_STM8_libraries/stm8_interrupt.c: 37: if (EXTIPinMaskC == 0) previousStateC = PC_IDR;
+      00008E C6u00u07         [ 1]  204 	ld	a, _EXTIPinMaskC+0
+      000091 26 05            [ 1]  205 	jrne	00109$
+      000093 55 50 0Bu00u06   [ 1]  206 	mov	_previousStateC+0, 0x500b
+      000098                        207 00109$:
+                                    208 ;	../../my_STM8_libraries/stm8_interrupt.c: 38: EXTIPinMaskC |= (1 << pin);
+      000098 7B 03            [ 1]  209 	ld	a, (0x03, sp)
+      00009A 97               [ 1]  210 	ld	xl, a
+      00009B A6 01            [ 1]  211 	ld	a, #0x01
+      00009D 88               [ 1]  212 	push	a
+      00009E 9F               [ 1]  213 	ld	a, xl
+      00009F 4D               [ 1]  214 	tnz	a
+      0000A0 27 05            [ 1]  215 	jreq	00176$
+      0000A2                        216 00175$:
+      0000A2 08 01            [ 1]  217 	sll	(1, sp)
+      0000A4 4A               [ 1]  218 	dec	a
+      0000A5 26 FB            [ 1]  219 	jrne	00175$
+      0000A7                        220 00176$:
+      0000A7 84               [ 1]  221 	pop	a
+      0000A8 CAu00u07         [ 1]  222 	or	a, _EXTIPinMaskC+0
+      0000AB C7u00u07         [ 1]  223 	ld	_EXTIPinMaskC+0, a
+                                    224 ;	../../my_STM8_libraries/stm8_interrupt.c: 39: break;
+      0000AE 20 20            [ 2]  225 	jra	00114$
+                                    226 ;	../../my_STM8_libraries/stm8_interrupt.c: 40: case EXTI_PORTD:
+      0000B0                        227 00110$:
+                                    228 ;	../../my_STM8_libraries/stm8_interrupt.c: 41: if (EXTIPinMaskD == 0) previousStateD = PD_IDR;
+      0000B0 C6u00u0A         [ 1]  229 	ld	a, _EXTIPinMaskD+0
+      0000B3 26 05            [ 1]  230 	jrne	00112$
+      0000B5 55 50 10u00u09   [ 1]  231 	mov	_previousStateD+0, 0x5010
+      0000BA                        232 00112$:
+                                    233 ;	../../my_STM8_libraries/stm8_interrupt.c: 42: EXTIPinMaskD |= (1 << pin);
+      0000BA 7B 03            [ 1]  234 	ld	a, (0x03, sp)
+      0000BC 97               [ 1]  235 	ld	xl, a
+      0000BD A6 01            [ 1]  236 	ld	a, #0x01
+      0000BF 88               [ 1]  237 	push	a
+      0000C0 9F               [ 1]  238 	ld	a, xl
+      0000C1 4D               [ 1]  239 	tnz	a
+      0000C2 27 05            [ 1]  240 	jreq	00179$
+      0000C4                        241 00178$:
+      0000C4 08 01            [ 1]  242 	sll	(1, sp)
+      0000C6 4A               [ 1]  243 	dec	a
+      0000C7 26 FB            [ 1]  244 	jrne	00178$
+      0000C9                        245 00179$:
+      0000C9 84               [ 1]  246 	pop	a
+      0000CA CAu00u0A         [ 1]  247 	or	a, _EXTIPinMaskD+0
+      0000CD C7u00u0A         [ 1]  248 	ld	_EXTIPinMaskD+0, a
+                                    249 ;	../../my_STM8_libraries/stm8_interrupt.c: 44: }
+      0000D0                        250 00114$:
+                                    251 ;	../../my_STM8_libraries/stm8_interrupt.c: 45: }
+      0000D0 85               [ 2]  252 	popw	x
+      0000D1 84               [ 1]  253 	pop	a
+      0000D2 FC               [ 2]  254 	jp	(x)
+                                    255 ;	../../my_STM8_libraries/stm8_interrupt.c: 46: void clear_EXTI_pin(uint8_t port, uint8_t pin)
+                                    256 ;	-----------------------------------------
+                                    257 ;	 function clear_EXTI_pin
+                                    258 ;	-----------------------------------------
+      0000D3                        259 _clear_EXTI_pin:
+      0000D3 97               [ 1]  260 	ld	xl, a
+                                    261 ;	../../my_STM8_libraries/stm8_interrupt.c: 51: EXTIPinMaskA &= ~(1 << pin);
+      0000D4 7B 03            [ 1]  262 	ld	a, (0x03, sp)
+      0000D6 95               [ 1]  263 	ld	xh, a
+      0000D7 A6 01            [ 1]  264 	ld	a, #0x01
+      0000D9 88               [ 1]  265 	push	a
+      0000DA 9E               [ 1]  266 	ld	a, xh
+      0000DB 4D               [ 1]  267 	tnz	a
+      0000DC 27 05            [ 1]  268 	jreq	00129$
+      0000DE                        269 00128$:
+      0000DE 08 01            [ 1]  270 	sll	(1, sp)
+      0000E0 4A               [ 1]  271 	dec	a
+      0000E1 26 FB            [ 1]  272 	jrne	00128$
+      0000E3                        273 00129$:
+      0000E3 84               [ 1]  274 	pop	a
+      0000E4 43               [ 1]  275 	cpl	a
+      0000E5 95               [ 1]  276 	ld	xh, a
+                                    277 ;	../../my_STM8_libraries/stm8_interrupt.c: 48: switch (port)
+      0000E6 9F               [ 1]  278 	ld	a, xl
+      0000E7 A1 00            [ 1]  279 	cp	a, #0x00
+      0000E9 27 11            [ 1]  280 	jreq	00101$
+      0000EB 9F               [ 1]  281 	ld	a, xl
+      0000EC A1 02            [ 1]  282 	cp	a, #0x02
+      0000EE 27 15            [ 1]  283 	jreq	00102$
+      0000F0 9F               [ 1]  284 	ld	a, xl
+      0000F1 A1 04            [ 1]  285 	cp	a, #0x04
+      0000F3 27 19            [ 1]  286 	jreq	00103$
+      0000F5 9F               [ 1]  287 	ld	a, xl
+      0000F6 A1 06            [ 1]  288 	cp	a, #0x06
+      0000F8 27 1D            [ 1]  289 	jreq	00104$
+      0000FA 20 22            [ 2]  290 	jra	00106$
+                                    291 ;	../../my_STM8_libraries/stm8_interrupt.c: 50: case EXTI_PORTA:
+      0000FC                        292 00101$:
+                                    293 ;	../../my_STM8_libraries/stm8_interrupt.c: 51: EXTIPinMaskA &= ~(1 << pin);
+      0000FC 9E               [ 1]  294 	ld	a, xh
+      0000FD C4u00u01         [ 1]  295 	and	a, _EXTIPinMaskA+0
+      000100 C7u00u01         [ 1]  296 	ld	_EXTIPinMaskA+0, a
+                                    297 ;	../../my_STM8_libraries/stm8_interrupt.c: 52: break;
+      000103 20 19            [ 2]  298 	jra	00106$
+                                    299 ;	../../my_STM8_libraries/stm8_interrupt.c: 53: case EXTI_PORTB:
+      000105                        300 00102$:
+                                    301 ;	../../my_STM8_libraries/stm8_interrupt.c: 54: EXTIPinMaskB &= ~(1 << pin);
+      000105 9E               [ 1]  302 	ld	a, xh
+      000106 C4u00u04         [ 1]  303 	and	a, _EXTIPinMaskB+0
+      000109 C7u00u04         [ 1]  304 	ld	_EXTIPinMaskB+0, a
+                                    305 ;	../../my_STM8_libraries/stm8_interrupt.c: 55: break;
+      00010C 20 10            [ 2]  306 	jra	00106$
+                                    307 ;	../../my_STM8_libraries/stm8_interrupt.c: 56: case EXTI_PORTC:
+      00010E                        308 00103$:
+                                    309 ;	../../my_STM8_libraries/stm8_interrupt.c: 57: EXTIPinMaskC &= ~(1 << pin);
+      00010E 9E               [ 1]  310 	ld	a, xh
+      00010F C4u00u07         [ 1]  311 	and	a, _EXTIPinMaskC+0
+      000112 C7u00u07         [ 1]  312 	ld	_EXTIPinMaskC+0, a
+                                    313 ;	../../my_STM8_libraries/stm8_interrupt.c: 58: break;
+      000115 20 07            [ 2]  314 	jra	00106$
+                                    315 ;	../../my_STM8_libraries/stm8_interrupt.c: 59: case EXTI_PORTD:
+      000117                        316 00104$:
+                                    317 ;	../../my_STM8_libraries/stm8_interrupt.c: 60: EXTIPinMaskD &= ~(1 << pin);
+      000117 9E               [ 1]  318 	ld	a, xh
+      000118 C4u00u0A         [ 1]  319 	and	a, _EXTIPinMaskD+0
+      00011B C7u00u0A         [ 1]  320 	ld	_EXTIPinMaskD+0, a
+                                    321 ;	../../my_STM8_libraries/stm8_interrupt.c: 62: }
+      00011E                        322 00106$:
+                                    323 ;	../../my_STM8_libraries/stm8_interrupt.c: 63: }
+      00011E 85               [ 2]  324 	popw	x
+      00011F 84               [ 1]  325 	pop	a
+      000120 FC               [ 2]  326 	jp	(x)
+                                    327 ;	../../my_STM8_libraries/stm8_interrupt.c: 64: void setInterruptPriority(uint8_t interrupt, uint8_t priorityLevel)
+                                    328 ;	-----------------------------------------
+                                    329 ;	 function setInterruptPriority
+                                    330 ;	-----------------------------------------
+      000121                        331 _setInterruptPriority:
+      000121 52 02            [ 2]  332 	sub	sp, #2
+                                    333 ;	../../my_STM8_libraries/stm8_interrupt.c: 66: volatile uint8_t *priorityReg = &ITC_SPR1 + (interrupt >> 2);
+      000123 90 97            [ 1]  334 	ld	yl, a
+      000125 44               [ 1]  335 	srl	a
+      000126 44               [ 1]  336 	srl	a
+      000127 5F               [ 1]  337 	clrw	x
+      000128 97               [ 1]  338 	ld	xl, a
+      000129 1C 7F 70         [ 2]  339 	addw	x, #0x7f70
+                                    340 ;	../../my_STM8_libraries/stm8_interrupt.c: 67: *priorityReg &= ~(3 << ((interrupt & 3) << 1));
+      00012C F6               [ 1]  341 	ld	a, (x)
+      00012D 6B 02            [ 1]  342 	ld	(0x02, sp), a
+      00012F 90 9F            [ 1]  343 	ld	a, yl
+      000131 A4 03            [ 1]  344 	and	a, #0x03
+      000133 48               [ 1]  345 	sll	a
+      000134 6B 01            [ 1]  346 	ld	(0x01, sp), a
+      000136 A6 03            [ 1]  347 	ld	a, #0x03
+      000138 88               [ 1]  348 	push	a
+      000139 7B 02            [ 1]  349 	ld	a, (0x02, sp)
+      00013B 27 05            [ 1]  350 	jreq	00104$
+      00013D                        351 00103$:
+      00013D 08 01            [ 1]  352 	sll	(1, sp)
+      00013F 4A               [ 1]  353 	dec	a
+      000140 26 FB            [ 1]  354 	jrne	00103$
+      000142                        355 00104$:
+      000142 84               [ 1]  356 	pop	a
+      000143 43               [ 1]  357 	cpl	a
+      000144 14 02            [ 1]  358 	and	a, (0x02, sp)
+      000146 F7               [ 1]  359 	ld	(x), a
+                                    360 ;	../../my_STM8_libraries/stm8_interrupt.c: 68: *priorityReg |= (priorityLevel << ((interrupt & 3) << 1));
+      000147 F6               [ 1]  361 	ld	a, (x)
+      000148 6B 02            [ 1]  362 	ld	(0x02, sp), a
+      00014A 7B 05            [ 1]  363 	ld	a, (0x05, sp)
+      00014C 88               [ 1]  364 	push	a
+      00014D 7B 02            [ 1]  365 	ld	a, (0x02, sp)
+      00014F 27 05            [ 1]  366 	jreq	00106$
+      000151                        367 00105$:
+      000151 08 01            [ 1]  368 	sll	(1, sp)
+      000153 4A               [ 1]  369 	dec	a
+      000154 26 FB            [ 1]  370 	jrne	00105$
+      000156                        371 00106$:
+      000156 84               [ 1]  372 	pop	a
+      000157 1A 02            [ 1]  373 	or	a, (0x02, sp)
+      000159 F7               [ 1]  374 	ld	(x), a
+                                    375 ;	../../my_STM8_libraries/stm8_interrupt.c: 69: }
+      00015A 5B 02            [ 2]  376 	addw	sp, #2
+      00015C 85               [ 2]  377 	popw	x
+      00015D 84               [ 1]  378 	pop	a
+      00015E FC               [ 2]  379 	jp	(x)
+                                    380 	.area CODE
+                                    381 	.area CONST
+                                    382 	.area INITIALIZER
+      000000                        383 __xinit__previousStateA:
+      000000 00                     384 	.db #0x00	; 0
+      000001                        385 __xinit__EXTIPinMaskA:
+      000001 00                     386 	.db #0x00	; 0
+      000002                        387 __xinit__EXTI_FlagA:
+      000002 00                     388 	.db #0x00	; 0
+      000003                        389 __xinit__previousStateB:
+      000003 00                     390 	.db #0x00	; 0
+      000004                        391 __xinit__EXTIPinMaskB:
+      000004 00                     392 	.db #0x00	; 0
+      000005                        393 __xinit__EXTI_FlagB:
+      000005 00                     394 	.db #0x00	; 0
+      000006                        395 __xinit__previousStateC:
+      000006 00                     396 	.db #0x00	; 0
+      000007                        397 __xinit__EXTIPinMaskC:
+      000007 00                     398 	.db #0x00	; 0
+      000008                        399 __xinit__EXTI_FlagC:
+      000008 00                     400 	.db #0x00	; 0
+      000009                        401 __xinit__previousStateD:
+      000009 00                     402 	.db #0x00	; 0
+      00000A                        403 __xinit__EXTIPinMaskD:
+      00000A 00                     404 	.db #0x00	; 0
+      00000B                        405 __xinit__EXTI_FlagD:
+      00000B 00                     406 	.db #0x00	; 0
+                                    407 	.area CABS (ABS)

@@ -1,0 +1,56 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8), page 1.
+Hexadecimal [24-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =  002710 L
+    .__.ABS.                                                    =  000000 G
+    .__.CPU.                                                    =  000000 L
+    .__.H$L.                                                    =  000001 L
+  2 _EXTIPinMaskA                                                  000001 GR
+  2 _EXTIPinMaskB                                                  000004 GR
+  2 _EXTIPinMaskC                                                  000007 GR
+  2 _EXTIPinMaskD                                                  00000A GR
+  2 _EXTI_FlagA                                                    000002 GR
+  2 _EXTI_FlagB                                                    000005 GR
+  2 _EXTI_FlagC                                                    000008 GR
+  2 _EXTI_FlagD                                                    00000B GR
+  8 __xinit__EXTIPinMaskA                                          000001 R
+  8 __xinit__EXTIPinMaskB                                          000004 R
+  8 __xinit__EXTIPinMaskC                                          000007 R
+  8 __xinit__EXTIPinMaskD                                          00000A R
+  8 __xinit__EXTI_FlagA                                            000002 R
+  8 __xinit__EXTI_FlagB                                            000005 R
+  8 __xinit__EXTI_FlagC                                            000008 R
+  8 __xinit__EXTI_FlagD                                            00000B R
+  8 __xinit__previousStateA                                        000000 R
+  8 __xinit__previousStateB                                        000003 R
+  8 __xinit__previousStateC                                        000006 R
+  8 __xinit__previousStateD                                        000009 R
+  9 _clear_EXTI_pin                                                0000D3 GR
+  2 _previousStateA                                                000000 GR
+  2 _previousStateB                                                000003 GR
+  2 _previousStateC                                                000006 GR
+  2 _previousStateD                                                000009 GR
+  9 _setInterruptPriority                                          000121 GR
+  9 _set_EXTI                                                      000000 GR
+  9 _set_EXTI_pin                                                  000037 GR
+
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (STMicroelectronics STM8), page 2.
+Hexadecimal [24-Bits]
+
+Area Table
+
+   0 _CODE                                      size      0   flags    0
+   1 DATA                                       size      0   flags    0
+   2 INITIALIZED                                size      C   flags    0
+   3 DABS                                       size      0   flags    8
+   4 HOME                                       size      0   flags    0
+   5 GSINIT                                     size      0   flags    0
+   6 GSFINAL                                    size      0   flags    0
+   7 CONST                                      size      0   flags    0
+   8 INITIALIZER                                size      C   flags    0
+   9 CODE                                       size    15F   flags    0
+   A CABS                                       size      0   flags    8
+
