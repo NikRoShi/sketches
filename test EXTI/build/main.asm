@@ -101,59 +101,53 @@ __sdcc_program_startup:
 ;	 function EXTI_A_IRQHandler
 ;	-----------------------------------------
 _EXTI_A_IRQHandler:
-;	main.c: 13: currentStateA = PA_IDR;
+;	main.c: 12: changedA = PA_IDR;
 	ld	a, 0x5001
-;	main.c: 14: changedA = previousStateA ^ currentStateA;
-	ld	xl, a
-	xor	a, _previousStateA+0
-;	main.c: 15: changedA &= EXTIPinMaskA;
+;	main.c: 13: changedA &= EXTIPinMaskA;
 	and	a, _EXTIPinMaskA+0
-;	main.c: 16: EXTI_FlagA |= changedA;
+;	main.c: 14: EXTI_FlagA |= changedA;
 	or	a, _EXTI_FlagA+0
 	ld	_EXTI_FlagA+0, a
-;	main.c: 17: previousStateA = currentStateA;
-	ld	a, xl
-	ld	_previousStateA+0, a
-;	main.c: 18: }
+;	main.c: 15: }
 	iret
-;	main.c: 20: int main(void)
+;	main.c: 17: int main(void)
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-;	main.c: 22: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+;	main.c: 19: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 24: init_UART(9600, DISABLE);
+;	main.c: 21: init_UART(9600, DISABLE);
 	clr	a
 	ldw	x, #0x2580
 	call	_init_UART
-;	main.c: 26: set_EXTI(EXTI_PORTA, FALLING);
+;	main.c: 23: set_EXTI(EXTI_PORTA, FALLING);
 	push	#0x02
 	clr	a
 	call	_set_EXTI
-;	main.c: 27: set_EXTI_pin(EXTI_PORTA, 1);
+;	main.c: 24: set_EXTI_pin(EXTI_PORTA, 1);
 	push	#0x01
 	clr	a
 	call	_set_EXTI_pin
-;	main.c: 29: enableInterrupts();	
+;	main.c: 26: enableInterrupts();	
 	rim
-;	main.c: 30: while (1)
+;	main.c: 27: while (1)
 00104$:
-;	main.c: 32: if (EXTI_FlagA & (1 << 1))
+;	main.c: 29: if (EXTI_FlagA & (1 << 1))
 	btjf	_EXTI_FlagA+0, #1, 00104$
-;	main.c: 34: EXTI_FlagA &= ~(1 << 1);
+;	main.c: 31: EXTI_FlagA &= ~(1 << 1);
 	bres	_EXTI_FlagA+0, #1
-;	main.c: 35: counter++;
+;	main.c: 32: counter++;
 	inc	_counter+0
-;	main.c: 36: printInt_UART(counter);
+;	main.c: 33: printInt_UART(counter);
 	ld	a, _counter+0
 	clrw	x
 	ld	xl, a
 	call	_printInt_UART
-;	main.c: 37: line_UART();
+;	main.c: 34: line_UART();
 	call	_line_UART
 	jra	00104$
-;	main.c: 40: }
+;	main.c: 37: }
 	ret
 	.area CODE
 	.area CONST

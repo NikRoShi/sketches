@@ -7,14 +7,11 @@ uint8_t counter = 0;
 
 void EXTI_A_IRQHandler(void) __interrupt(IRQ_EXTI0)
 {
-	uint8_t currentStateA = 0;
 	uint8_t changedA = 0;
 	
-	currentStateA = PA_IDR;
-	changedA = previousStateA ^ currentStateA;
+	changedA = PA_IDR;
 	changedA &= EXTIPinMaskA;
 	EXTI_FlagA |= changedA;
-	previousStateA = currentStateA;
 }
 
 int main(void)

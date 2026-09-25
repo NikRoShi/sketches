@@ -18,8 +18,7 @@ Symbol Table
   2 _counter                                                       000000 GR
     _init_UART                                                     ****** GX
     _line_UART                                                     ****** GX
-  A _main                                                          000015 GR
-    _previousStateA                                                ****** GX
+  A _main                                                          00000D GR
     _printInt_UART                                                 ****** GX
     _set_EXTI                                                      ****** GX
     _set_EXTI_pin                                                  ****** GX
@@ -46,6 +45,6 @@ Area Table
    7 GSFINAL                                    size      3   flags    0
    8 CONST                                      size      0   flags    0
    9 INITIALIZER                                size      1   flags    0
-   A CODE                                       size     48   flags    0
+   A CODE                                       size     40   flags    0
    B CABS                                       size      0   flags    8
 

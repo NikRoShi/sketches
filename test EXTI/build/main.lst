@@ -90,7 +90,7 @@
                                      90 	.area HOME
                                      91 	.area HOME
       000018                         92 __sdcc_program_startup:
-      000018 CCr00r15         [ 2]   93 	jp	_main
+      000018 CCr00r0D         [ 2]   93 	jp	_main
                                      94 ;	return from main will return to caller
                                      95 ;--------------------------------------------------------
                                      96 ; code
@@ -101,63 +101,57 @@
                                     101 ;	 function EXTI_A_IRQHandler
                                     102 ;	-----------------------------------------
       000000                        103 _EXTI_A_IRQHandler:
-                                    104 ;	main.c: 13: currentStateA = PA_IDR;
+                                    104 ;	main.c: 12: changedA = PA_IDR;
       000000 C6 50 01         [ 1]  105 	ld	a, 0x5001
-                                    106 ;	main.c: 14: changedA = previousStateA ^ currentStateA;
-      000003 97               [ 1]  107 	ld	xl, a
-      000004 C8u00u00         [ 1]  108 	xor	a, _previousStateA+0
-                                    109 ;	main.c: 15: changedA &= EXTIPinMaskA;
-      000007 C4u00u00         [ 1]  110 	and	a, _EXTIPinMaskA+0
-                                    111 ;	main.c: 16: EXTI_FlagA |= changedA;
-      00000A CAu00u00         [ 1]  112 	or	a, _EXTI_FlagA+0
-      00000D C7u00u00         [ 1]  113 	ld	_EXTI_FlagA+0, a
-                                    114 ;	main.c: 17: previousStateA = currentStateA;
-      000010 9F               [ 1]  115 	ld	a, xl
-      000011 C7u00u00         [ 1]  116 	ld	_previousStateA+0, a
-                                    117 ;	main.c: 18: }
-      000014 80               [11]  118 	iret
-                                    119 ;	main.c: 20: int main(void)
-                                    120 ;	-----------------------------------------
-                                    121 ;	 function main
-                                    122 ;	-----------------------------------------
-      000015                        123 _main:
-                                    124 ;	main.c: 22: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
-      000015 35 00 50 C6      [ 1]  125 	mov	0x50c6+0, #0x00
-                                    126 ;	main.c: 24: init_UART(9600, DISABLE);
-      000019 4F               [ 1]  127 	clr	a
-      00001A AE 25 80         [ 2]  128 	ldw	x, #0x2580
-      00001D CDr00r00         [ 4]  129 	call	_init_UART
-                                    130 ;	main.c: 26: set_EXTI(EXTI_PORTA, FALLING);
-      000020 4B 02            [ 1]  131 	push	#0x02
-      000022 4F               [ 1]  132 	clr	a
-      000023 CDr00r00         [ 4]  133 	call	_set_EXTI
-                                    134 ;	main.c: 27: set_EXTI_pin(EXTI_PORTA, 1);
-      000026 4B 01            [ 1]  135 	push	#0x01
-      000028 4F               [ 1]  136 	clr	a
-      000029 CDr00r00         [ 4]  137 	call	_set_EXTI_pin
-                                    138 ;	main.c: 29: enableInterrupts();	
-      00002C 9A               [ 1]  139 	rim
-                                    140 ;	main.c: 30: while (1)
-      00002D                        141 00104$:
-                                    142 ;	main.c: 32: if (EXTI_FlagA & (1 << 1))
-      00002D 72 03u00u00 FB   [ 2]  143 	btjf	_EXTI_FlagA+0, #1, 00104$
-                                    144 ;	main.c: 34: EXTI_FlagA &= ~(1 << 1);
-      000032 72 13u00u00      [ 1]  145 	bres	_EXTI_FlagA+0, #1
-                                    146 ;	main.c: 35: counter++;
-      000036 72 5Cu00u00      [ 1]  147 	inc	_counter+0
-                                    148 ;	main.c: 36: printInt_UART(counter);
-      00003A C6u00u00         [ 1]  149 	ld	a, _counter+0
-      00003D 5F               [ 1]  150 	clrw	x
-      00003E 97               [ 1]  151 	ld	xl, a
-      00003F CDr00r00         [ 4]  152 	call	_printInt_UART
-                                    153 ;	main.c: 37: line_UART();
-      000042 CDr00r00         [ 4]  154 	call	_line_UART
-      000045 20 E6            [ 2]  155 	jra	00104$
-                                    156 ;	main.c: 40: }
-      000047 81               [ 4]  157 	ret
-                                    158 	.area CODE
-                                    159 	.area CONST
-                                    160 	.area INITIALIZER
-      000000                        161 __xinit__counter:
-      000000 00                     162 	.db #0x00	; 0
-                                    163 	.area CABS (ABS)
+                                    106 ;	main.c: 13: changedA &= EXTIPinMaskA;
+      000003 C4u00u00         [ 1]  107 	and	a, _EXTIPinMaskA+0
+                                    108 ;	main.c: 14: EXTI_FlagA |= changedA;
+      000006 CAu00u00         [ 1]  109 	or	a, _EXTI_FlagA+0
+      000009 C7u00u00         [ 1]  110 	ld	_EXTI_FlagA+0, a
+                                    111 ;	main.c: 15: }
+      00000C 80               [11]  112 	iret
+                                    113 ;	main.c: 17: int main(void)
+                                    114 ;	-----------------------------------------
+                                    115 ;	 function main
+                                    116 ;	-----------------------------------------
+      00000D                        117 _main:
+                                    118 ;	main.c: 19: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+      00000D 35 00 50 C6      [ 1]  119 	mov	0x50c6+0, #0x00
+                                    120 ;	main.c: 21: init_UART(9600, DISABLE);
+      000011 4F               [ 1]  121 	clr	a
+      000012 AE 25 80         [ 2]  122 	ldw	x, #0x2580
+      000015 CDr00r00         [ 4]  123 	call	_init_UART
+                                    124 ;	main.c: 23: set_EXTI(EXTI_PORTA, FALLING);
+      000018 4B 02            [ 1]  125 	push	#0x02
+      00001A 4F               [ 1]  126 	clr	a
+      00001B CDr00r00         [ 4]  127 	call	_set_EXTI
+                                    128 ;	main.c: 24: set_EXTI_pin(EXTI_PORTA, 1);
+      00001E 4B 01            [ 1]  129 	push	#0x01
+      000020 4F               [ 1]  130 	clr	a
+      000021 CDr00r00         [ 4]  131 	call	_set_EXTI_pin
+                                    132 ;	main.c: 26: enableInterrupts();	
+      000024 9A               [ 1]  133 	rim
+                                    134 ;	main.c: 27: while (1)
+      000025                        135 00104$:
+                                    136 ;	main.c: 29: if (EXTI_FlagA & (1 << 1))
+      000025 72 03u00u00 FB   [ 2]  137 	btjf	_EXTI_FlagA+0, #1, 00104$
+                                    138 ;	main.c: 31: EXTI_FlagA &= ~(1 << 1);
+      00002A 72 13u00u00      [ 1]  139 	bres	_EXTI_FlagA+0, #1
+                                    140 ;	main.c: 32: counter++;
+      00002E 72 5Cu00u00      [ 1]  141 	inc	_counter+0
+                                    142 ;	main.c: 33: printInt_UART(counter);
+      000032 C6u00u00         [ 1]  143 	ld	a, _counter+0
+      000035 5F               [ 1]  144 	clrw	x
+      000036 97               [ 1]  145 	ld	xl, a
+      000037 CDr00r00         [ 4]  146 	call	_printInt_UART
+                                    147 ;	main.c: 34: line_UART();
+      00003A CDr00r00         [ 4]  148 	call	_line_UART
+      00003D 20 E6            [ 2]  149 	jra	00104$
+                                    150 ;	main.c: 37: }
+      00003F 81               [ 4]  151 	ret
+                                    152 	.area CODE
+                                    153 	.area CONST
+                                    154 	.area INITIALIZER
+      000000                        155 __xinit__counter:
+      000000 00                     156 	.db #0x00	; 0
+                                    157 	.area CABS (ABS)
