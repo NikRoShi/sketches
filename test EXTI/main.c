@@ -7,7 +7,7 @@ uint8_t counter = 0;
 
 void EXTI_A_IRQHandler(void) __interrupt(IRQ_EXTI0)
 {
-    uint8_t currentStateA = 0;
+	uint8_t currentStateA = 0;
 	uint8_t changedA = 0;
 	
 	currentStateA = PA_IDR;
@@ -29,9 +29,9 @@ int main(void)
 	enableInterrupts();	
     while (1)
     {
-		if (EXTI_FlagA & (1 << 0))
+		if (EXTI_FlagA & (1 << 1))
 		{
-			EXTI_FlagA &= ~(1 << 0);
+			EXTI_FlagA &= ~(1 << 1);
 			counter++;
 			printInt_UART(counter);
 			line_UART();

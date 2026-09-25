@@ -138,6 +138,7 @@ _set_EXTI:
 ;	 function set_EXTI_pin
 ;	-----------------------------------------
 _set_EXTI_pin:
+	push	a
 ;	../../my_STM8_libraries/stm8_interrupt.c: 26: switch (port)
 	cp	a, #0x00
 	jreq	00101$
@@ -146,7 +147,9 @@ _set_EXTI_pin:
 	cp	a, #0x04
 	jreq	00107$
 	cp	a, #0x06
-	jreq	00110$
+	jrne	00166$
+	jp	00110$
+00166$:
 	jp	00114$
 ;	../../my_STM8_libraries/stm8_interrupt.c: 28: case EXTI_PORTA:
 00101$:
@@ -156,110 +159,168 @@ _set_EXTI_pin:
 	mov	_previousStateA+0, 0x5001
 00103$:
 ;	../../my_STM8_libraries/stm8_interrupt.c: 30: EXTIPinMaskA |= (1 << pin);
-	ld	a, (0x03, sp)
-	ld	xl, a
+	ld	a, (0x04, sp)
+	exg	a, xl
 	ld	a, #0x01
-	push	a
-	ld	a, xl
+	exg	a, xl
 	tnz	a
 	jreq	00170$
 00169$:
-	sll	(1, sp)
+	exg	a, xl
+	sll	a
+	exg	a, xl
 	dec	a
 	jrne	00169$
 00170$:
-	pop	a
+	ld	a, xl
 	or	a, _EXTIPinMaskA+0
 	ld	_EXTIPinMaskA+0, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 31: break;
-	jra	00114$
-;	../../my_STM8_libraries/stm8_interrupt.c: 32: case EXTI_PORTB:
+;	../../my_STM8_libraries/stm8_interrupt.c: 31: PA_DDR &= ~(1 << pin);
+	ld	a, 0x5002
+	ld	(0x01, sp), a
+	ld	a, xl
+	cpl	a
+	and	a, (0x01, sp)
+	ld	0x5002, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 32: PA_CR2 |= (1 << pin);
+	ld	a, 0x5004
+	pushw	x
+	or	a, (2, sp)
+	popw	x
+	ld	0x5004, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 33: break;
+	jp	00114$
+;	../../my_STM8_libraries/stm8_interrupt.c: 34: case EXTI_PORTB:
 00104$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 33: if (EXTIPinMaskB == 0) previousStateB = PB_IDR;
+;	../../my_STM8_libraries/stm8_interrupt.c: 35: if (EXTIPinMaskB == 0) previousStateB = PB_IDR;
 	ld	a, _EXTIPinMaskB+0
 	jrne	00106$
 	mov	_previousStateB+0, 0x5006
 00106$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 34: EXTIPinMaskB |= (1 << pin);
-	ld	a, (0x03, sp)
-	ld	xl, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 36: EXTIPinMaskB |= (1 << pin);
+	ld	a, (0x04, sp)
+	exg	a, xl
 	ld	a, #0x01
-	push	a
-	ld	a, xl
+	exg	a, xl
 	tnz	a
 	jreq	00173$
 00172$:
-	sll	(1, sp)
+	exg	a, xl
+	sll	a
+	exg	a, xl
 	dec	a
 	jrne	00172$
 00173$:
-	pop	a
+	ld	a, xl
 	or	a, _EXTIPinMaskB+0
 	ld	_EXTIPinMaskB+0, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 35: break;
+;	../../my_STM8_libraries/stm8_interrupt.c: 37: PB_DDR &= ~(1 << pin);
+	ld	a, 0x5007
+	ld	(0x01, sp), a
+	ld	a, xl
+	cpl	a
+	and	a, (0x01, sp)
+	ld	0x5007, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 38: PB_CR2 |= (1 << pin);
+	ld	a, 0x5009
+	pushw	x
+	or	a, (2, sp)
+	popw	x
+	ld	0x5009, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 39: break;
 	jra	00114$
-;	../../my_STM8_libraries/stm8_interrupt.c: 36: case EXTI_PORTC:
+;	../../my_STM8_libraries/stm8_interrupt.c: 40: case EXTI_PORTC:
 00107$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 37: if (EXTIPinMaskC == 0) previousStateC = PC_IDR;
+;	../../my_STM8_libraries/stm8_interrupt.c: 41: if (EXTIPinMaskC == 0) previousStateC = PC_IDR;
 	ld	a, _EXTIPinMaskC+0
 	jrne	00109$
 	mov	_previousStateC+0, 0x500b
 00109$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 38: EXTIPinMaskC |= (1 << pin);
-	ld	a, (0x03, sp)
-	ld	xl, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 42: EXTIPinMaskC |= (1 << pin);
+	ld	a, (0x04, sp)
+	exg	a, xl
 	ld	a, #0x01
-	push	a
-	ld	a, xl
+	exg	a, xl
 	tnz	a
 	jreq	00176$
 00175$:
-	sll	(1, sp)
+	exg	a, xl
+	sll	a
+	exg	a, xl
 	dec	a
 	jrne	00175$
 00176$:
-	pop	a
+	ld	a, xl
 	or	a, _EXTIPinMaskC+0
 	ld	_EXTIPinMaskC+0, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 39: break;
+;	../../my_STM8_libraries/stm8_interrupt.c: 43: PC_DDR &= ~(1 << pin);
+	ld	a, 0x500c
+	ld	(0x01, sp), a
+	ld	a, xl
+	cpl	a
+	and	a, (0x01, sp)
+	ld	0x500c, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 44: PC_CR2 |= (1 << pin);
+	ld	a, 0x500e
+	pushw	x
+	or	a, (2, sp)
+	popw	x
+	ld	0x500e, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 45: break;
 	jra	00114$
-;	../../my_STM8_libraries/stm8_interrupt.c: 40: case EXTI_PORTD:
+;	../../my_STM8_libraries/stm8_interrupt.c: 46: case EXTI_PORTD:
 00110$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 41: if (EXTIPinMaskD == 0) previousStateD = PD_IDR;
+;	../../my_STM8_libraries/stm8_interrupt.c: 47: if (EXTIPinMaskD == 0) previousStateD = PD_IDR;
 	ld	a, _EXTIPinMaskD+0
 	jrne	00112$
 	mov	_previousStateD+0, 0x5010
 00112$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 42: EXTIPinMaskD |= (1 << pin);
-	ld	a, (0x03, sp)
-	ld	xl, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 48: EXTIPinMaskD |= (1 << pin);
+	ld	a, (0x04, sp)
+	exg	a, xl
 	ld	a, #0x01
-	push	a
-	ld	a, xl
+	exg	a, xl
 	tnz	a
 	jreq	00179$
 00178$:
-	sll	(1, sp)
+	exg	a, xl
+	sll	a
+	exg	a, xl
 	dec	a
 	jrne	00178$
 00179$:
-	pop	a
+	ld	a, xl
 	or	a, _EXTIPinMaskD+0
 	ld	_EXTIPinMaskD+0, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 44: }
+;	../../my_STM8_libraries/stm8_interrupt.c: 49: PD_DDR &= ~(1 << pin);
+	ld	a, 0x5011
+	ld	(0x01, sp), a
+	ld	a, xl
+	cpl	a
+	and	a, (0x01, sp)
+	ld	0x5011, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 50: PD_CR2 |= (1 << pin);
+	ld	a, 0x5013
+	pushw	x
+	or	a, (2, sp)
+	popw	x
+	ld	0x5013, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 52: }
 00114$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 45: }
+;	../../my_STM8_libraries/stm8_interrupt.c: 53: }
+	pop	a
 	popw	x
 	pop	a
 	jp	(x)
-;	../../my_STM8_libraries/stm8_interrupt.c: 46: void clear_EXTI_pin(uint8_t port, uint8_t pin)
+;	../../my_STM8_libraries/stm8_interrupt.c: 54: void clear_EXTI_pin(uint8_t port, uint8_t pin)
 ;	-----------------------------------------
 ;	 function clear_EXTI_pin
 ;	-----------------------------------------
 _clear_EXTI_pin:
+	push	a
 	ld	xl, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 51: EXTIPinMaskA &= ~(1 << pin);
-	ld	a, (0x03, sp)
+;	../../my_STM8_libraries/stm8_interrupt.c: 59: EXTIPinMaskA &= ~(1 << pin);
+	ld	a, (0x04, sp)
 	ld	xh, a
 	ld	a, #0x01
 	push	a
@@ -273,8 +334,8 @@ _clear_EXTI_pin:
 00129$:
 	pop	a
 	cpl	a
-	ld	xh, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 48: switch (port)
+	ld	(0x01, sp), a
+;	../../my_STM8_libraries/stm8_interrupt.c: 56: switch (port)
 	ld	a, xl
 	cp	a, #0x00
 	jreq	00101$
@@ -288,56 +349,89 @@ _clear_EXTI_pin:
 	cp	a, #0x06
 	jreq	00104$
 	jra	00106$
-;	../../my_STM8_libraries/stm8_interrupt.c: 50: case EXTI_PORTA:
+;	../../my_STM8_libraries/stm8_interrupt.c: 58: case EXTI_PORTA:
 00101$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 51: EXTIPinMaskA &= ~(1 << pin);
-	ld	a, xh
+;	../../my_STM8_libraries/stm8_interrupt.c: 59: EXTIPinMaskA &= ~(1 << pin);
+	ld	a, (0x01, sp)
 	and	a, _EXTIPinMaskA+0
 	ld	_EXTIPinMaskA+0, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 52: break;
+;	../../my_STM8_libraries/stm8_interrupt.c: 60: PA_DDR &= ~(1 << pin);
+	ld	a, 0x5002
+	and	a, (0x01, sp)
+	ld	0x5002, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 61: PA_CR2 &= ~(1 << pin);
+	ld	a, 0x5004
+	and	a, (0x01, sp)
+	ld	0x5004, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 62: break;
 	jra	00106$
-;	../../my_STM8_libraries/stm8_interrupt.c: 53: case EXTI_PORTB:
+;	../../my_STM8_libraries/stm8_interrupt.c: 63: case EXTI_PORTB:
 00102$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 54: EXTIPinMaskB &= ~(1 << pin);
-	ld	a, xh
+;	../../my_STM8_libraries/stm8_interrupt.c: 64: EXTIPinMaskB &= ~(1 << pin);
+	ld	a, (0x01, sp)
 	and	a, _EXTIPinMaskB+0
 	ld	_EXTIPinMaskB+0, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 55: break;
+;	../../my_STM8_libraries/stm8_interrupt.c: 65: PB_DDR &= ~(1 << pin);
+	ld	a, 0x5007
+	and	a, (0x01, sp)
+	ld	0x5007, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 66: PB_CR2 &= ~(1 << pin);
+	ld	a, 0x5009
+	and	a, (0x01, sp)
+	ld	0x5009, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 67: break;
 	jra	00106$
-;	../../my_STM8_libraries/stm8_interrupt.c: 56: case EXTI_PORTC:
+;	../../my_STM8_libraries/stm8_interrupt.c: 68: case EXTI_PORTC:
 00103$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 57: EXTIPinMaskC &= ~(1 << pin);
-	ld	a, xh
+;	../../my_STM8_libraries/stm8_interrupt.c: 69: EXTIPinMaskC &= ~(1 << pin);
+	ld	a, (0x01, sp)
 	and	a, _EXTIPinMaskC+0
 	ld	_EXTIPinMaskC+0, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 58: break;
+;	../../my_STM8_libraries/stm8_interrupt.c: 70: PC_DDR &= ~(1 << pin);
+	ld	a, 0x500c
+	and	a, (0x01, sp)
+	ld	0x500c, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 71: PC_CR2 &= ~(1 << pin);
+	ld	a, 0x500e
+	and	a, (0x01, sp)
+	ld	0x500e, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 72: break;
 	jra	00106$
-;	../../my_STM8_libraries/stm8_interrupt.c: 59: case EXTI_PORTD:
+;	../../my_STM8_libraries/stm8_interrupt.c: 73: case EXTI_PORTD:
 00104$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 60: EXTIPinMaskD &= ~(1 << pin);
-	ld	a, xh
+;	../../my_STM8_libraries/stm8_interrupt.c: 74: EXTIPinMaskD &= ~(1 << pin);
+	ld	a, (0x01, sp)
 	and	a, _EXTIPinMaskD+0
 	ld	_EXTIPinMaskD+0, a
-;	../../my_STM8_libraries/stm8_interrupt.c: 62: }
+;	../../my_STM8_libraries/stm8_interrupt.c: 75: PD_DDR &= ~(1 << pin);
+	ld	a, 0x5011
+	and	a, (0x01, sp)
+	ld	0x5011, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 76: PD_CR2 &= ~(1 << pin);
+	ld	a, 0x5013
+	and	a, (0x01, sp)
+	ld	0x5013, a
+;	../../my_STM8_libraries/stm8_interrupt.c: 78: }
 00106$:
-;	../../my_STM8_libraries/stm8_interrupt.c: 63: }
+;	../../my_STM8_libraries/stm8_interrupt.c: 79: }
+	pop	a
 	popw	x
 	pop	a
 	jp	(x)
-;	../../my_STM8_libraries/stm8_interrupt.c: 64: void setInterruptPriority(uint8_t interrupt, uint8_t priorityLevel)
+;	../../my_STM8_libraries/stm8_interrupt.c: 80: void setInterruptPriority(uint8_t interrupt, uint8_t priorityLevel)
 ;	-----------------------------------------
 ;	 function setInterruptPriority
 ;	-----------------------------------------
 _setInterruptPriority:
 	sub	sp, #2
-;	../../my_STM8_libraries/stm8_interrupt.c: 66: volatile uint8_t *priorityReg = &ITC_SPR1 + (interrupt >> 2);
+;	../../my_STM8_libraries/stm8_interrupt.c: 82: volatile uint8_t *priorityReg = &ITC_SPR1 + (interrupt >> 2);
 	ld	yl, a
 	srl	a
 	srl	a
 	clrw	x
 	ld	xl, a
 	addw	x, #0x7f70
-;	../../my_STM8_libraries/stm8_interrupt.c: 67: *priorityReg &= ~(3 << ((interrupt & 3) << 1));
+;	../../my_STM8_libraries/stm8_interrupt.c: 83: *priorityReg &= ~(3 << ((interrupt & 3) << 1));
 	ld	a, (x)
 	ld	(0x02, sp), a
 	ld	a, yl
@@ -357,7 +451,7 @@ _setInterruptPriority:
 	cpl	a
 	and	a, (0x02, sp)
 	ld	(x), a
-;	../../my_STM8_libraries/stm8_interrupt.c: 68: *priorityReg |= (priorityLevel << ((interrupt & 3) << 1));
+;	../../my_STM8_libraries/stm8_interrupt.c: 84: *priorityReg |= (priorityLevel << ((interrupt & 3) << 1));
 	ld	a, (x)
 	ld	(0x02, sp), a
 	ld	a, (0x05, sp)
@@ -372,7 +466,7 @@ _setInterruptPriority:
 	pop	a
 	or	a, (0x02, sp)
 	ld	(x), a
-;	../../my_STM8_libraries/stm8_interrupt.c: 69: }
+;	../../my_STM8_libraries/stm8_interrupt.c: 85: }
 	addw	sp, #2
 	popw	x
 	pop	a

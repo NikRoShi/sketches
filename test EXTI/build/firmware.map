@@ -25,7 +25,7 @@ Area                                    Addr        Size        Decimal Bytes (A
      0000001A  l_GSINIT                        
      0000001B  l_HOME                          
      00000021  s_SSEG                          
-     00000CC3  l_CODE                          
+     00000D68  l_CODE                          
      00008000  s_HOME                          
      0000801B  s_GSINIT                        
      00008035  s_GSFINAL                       
@@ -124,7 +124,7 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-CODE                                0000805F    00000CC3 =        3267. bytes (REL,CON)
+CODE                                0000805F    00000D68 =        3432. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -160,42 +160,42 @@ CODE                                0000805F    00000CC3 =        3267. bytes (R
      000085CF  _readBuffer_I2C                    stm8_I2C
      000086EA  _set_EXTI                          stm8_interrupt
      00008721  _set_EXTI_pin                      stm8_interrupt
-     000087BD  _clear_EXTI_pin                    stm8_interrupt
-     0000880B  _setInterruptPriority              stm8_interrupt
-     00008849  _init_PWM                          stm8_PWM
-     000088B5  _startChannel_PWM                  stm8_PWM
-     000088E9  _stopChannel_PWM                   stm8_PWM
-     00008905  _write_PWM                         stm8_PWM
-     00008935  _writePercent_PWM                  stm8_PWM
-     0000897E  _init_SPI                          stm8_SPI
-     000089B6  _exchange_SPI                      stm8_SPI
-     000089FC  _write_SPI                         stm8_SPI
-     000089FF  _read_SPI                          stm8_SPI
-     00008A04  _tick_TIME                         stm8_TIME
-     00008A18  _init_TIME                         stm8_TIME
-     00008A38  _get_ms                            stm8_TIME
-     00008A42  _get_mcs                           stm8_TIME
-     00008A80  _delay                             stm8_TIME
-     00008AB4  _init_UART                         stm8_UART
-     00008AFF  _write_UART                        stm8_UART
+     0000881B  _clear_EXTI_pin                    stm8_interrupt
+     000088B0  _setInterruptPriority              stm8_interrupt
+     000088EE  _init_PWM                          stm8_PWM
+     0000895A  _startChannel_PWM                  stm8_PWM
+     0000898E  _stopChannel_PWM                   stm8_PWM
+     000089AA  _write_PWM                         stm8_PWM
+     000089DA  _writePercent_PWM                  stm8_PWM
+     00008A23  _init_SPI                          stm8_SPI
+     00008A5B  _exchange_SPI                      stm8_SPI
+     00008AA1  _write_SPI                         stm8_SPI
+     00008AA4  _read_SPI                          stm8_SPI
+     00008AA9  _tick_TIME                         stm8_TIME
+     00008ABD  _init_TIME                         stm8_TIME
+     00008ADD  _get_ms                            stm8_TIME
+     00008AE7  _get_mcs                           stm8_TIME
+     00008B25  _delay                             stm8_TIME
+     00008B59  _init_UART                         stm8_UART
+     00008BA4  _write_UART                        stm8_UART
 ASxxxx Linker V03.00 + NoICE + sdld,  page 11.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-CODE                                0000805F    00000CC3 =        3267. bytes (REL,CON)
+CODE                                0000805F    00000D68 =        3432. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     00008B18  _print_UART                        stm8_UART
-     00008B2B  _printInt_UART                     stm8_UART
-     00008B8A  _line_UART                         stm8_UART
-     00008BAE  _printHex_UART                     stm8_UART
-     00008BD7  _isDataReceived_UART               stm8_UART
-     00008BE1  _getData_UART                      stm8_UART
-     00008BE5  __modulong                         _modulong
-     00008C4D  __divulong                         _divulong
-     00008CA6  __mullong                          
+     00008BBD  _print_UART                        stm8_UART
+     00008BD0  _printInt_UART                     stm8_UART
+     00008C2F  _line_UART                         stm8_UART
+     00008C53  _printHex_UART                     stm8_UART
+     00008C7C  _isDataReceived_UART               stm8_UART
+     00008C86  _getData_UART                      stm8_UART
+     00008C8A  __modulong                         _modulong
+     00008CF2  __divulong                         _divulong
+     00008D4B  __mullong                          
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 12.
 

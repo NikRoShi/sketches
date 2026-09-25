@@ -109,7 +109,7 @@
       0080D0 4B 00            [ 1]  109 	push	#0x00
       0080D2 4B 18            [ 1]  110 	push	#0x18
       0080D4 4F               [ 1]  111 	clr	a
-      0080D5 CD 89 7E         [ 4]  112 	call	_init_SPI
+      0080D5 CD 8A 23         [ 4]  112 	call	_init_SPI
                                     113 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 51: pinMode(latchPort, latchPin, OUTPUT);
       0080D8 4B 00            [ 1]  114 	push	#0x00
       0080DA C6 00 03         [ 1]  115 	ld	a, _latchPin+0
@@ -162,13 +162,13 @@
       008113 C6 00 0D         [ 1]  162 	ld	a, _currentPosition+0
       008116 97               [ 1]  163 	ld	xl, a
       008117 D6 00 04         [ 1]  164 	ld	a, (_displayBuffer+0, x)
-      00811A CD 89 FC         [ 4]  165 	call	_write_SPI
+      00811A CD 8A A1         [ 4]  165 	call	_write_SPI
                                     166 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 65: write_SPI(positionTable[currentPosition]);
       00811D 5F               [ 1]  167 	clrw	x
       00811E C6 00 0D         [ 1]  168 	ld	a, _currentPosition+0
       008121 97               [ 1]  169 	ld	xl, a
       008122 D6 80 38         [ 1]  170 	ld	a, (_positionTable+0, x)
-      008125 CD 89 FC         [ 4]  171 	call	_write_SPI
+      008125 CD 8A A1         [ 4]  171 	call	_write_SPI
                                     172 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 67: writePin(latchPort, latchPin, HIGH);
       008128 4B 01            [ 1]  173 	push	#0x01
       00812A C6 00 03         [ 1]  174 	ld	a, _latchPin+0
@@ -211,7 +211,7 @@
       00815F 89               [ 2]  211 	pushw	x
       008160 1E 09            [ 2]  212 	ldw	x, (0x09, sp)
       008162 89               [ 2]  213 	pushw	x
-      008163 CD 8B E5         [ 4]  214 	call	__modulong
+      008163 CD 8C 8A         [ 4]  214 	call	__modulong
       008166 5B 08            [ 2]  215 	addw	sp, #8
       008168 9F               [ 1]  216 	ld	a, xl
       008169 88               [ 1]  217 	push	a
@@ -226,7 +226,7 @@
       008178 89               [ 2]  226 	pushw	x
       008179 1E 09            [ 2]  227 	ldw	x, (0x09, sp)
       00817B 89               [ 2]  228 	pushw	x
-      00817C CD 8C 4D         [ 4]  229 	call	__divulong
+      00817C CD 8C F2         [ 4]  229 	call	__divulong
       00817F 5B 08            [ 2]  230 	addw	sp, #8
       008181 1F 05            [ 2]  231 	ldw	(0x05, sp), x
       008183 17 03            [ 2]  232 	ldw	(0x03, sp), y

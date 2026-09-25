@@ -139,10 +139,10 @@ _main:
 	rim
 ;	main.c: 30: while (1)
 00104$:
-;	main.c: 32: if (EXTI_FlagA & (1 << 0))
-	btjf	_EXTI_FlagA+0, #0, 00104$
-;	main.c: 34: EXTI_FlagA &= ~(1 << 0);
-	bres	_EXTI_FlagA+0, #0
+;	main.c: 32: if (EXTI_FlagA & (1 << 1))
+	btjf	_EXTI_FlagA+0, #1, 00104$
+;	main.c: 34: EXTI_FlagA &= ~(1 << 1);
+	bres	_EXTI_FlagA+0, #1
 ;	main.c: 35: counter++;
 	inc	_counter+0
 ;	main.c: 36: printInt_UART(counter);

@@ -126,7 +126,7 @@
                                     126 ;	main.c: 24: init_UART(9600, DISABLE);
       008078 4F               [ 1]  127 	clr	a
       008079 AE 25 80         [ 2]  128 	ldw	x, #0x2580
-      00807C CD 8A B4         [ 4]  129 	call	_init_UART
+      00807C CD 8B 59         [ 4]  129 	call	_init_UART
                                     130 ;	main.c: 26: set_EXTI(EXTI_PORTA, FALLING);
       00807F 4B 02            [ 1]  131 	push	#0x02
       008081 4F               [ 1]  132 	clr	a
@@ -139,19 +139,19 @@
       00808B 9A               [ 1]  139 	rim
                                     140 ;	main.c: 30: while (1)
       00808C                        141 00104$:
-                                    142 ;	main.c: 32: if (EXTI_FlagA & (1 << 0))
-      00808C 72 01 00 11 FB   [ 2]  143 	btjf	_EXTI_FlagA+0, #0, 00104$
-                                    144 ;	main.c: 34: EXTI_FlagA &= ~(1 << 0);
-      008091 72 11 00 11      [ 1]  145 	bres	_EXTI_FlagA+0, #0
+                                    142 ;	main.c: 32: if (EXTI_FlagA & (1 << 1))
+      00808C 72 03 00 11 FB   [ 2]  143 	btjf	_EXTI_FlagA+0, #1, 00104$
+                                    144 ;	main.c: 34: EXTI_FlagA &= ~(1 << 1);
+      008091 72 13 00 11      [ 1]  145 	bres	_EXTI_FlagA+0, #1
                                     146 ;	main.c: 35: counter++;
       008095 72 5C 00 0C      [ 1]  147 	inc	_counter+0
                                     148 ;	main.c: 36: printInt_UART(counter);
       008099 C6 00 0C         [ 1]  149 	ld	a, _counter+0
       00809C 5F               [ 1]  150 	clrw	x
       00809D 97               [ 1]  151 	ld	xl, a
-      00809E CD 8B 2B         [ 4]  152 	call	_printInt_UART
+      00809E CD 8B D0         [ 4]  152 	call	_printInt_UART
                                     153 ;	main.c: 37: line_UART();
-      0080A1 CD 8B 8A         [ 4]  154 	call	_line_UART
+      0080A1 CD 8C 2F         [ 4]  154 	call	_line_UART
       0080A4 20 E6            [ 2]  155 	jra	00104$
                                     156 ;	main.c: 40: }
       0080A6 81               [ 4]  157 	ret

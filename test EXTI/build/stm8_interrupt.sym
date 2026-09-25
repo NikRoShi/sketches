@@ -27,12 +27,12 @@ Symbol Table
   8 __xinit__previousStateB                                        000003 R
   8 __xinit__previousStateC                                        000006 R
   8 __xinit__previousStateD                                        000009 R
-  9 _clear_EXTI_pin                                                0000D3 GR
+  9 _clear_EXTI_pin                                                000131 GR
   2 _previousStateA                                                000000 GR
   2 _previousStateB                                                000003 GR
   2 _previousStateC                                                000006 GR
   2 _previousStateD                                                000009 GR
-  9 _setInterruptPriority                                          000121 GR
+  9 _setInterruptPriority                                          0001C6 GR
   9 _set_EXTI                                                      000000 GR
   9 _set_EXTI_pin                                                  000037 GR
 
@@ -51,6 +51,6 @@ Area Table
    6 GSFINAL                                    size      0   flags    0
    7 CONST                                      size      0   flags    0
    8 INITIALIZER                                size      C   flags    0
-   9 CODE                                       size    15F   flags    0
+   9 CODE                                       size    204   flags    0
    A CABS                                       size      0   flags    8
 
