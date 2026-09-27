@@ -10,6 +10,7 @@
 ;--------------------------------------------------------
 	.globl _main
 	.globl _EXTI_A_IRQHandler
+	.globl _handlerPortA
 	.globl _set_EXTI_pin
 	.globl _set_EXTI
 	.globl _line_UART
@@ -101,53 +102,50 @@ __sdcc_program_startup:
 ;	 function EXTI_A_IRQHandler
 ;	-----------------------------------------
 _EXTI_A_IRQHandler:
-;	main.c: 12: changedA = PA_IDR;
-	ld	a, 0x5001
-;	main.c: 13: changedA &= EXTIPinMaskA;
-	and	a, _EXTIPinMaskA+0
-;	main.c: 14: EXTI_FlagA |= changedA;
-	or	a, _EXTI_FlagA+0
-	ld	_EXTI_FlagA+0, a
-;	main.c: 15: }
+	clr	a
+	div	x, a
+;	main.c: 10: handlerPortA();
+	call	_handlerPortA
+;	main.c: 11: }
 	iret
-;	main.c: 17: int main(void)
+;	main.c: 13: int main(void)
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-;	main.c: 19: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
+;	main.c: 15: CLK_CKDIVR = 0;	//частота тактирования мк 16 МГц
 	mov	0x50c6+0, #0x00
-;	main.c: 21: init_UART(9600, DISABLE);
+;	main.c: 17: init_UART(9600, DISABLE);
 	clr	a
 	ldw	x, #0x2580
 	call	_init_UART
-;	main.c: 23: set_EXTI(EXTI_PORTA, FALLING);
+;	main.c: 19: set_EXTI(EXTI_PORTA, FALLING);
 	push	#0x02
 	clr	a
 	call	_set_EXTI
-;	main.c: 24: set_EXTI_pin(EXTI_PORTA, 1);
+;	main.c: 20: set_EXTI_pin(EXTI_PORTA, 1);
 	push	#0x01
 	clr	a
 	call	_set_EXTI_pin
-;	main.c: 26: enableInterrupts();	
+;	main.c: 22: enableInterrupts();	
 	rim
-;	main.c: 27: while (1)
+;	main.c: 23: while (1)
 00104$:
-;	main.c: 29: if (EXTI_FlagA & (1 << 1))
+;	main.c: 25: if (EXTI_FlagA & (1 << 1))
 	btjf	_EXTI_FlagA+0, #1, 00104$
-;	main.c: 31: EXTI_FlagA &= ~(1 << 1);
+;	main.c: 27: EXTI_FlagA &= ~(1 << 1);
 	bres	_EXTI_FlagA+0, #1
-;	main.c: 32: counter++;
+;	main.c: 28: counter++;
 	inc	_counter+0
-;	main.c: 33: printInt_UART(counter);
+;	main.c: 29: printInt_UART(counter);
 	ld	a, _counter+0
 	clrw	x
 	ld	xl, a
 	call	_printInt_UART
-;	main.c: 34: line_UART();
+;	main.c: 30: line_UART();
 	call	_line_UART
 	jra	00104$
-;	main.c: 37: }
+;	main.c: 33: }
 	ret
 	.area CODE
 	.area CONST

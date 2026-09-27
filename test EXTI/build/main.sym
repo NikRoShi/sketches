@@ -7,7 +7,6 @@ Symbol Table
     .__.ABS.                                                    =  000000 G
     .__.CPU.                                                    =  000000 L
     .__.H$L.                                                    =  000001 L
-    _EXTIPinMaskA                                                  ****** GX
   A _EXTI_A_IRQHandler                                             000000 GR
     _EXTI_FlagA                                                    ****** GX
   5 __interrupt_vect                                               000000 R
@@ -16,9 +15,10 @@ Symbol Table
   3 __start__stack                                                 000000 R
   9 __xinit__counter                                               000000 R
   2 _counter                                                       000000 GR
+    _handlerPortA                                                  ****** GX
     _init_UART                                                     ****** GX
     _line_UART                                                     ****** GX
-  A _main                                                          00000D GR
+  A _main                                                          000006 GR
     _printInt_UART                                                 ****** GX
     _set_EXTI                                                      ****** GX
     _set_EXTI_pin                                                  ****** GX
@@ -45,6 +45,6 @@ Area Table
    7 GSFINAL                                    size      3   flags    0
    8 CONST                                      size      0   flags    0
    9 INITIALIZER                                size      1   flags    0
-   A CODE                                       size     40   flags    0
+   A CODE                                       size     39   flags    0
    B CABS                                       size      0   flags    8
 

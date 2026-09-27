@@ -68,178 +68,178 @@
                                      68 ;	-----------------------------------------
                                      69 ;	 function clear_display
                                      70 ;	-----------------------------------------
-      00809F                         71 _clear_display:
+      008098                         71 _clear_display:
                                      72 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 37: for (uint8_t i = 0; i < 8; i++)
-      00809F 4F               [ 1]   73 	clr	a
-      0080A0                         74 00103$:
-      0080A0 A1 08            [ 1]   75 	cp	a, #0x08
-      0080A2 25 01            [ 1]   76 	jrc	00118$
-      0080A4 81               [ 4]   77 	ret
-      0080A5                         78 00118$:
+      008098 4F               [ 1]   73 	clr	a
+      008099                         74 00103$:
+      008099 A1 08            [ 1]   75 	cp	a, #0x08
+      00809B 25 01            [ 1]   76 	jrc	00118$
+      00809D 81               [ 4]   77 	ret
+      00809E                         78 00118$:
                                      79 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 39: displayBuffer[i] = DISPLAY_BLANK;
-      0080A5 5F               [ 1]   80 	clrw	x
-      0080A6 97               [ 1]   81 	ld	xl, a
-      0080A7 1C 00 04         [ 2]   82 	addw	x, #(_displayBuffer+0)
-      0080AA 88               [ 1]   83 	push	a
-      0080AB A6 FF            [ 1]   84 	ld	a, #0xff
-      0080AD F7               [ 1]   85 	ld	(x), a
-      0080AE 84               [ 1]   86 	pop	a
+      00809E 5F               [ 1]   80 	clrw	x
+      00809F 97               [ 1]   81 	ld	xl, a
+      0080A0 1C 00 04         [ 2]   82 	addw	x, #(_displayBuffer+0)
+      0080A3 88               [ 1]   83 	push	a
+      0080A4 A6 FF            [ 1]   84 	ld	a, #0xff
+      0080A6 F7               [ 1]   85 	ld	(x), a
+      0080A7 84               [ 1]   86 	pop	a
                                      87 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 37: for (uint8_t i = 0; i < 8; i++)
-      0080AF 4C               [ 1]   88 	inc	a
-      0080B0 20 EE            [ 2]   89 	jra	00103$
+      0080A8 4C               [ 1]   88 	inc	a
+      0080A9 20 EE            [ 2]   89 	jra	00103$
                                      90 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 41: }
-      0080B2 81               [ 4]   91 	ret
+      0080AB 81               [ 4]   91 	ret
                                      92 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 43: void init_display(volatile uint8_t *port, uint8_t pin)
                                      93 ;	-----------------------------------------
                                      94 ;	 function init_display
                                      95 ;	-----------------------------------------
-      0080B3                         96 _init_display:
-      0080B3 52 02            [ 2]   97 	sub	sp, #2
-      0080B5 1F 01            [ 2]   98 	ldw	(0x01, sp), x
-      0080B7 C7 00 03         [ 1]   99 	ld	_latchPin+0, a
+      0080AC                         96 _init_display:
+      0080AC 52 02            [ 2]   97 	sub	sp, #2
+      0080AE 1F 01            [ 2]   98 	ldw	(0x01, sp), x
+      0080B0 C7 00 03         [ 1]   99 	ld	_latchPin+0, a
                                     100 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 45: latchPort = port;
-      0080BA 1E 01            [ 2]  101 	ldw	x, (0x01, sp)
-      0080BC CF 00 01         [ 2]  102 	ldw	_latchPort+0, x
+      0080B3 1E 01            [ 2]  101 	ldw	x, (0x01, sp)
+      0080B5 CF 00 01         [ 2]  102 	ldw	_latchPort+0, x
                                     103 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 47: currentPosition = 0;
-      0080BF 72 5F 00 0D      [ 1]  104 	clr	_currentPosition+0
+      0080B8 72 5F 00 0D      [ 1]  104 	clr	_currentPosition+0
                                     105 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 48: clear_display();
-      0080C3 CD 80 9F         [ 4]  106 	call	_clear_display
+      0080BC CD 80 98         [ 4]  106 	call	_clear_display
                                     107 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 50: init_SPI(SPI_MODE0, SPI_DIV16, SPI_MSB, SPI_MST);
-      0080C6 4B 04            [ 1]  108 	push	#0x04
-      0080C8 4B 00            [ 1]  109 	push	#0x00
-      0080CA 4B 18            [ 1]  110 	push	#0x18
-      0080CC 4F               [ 1]  111 	clr	a
-      0080CD CD 8A 1B         [ 4]  112 	call	_init_SPI
+      0080BF 4B 04            [ 1]  108 	push	#0x04
+      0080C1 4B 00            [ 1]  109 	push	#0x00
+      0080C3 4B 18            [ 1]  110 	push	#0x18
+      0080C5 4F               [ 1]  111 	clr	a
+      0080C6 CD 8A 71         [ 4]  112 	call	_init_SPI
                                     113 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 51: pinMode(latchPort, latchPin, OUTPUT);
-      0080D0 4B 00            [ 1]  114 	push	#0x00
-      0080D2 C6 00 03         [ 1]  115 	ld	a, _latchPin+0
-      0080D5 CE 00 01         [ 2]  116 	ldw	x, _latchPort+0
-      0080D8 CD 82 6C         [ 4]  117 	call	_pinMode
+      0080C9 4B 00            [ 1]  114 	push	#0x00
+      0080CB C6 00 03         [ 1]  115 	ld	a, _latchPin+0
+      0080CE CE 00 01         [ 2]  116 	ldw	x, _latchPort+0
+      0080D1 CD 82 65         [ 4]  117 	call	_pinMode
                                     118 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 53: writePin(latchPort, latchPin, LOW);
-      0080DB 4B 00            [ 1]  119 	push	#0x00
-      0080DD C6 00 03         [ 1]  120 	ld	a, _latchPin+0
-      0080E0 CE 00 01         [ 2]  121 	ldw	x, _latchPort+0
-      0080E3 CD 82 FA         [ 4]  122 	call	_writePin
+      0080D4 4B 00            [ 1]  119 	push	#0x00
+      0080D6 C6 00 03         [ 1]  120 	ld	a, _latchPin+0
+      0080D9 CE 00 01         [ 2]  121 	ldw	x, _latchPort+0
+      0080DC CD 82 F3         [ 4]  122 	call	_writePin
                                     123 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 54: }
-      0080E6 5B 02            [ 2]  124 	addw	sp, #2
-      0080E8 81               [ 4]  125 	ret
+      0080DF 5B 02            [ 2]  124 	addw	sp, #2
+      0080E1 81               [ 4]  125 	ret
                                     126 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 55: void setDigit(uint8_t position, uint8_t digit)
                                     127 ;	-----------------------------------------
                                     128 ;	 function setDigit
                                     129 ;	-----------------------------------------
-      0080E9                        130 _setDigit:
+      0080E2                        130 _setDigit:
                                     131 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 57: if (position > 7) return;
-      0080E9 A1 07            [ 1]  132 	cp	a, #0x07
-      0080EB 22 1A            [ 1]  133 	jrugt	00105$
+      0080E2 A1 07            [ 1]  132 	cp	a, #0x07
+      0080E4 22 1A            [ 1]  133 	jrugt	00105$
                                     134 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 58: if (digit > 9) return;
-      0080ED 88               [ 1]  135 	push	a
-      0080EE 7B 04            [ 1]  136 	ld	a, (0x04, sp)
-      0080F0 A1 09            [ 1]  137 	cp	a, #0x09
-      0080F2 84               [ 1]  138 	pop	a
-      0080F3 22 12            [ 1]  139 	jrugt	00105$
+      0080E6 88               [ 1]  135 	push	a
+      0080E7 7B 04            [ 1]  136 	ld	a, (0x04, sp)
+      0080E9 A1 09            [ 1]  137 	cp	a, #0x09
+      0080EB 84               [ 1]  138 	pop	a
+      0080EC 22 12            [ 1]  139 	jrugt	00105$
                                     140 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 60: displayBuffer[position] = digitTable[digit];
-      0080F5 5F               [ 1]  141 	clrw	x
-      0080F6 97               [ 1]  142 	ld	xl, a
-      0080F7 1C 00 04         [ 2]  143 	addw	x, #(_displayBuffer+0)
-      0080FA 90 5F            [ 1]  144 	clrw	y
-      0080FC 7B 03            [ 1]  145 	ld	a, (0x03, sp)
-      0080FE 90 97            [ 1]  146 	ld	yl, a
-      008100 72 A9 80 40      [ 2]  147 	addw	y, #(_digitTable+0)
-      008104 90 F6            [ 1]  148 	ld	a, (y)
-      008106 F7               [ 1]  149 	ld	(x), a
-      008107                        150 00105$:
+      0080EE 5F               [ 1]  141 	clrw	x
+      0080EF 97               [ 1]  142 	ld	xl, a
+      0080F0 1C 00 04         [ 2]  143 	addw	x, #(_displayBuffer+0)
+      0080F3 90 5F            [ 1]  144 	clrw	y
+      0080F5 7B 03            [ 1]  145 	ld	a, (0x03, sp)
+      0080F7 90 97            [ 1]  146 	ld	yl, a
+      0080F9 72 A9 80 40      [ 2]  147 	addw	y, #(_digitTable+0)
+      0080FD 90 F6            [ 1]  148 	ld	a, (y)
+      0080FF F7               [ 1]  149 	ld	(x), a
+      008100                        150 00105$:
                                     151 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 61: }
-      008107 85               [ 2]  152 	popw	x
-      008108 84               [ 1]  153 	pop	a
-      008109 FC               [ 2]  154 	jp	(x)
+      008100 85               [ 2]  152 	popw	x
+      008101 84               [ 1]  153 	pop	a
+      008102 FC               [ 2]  154 	jp	(x)
                                     155 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 62: void refresh_display(void)
                                     156 ;	-----------------------------------------
                                     157 ;	 function refresh_display
                                     158 ;	-----------------------------------------
-      00810A                        159 _refresh_display:
+      008103                        159 _refresh_display:
                                     160 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 64: write_SPI(displayBuffer[currentPosition]);
-      00810A 5F               [ 1]  161 	clrw	x
-      00810B C6 00 0D         [ 1]  162 	ld	a, _currentPosition+0
-      00810E 97               [ 1]  163 	ld	xl, a
-      00810F D6 00 04         [ 1]  164 	ld	a, (_displayBuffer+0, x)
-      008112 CD 8A 99         [ 4]  165 	call	_write_SPI
+      008103 5F               [ 1]  161 	clrw	x
+      008104 C6 00 0D         [ 1]  162 	ld	a, _currentPosition+0
+      008107 97               [ 1]  163 	ld	xl, a
+      008108 D6 00 04         [ 1]  164 	ld	a, (_displayBuffer+0, x)
+      00810B CD 8A EF         [ 4]  165 	call	_write_SPI
                                     166 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 65: write_SPI(positionTable[currentPosition]);
-      008115 5F               [ 1]  167 	clrw	x
-      008116 C6 00 0D         [ 1]  168 	ld	a, _currentPosition+0
-      008119 97               [ 1]  169 	ld	xl, a
-      00811A D6 80 38         [ 1]  170 	ld	a, (_positionTable+0, x)
-      00811D CD 8A 99         [ 4]  171 	call	_write_SPI
+      00810E 5F               [ 1]  167 	clrw	x
+      00810F C6 00 0D         [ 1]  168 	ld	a, _currentPosition+0
+      008112 97               [ 1]  169 	ld	xl, a
+      008113 D6 80 38         [ 1]  170 	ld	a, (_positionTable+0, x)
+      008116 CD 8A EF         [ 4]  171 	call	_write_SPI
                                     172 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 67: writePin(latchPort, latchPin, HIGH);
-      008120 4B 01            [ 1]  173 	push	#0x01
-      008122 C6 00 03         [ 1]  174 	ld	a, _latchPin+0
-      008125 CE 00 01         [ 2]  175 	ldw	x, _latchPort+0
-      008128 CD 82 FA         [ 4]  176 	call	_writePin
+      008119 4B 01            [ 1]  173 	push	#0x01
+      00811B C6 00 03         [ 1]  174 	ld	a, _latchPin+0
+      00811E CE 00 01         [ 2]  175 	ldw	x, _latchPort+0
+      008121 CD 82 F3         [ 4]  176 	call	_writePin
                                     177 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 68: writePin(latchPort, latchPin, LOW);
-      00812B 4B 00            [ 1]  178 	push	#0x00
-      00812D C6 00 03         [ 1]  179 	ld	a, _latchPin+0
-      008130 CE 00 01         [ 2]  180 	ldw	x, _latchPort+0
-      008133 CD 82 FA         [ 4]  181 	call	_writePin
+      008124 4B 00            [ 1]  178 	push	#0x00
+      008126 C6 00 03         [ 1]  179 	ld	a, _latchPin+0
+      008129 CE 00 01         [ 2]  180 	ldw	x, _latchPort+0
+      00812C CD 82 F3         [ 4]  181 	call	_writePin
                                     182 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 70: currentPosition++;
-      008136 72 5C 00 0D      [ 1]  183 	inc	_currentPosition+0
+      00812F 72 5C 00 0D      [ 1]  183 	inc	_currentPosition+0
                                     184 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 71: if (currentPosition > 7) currentPosition = 0;
-      00813A C6 00 0D         [ 1]  185 	ld	a, _currentPosition+0
-      00813D A1 07            [ 1]  186 	cp	a, #0x07
-      00813F 22 01            [ 1]  187 	jrugt	00110$
-      008141 81               [ 4]  188 	ret
-      008142                        189 00110$:
-      008142 72 5F 00 0D      [ 1]  190 	clr	_currentPosition+0
+      008133 C6 00 0D         [ 1]  185 	ld	a, _currentPosition+0
+      008136 A1 07            [ 1]  186 	cp	a, #0x07
+      008138 22 01            [ 1]  187 	jrugt	00110$
+      00813A 81               [ 4]  188 	ret
+      00813B                        189 00110$:
+      00813B 72 5F 00 0D      [ 1]  190 	clr	_currentPosition+0
                                     191 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 72: }
-      008146 81               [ 4]  192 	ret
+      00813F 81               [ 4]  192 	ret
                                     193 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 73: void printNumber(uint32_t number)
                                     194 ;	-----------------------------------------
                                     195 ;	 function printNumber
                                     196 ;	-----------------------------------------
-      008147                        197 _printNumber:
+      008140                        197 _printNumber:
                                     198 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 75: while (number)
-      008147                        199 00101$:
-      008147 1E 05            [ 2]  200 	ldw	x, (0x05, sp)
-      008149 26 04            [ 1]  201 	jrne	00116$
-      00814B 1E 03            [ 2]  202 	ldw	x, (0x03, sp)
-      00814D 27 34            [ 1]  203 	jreq	00103$
-      00814F                        204 00116$:
+      008140                        199 00101$:
+      008140 1E 05            [ 2]  200 	ldw	x, (0x05, sp)
+      008142 26 04            [ 1]  201 	jrne	00116$
+      008144 1E 03            [ 2]  202 	ldw	x, (0x03, sp)
+      008146 27 34            [ 1]  203 	jreq	00103$
+      008148                        204 00116$:
                                     205 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 77: setDigit(a, number % 10);
-      00814F 4B 0A            [ 1]  206 	push	#0x0a
-      008151 5F               [ 1]  207 	clrw	x
-      008152 89               [ 2]  208 	pushw	x
-      008153 4B 00            [ 1]  209 	push	#0x00
-      008155 1E 09            [ 2]  210 	ldw	x, (0x09, sp)
-      008157 89               [ 2]  211 	pushw	x
-      008158 1E 09            [ 2]  212 	ldw	x, (0x09, sp)
-      00815A 89               [ 2]  213 	pushw	x
-      00815B CD 8C 82         [ 4]  214 	call	__modulong
-      00815E 5B 08            [ 2]  215 	addw	sp, #8
-      008160 9F               [ 1]  216 	ld	a, xl
-      008161 88               [ 1]  217 	push	a
-      008162 C6 00 0E         [ 1]  218 	ld	a, _a+0
-      008165 CD 80 E9         [ 4]  219 	call	_setDigit
+      008148 4B 0A            [ 1]  206 	push	#0x0a
+      00814A 5F               [ 1]  207 	clrw	x
+      00814B 89               [ 2]  208 	pushw	x
+      00814C 4B 00            [ 1]  209 	push	#0x00
+      00814E 1E 09            [ 2]  210 	ldw	x, (0x09, sp)
+      008150 89               [ 2]  211 	pushw	x
+      008151 1E 09            [ 2]  212 	ldw	x, (0x09, sp)
+      008153 89               [ 2]  213 	pushw	x
+      008154 CD 8C D8         [ 4]  214 	call	__modulong
+      008157 5B 08            [ 2]  215 	addw	sp, #8
+      008159 9F               [ 1]  216 	ld	a, xl
+      00815A 88               [ 1]  217 	push	a
+      00815B C6 00 0E         [ 1]  218 	ld	a, _a+0
+      00815E CD 80 E2         [ 4]  219 	call	_setDigit
                                     220 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 78: number /= 10;
-      008168 4B 0A            [ 1]  221 	push	#0x0a
-      00816A 5F               [ 1]  222 	clrw	x
-      00816B 89               [ 2]  223 	pushw	x
-      00816C 4B 00            [ 1]  224 	push	#0x00
-      00816E 1E 09            [ 2]  225 	ldw	x, (0x09, sp)
-      008170 89               [ 2]  226 	pushw	x
-      008171 1E 09            [ 2]  227 	ldw	x, (0x09, sp)
-      008173 89               [ 2]  228 	pushw	x
-      008174 CD 8C EA         [ 4]  229 	call	__divulong
-      008177 5B 08            [ 2]  230 	addw	sp, #8
-      008179 1F 05            [ 2]  231 	ldw	(0x05, sp), x
-      00817B 17 03            [ 2]  232 	ldw	(0x03, sp), y
+      008161 4B 0A            [ 1]  221 	push	#0x0a
+      008163 5F               [ 1]  222 	clrw	x
+      008164 89               [ 2]  223 	pushw	x
+      008165 4B 00            [ 1]  224 	push	#0x00
+      008167 1E 09            [ 2]  225 	ldw	x, (0x09, sp)
+      008169 89               [ 2]  226 	pushw	x
+      00816A 1E 09            [ 2]  227 	ldw	x, (0x09, sp)
+      00816C 89               [ 2]  228 	pushw	x
+      00816D CD 8D 40         [ 4]  229 	call	__divulong
+      008170 5B 08            [ 2]  230 	addw	sp, #8
+      008172 1F 05            [ 2]  231 	ldw	(0x05, sp), x
+      008174 17 03            [ 2]  232 	ldw	(0x03, sp), y
                                     233 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 79: a++;
-      00817D 72 5C 00 0E      [ 1]  234 	inc	_a+0
-      008181 20 C4            [ 2]  235 	jra	00101$
-      008183                        236 00103$:
+      008176 72 5C 00 0E      [ 1]  234 	inc	_a+0
+      00817A 20 C4            [ 2]  235 	jra	00101$
+      00817C                        236 00103$:
                                     237 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 81: a = 0;
-      008183 72 5F 00 0E      [ 1]  238 	clr	_a+0
+      00817C 72 5F 00 0E      [ 1]  238 	clr	_a+0
                                     239 ;	../../my_STM8_libraries/stm8_7SEG595_display.c: 82: }
-      008187 1E 01            [ 2]  240 	ldw	x, (1, sp)
-      008189 5B 06            [ 2]  241 	addw	sp, #6
-      00818B FC               [ 2]  242 	jp	(x)
+      008180 1E 01            [ 2]  240 	ldw	x, (1, sp)
+      008182 5B 06            [ 2]  241 	addw	sp, #6
+      008184 FC               [ 2]  242 	jp	(x)
                                     243 	.area CODE
                                     244 	.area CONST
       008038                        245 _positionTable:
